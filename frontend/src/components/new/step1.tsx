@@ -3,6 +3,9 @@ import styled from "styled-components";
 
 const Box = styled.div`
   padding-top: 40px;
+  input[type="file"] {
+    display: none;
+  }
 `
 const UploadBox = styled.div`
   //border: 4px solid #fcca00;
@@ -48,12 +51,16 @@ const UploadBtn = styled.div`
 export default function Step1(){
     return  <Box>
         <TitleBox>Upload Contract</TitleBox>
-        <UploadBox>
-            <div className="center">
-                <div><img src={UploadImg} alt="" className="uploadImg"/></div>
-                <div>Drop a PDF contract file here</div>
-                <UploadBtn>Upload</UploadBtn>
-            </div>
-        </UploadBox>
+        <label htmlFor="file-upload" className="custom-file-upload">
+            <UploadBox>
+                <div className="center">
+                    <div><img src={UploadImg} alt="" className="uploadImg"/></div>
+                    <div>Drop a PDF contract file here</div>
+                    <UploadBtn>Upload</UploadBtn>
+                </div>
+            </UploadBox>
+        </label>
+        <input id="file-upload" type="file"/>
+
     </Box>
 }
