@@ -247,15 +247,9 @@ function ApiLoader() {
   return <Box>
     <LoaderBox>
       <div className="la-ball-grid-pulse la-3x">
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
+        {
+          [...Array(9)].map((item,index)=>(  <div key={index} />))
+        }
       </div>
     </LoaderBox>
       {/*Initializing API*/}
