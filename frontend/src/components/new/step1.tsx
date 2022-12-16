@@ -17,6 +17,7 @@ const UploadBox = styled.div`
   align-items: center;
   text-align: center;
   background: #1c1d22;
+  cursor: pointer;
   .center{
     display: flex;
     flex-direction: column;
@@ -46,6 +47,9 @@ const UploadBtn = styled.div`
   width: 100px;
   margin-top: 20px;
   height: 40px;
+  &:hover{
+    opacity: 0.8;
+  }
 `
 
 export default function Step1(){
@@ -60,7 +64,7 @@ export default function Step1(){
                 </div>
             </UploadBox>
         </label>
-        <input id="file-upload" type="file"/>
+        <input id="file-upload" type="file" accept="application/pdf"/>
 
     </Box>
 }
