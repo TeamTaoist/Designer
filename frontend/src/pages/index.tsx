@@ -6,6 +6,7 @@ import New from "../new";
 import Contracts from "../Contract";
 import Mine from "../Mine";
 import Setting from "../setting";
+import Detail from "../detail";
 
 const routes = [
   { path: '/', Page: Home },
@@ -13,6 +14,7 @@ const routes = [
   { path: 'contracts', Page: Contracts },
   { path: 'mine', Page: Mine },
   { path: 'setting', Page: Setting },
+  { path: 'detail', Page: Detail },
 ];
 
 function Routing() {

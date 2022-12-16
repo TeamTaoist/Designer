@@ -1,6 +1,7 @@
 import {useState} from "react";
 import styled from "styled-components";
 import Layout from "./components/layout/layout";
+import { useNavigate } from "react-router-dom";
 
 const Box = styled.div`
     padding:20px 40px 40px;
@@ -175,6 +176,7 @@ const LastLine = styled.div`
 `
 
 export default function Contract(){
+    const navigate = useNavigate();
     const [current, setCurrrent] = useState<number>(0);
     const [ list ] = useState(['Queue','History']);
     const [ showArr,setShowArr ] = useState(new Array(6).fill(false));
@@ -186,6 +188,10 @@ export default function Contract(){
         let arr:boolean[] =new Array(6).fill(false);
         arr[num] = true;
         setShowArr(arr)
+    }
+
+    const handleView = () =>{
+        navigate("/detail")
     }
 
     return<Layout>
@@ -242,7 +248,7 @@ export default function Contract(){
                                         <div className="hashLine">
                                             <div className="top">Created: </div><div>5GWY4cfLTvqD7fP3...npj</div>
                                         </div>
-                                        <LastLine>View</LastLine>
+                                        <LastLine onClick={()=>handleView()}>View</LastLine>
                                     </RhtBox>
                                 </dd>
 
