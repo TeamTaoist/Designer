@@ -40,7 +40,14 @@
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": "react-app",
+    "rules": {
+      "import/no-default-export": "off",
+      "react-hooks/exhaustive-deps": "off",
+      "no-eval": "off",
+      "no-unused-vars": "off",
+      "import/no-anonymous-default-export": "off"
+    }
   },
   "browserslist": {
     "production": [
