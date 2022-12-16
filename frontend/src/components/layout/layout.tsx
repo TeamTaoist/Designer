@@ -98,9 +98,7 @@ export default function Layout(props:Props){
     const { children} = props;
     const [ show,setShow] = useState(false);
     const [ showBox,setShowBox] = useState(false);
-    const { switchAccount,accounts,account,isAccountReady,logout } = useAccount();
-
-    console.log(account);
+    const { switchAccount,accounts,account,logout } = useAccount();
 
     const handleShow = () =>{
         setShow(true)

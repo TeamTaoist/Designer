@@ -6,8 +6,40 @@ const Box = styled.div`
   height: 100vh;
   background: #1c1d22;
 `
-export default function Step3(){
+
+const Wallet = styled.div`
+    display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #000;
+  color: #fcca00;
+  padding: 0 20px;
+  border-radius: 4px;
+  border: 2px solid #fcca00;
+  font-family: "Lato-Regular";
+  width: 150px;
+  margin-top: 40px;
+  height: 46px;
+  cursor: pointer;
+  &:hover{
+    opacity: 0.8;
+  }
+`
+interface Iprops{
+    checkStep:Function
+}
+
+export default function Step3(props:Iprops){
+
+    const { checkStep } = props;
+    const handleNext = () =>{
+        checkStep(4)
+    }
+
     return <Box>
         <ViewPdf />
+        <div>
+            <Wallet onClick={()=>handleNext()}>Next</Wallet>
+        </div>
     </Box>
 }

@@ -101,15 +101,19 @@ const Wallet = styled.div`
     display: flex;
   justify-content: center;
   align-items: center;
-  background: #fcca00;
-  color: #000000;
+  background: #000;
+  color: #fcca00;
   padding: 0 20px;
   border-radius: 4px;
+  border: 2px solid #fcca00;
   font-family: "Lato-Regular";
   width: 150px;
   margin-top: 40px;
-  height: 50px;
+  height: 46px;
   cursor: pointer;
+  &:hover{
+    opacity: 0.8;
+  }
 `
 interface Iprops{
     checkStep:Function

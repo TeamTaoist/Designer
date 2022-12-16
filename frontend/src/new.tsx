@@ -27,13 +27,13 @@ export default function New(){
                     currentStep === 1 &&<Step1  checkStep={checkStep}/>
                 }
                 {
-                    currentStep === 2 &&<Step2 />
+                    currentStep === 2 &&<Step2  checkStep={checkStep} />
                 }
                 {
-                    currentStep === 3 &&<Step3 />
+                    currentStep === 3 &&<Step3   checkStep={checkStep}/>
                 }
                 {
-                    currentStep === 4 &&<Step4 />
+                    currentStep === 4 &&<Step4  />
                 }
 
             </Box>
