@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import demo from "../assets/123.pdf"
 
 const Box = styled.div`
   display: flex;
@@ -60,9 +59,14 @@ const UlBox = styled.ul`
     font-size: 12px;
   }
 `
+interface pdfProps {
+  fileUrl:string
+}
 
 
-export default function ViewPdf(){
+export default function ViewPdf(props:pdfProps){
+
+  const { fileUrl } = props;
 
   const handleSign = () =>{
     (document.querySelector('#iframe') as any).contentWindow.showSignature()
@@ -70,10 +74,10 @@ export default function ViewPdf(){
 
   return <Box>
     <IframeBox>
-      <iframe id="iframe"   src={`/pdfviewer/web/viewer.html?file=${demo}`} />
+      <iframe id="iframe"   src={`/pdfviewer/web/viewer.html?file=${fileUrl}`} />
     </IframeBox>
     <Rht>
-      <SignBox onClick={() => {handleSign()}}>Add My Signatures</SignBox>
+      {/*<SignBox onClick={() => {handleSign()}}>Add My Signatures</SignBox>*/}
 
 
       {/*<div*/}
