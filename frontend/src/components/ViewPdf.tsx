@@ -16,7 +16,7 @@ flex-grow: 1;
   }
 `
 const Rht = styled.div`
-  width: 250px;
+  width: 300px;
   color: #000000;
   background: #f1f2f7;
   box-sizing: border-box;
@@ -35,6 +35,30 @@ const SignBox = styled.div`
   background: linear-gradient(120deg,#3198f910 , #00c1ff30);
 `
 
+const UlBox = styled.ul`
+  li{
+    border-radius: 4px;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px dashed #3198f9;
+    padding: 20px;
+    cursor: pointer;
+    background: linear-gradient(120deg,#3198f910 , #00c1ff30);
+    margin-bottom: 20px;
+  }
+  .tit{
+    font-size: 18px;
+    font-family: "bold";
+  }
+  .addr{
+    font-size: 14px;
+  }
+  .time{
+    opacity: 0.5;
+    padding-top: 10px;
+    font-size: 12px;
+  }
+`
 
 
 export default function ViewPdf(){
@@ -48,7 +72,9 @@ export default function ViewPdf(){
       <iframe id="iframe"   src={`/pdfviewer/web/viewer.html?file=${demo}`} />
     </IframeBox>
     <Rht>
-      <SignBox onClick={() => {handleSign()}}>Add My Signatures</SignBox>
+      {/*<SignBox onClick={() => {handleSign()}}>Add My Signatures</SignBox>*/}
+
+
       {/*<div*/}
       {/*     onClick={() => {*/}
 
@@ -57,6 +83,16 @@ export default function ViewPdf(){
       {/*>*/}
       {/*  list*/}
       {/*</div>*/}
+      <UlBox>
+        {
+          [...Array(3)].map((item,index)=>(  <li key={index}>
+            <div className="tit">AccountName</div>
+            <div className="addr">5GWY...mdnpj</div>
+            <div className="time">12/16/2022</div>
+          </li>))
+        }
+
+      </UlBox>
     </Rht>
   </Box>
 }
