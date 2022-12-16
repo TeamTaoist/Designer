@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 const Box = styled.div`
   background: #1c1d22;
@@ -106,16 +106,20 @@ const Box = styled.div`
 `
 interface Iprops{
     checkStep:Function
+    currentStep:number
 }
 
 export default function StepNav(props:Iprops){
-    const {checkStep} = props;
+    const {checkStep,currentStep} = props;
 
     const [current,setCurrent] = useState(1);
     const [list] = useState(["Upload Document", "Manage Recipients","Prepare Documents","Review and Send"]);
 
+    useEffect(()=>{
+        setCurrent(currentStep);
+    },[currentStep])
+
     const handleCurrent = (num:number) =>{
-        setCurrent(num+1);
         checkStep(num+1)
     }
 

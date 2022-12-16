@@ -22,9 +22,9 @@ export default function New(){
     return <div>
         <Layout>
             <Box>
-                <StepNav checkStep={checkStep}/>
+                <StepNav checkStep={checkStep} currentStep={currentStep}/>
                 {
-                    currentStep === 1 &&<Step1 />
+                    currentStep === 1 &&<Step1  checkStep={checkStep}/>
                 }
                 {
                     currentStep === 2 &&<Step2 />
