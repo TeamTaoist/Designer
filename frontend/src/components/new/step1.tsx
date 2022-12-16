@@ -118,7 +118,7 @@ interface Iprops{
 export default function Step1(props:Iprops){
 
     const { checkStep } = props;
-    const [fileName,setFileName] = useState('1');
+    const [fileName,setFileName] = useState('');
 
 
     const updateLogo = (e:FormEvent) =>{
