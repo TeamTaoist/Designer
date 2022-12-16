@@ -84,25 +84,56 @@ export default function ViewPdf(props:pdfProps){
   const { fileUrl } = props;
   const [sList,setSlist] = useState<signObj[]>([]);
   const [sListIframe,setSListIframe] = useState<iframeObj[]>([]);
+  // const [agreeList,setAgreeList] = useState([]);
   const { account } = useAccount();
 
   const handleSign = () =>{
     (document.querySelector('#iframe') as any).contentWindow.showSignature()
   }
 
+  // useEffect(() => {
+  //   const getResourcesInfo = async () => {
+  //     const newResources = []
+  //     if (agreeList.resources) {
+  //       for(let k = 0; k < agreeList.resources.length; k++) {
+  //         const item = agreeList.resources[k]
+  //         const sourceKey = item.url.slice(item.url.lastIndexOf('/') + 1)
+  //         // const fileResult = await actionsApp.fleekGet(sourceKey)
+  //         const signInfo = String.fromCharCode.apply(null, fileResult.data)
+  //         newResources.push({
+  //           ...item,
+  //           ...(JSON.parse(signInfo)[0] as any)
+  //         })
+  //       }
+  //     }
+  //
+  //     setSlist(newResources);
+  //     console.log(newResources);
+  //     (document.querySelector('#iframe') as any).contentWindow.haveSignedList = newResources
+  //   }
+  //   getResourcesInfo()
+  // }, [agreeList])
+
+
   useEffect(() => {
-    (window as any).getSignatureList = function (e:any) {
-      setSListIframe(e)
+    (window as any).getSignatureList = function (e:iframeObj[]) {
+      let arr =[...e]
+      setSListIframe(arr)
+      console.error(e)
     }
-    // const timer = setInterval(() => {
-    //   setCount(Date.now())
-    // }, 500)
-    // return () => {
-    //   clearInterval(timer)
-    // }
+    const timer = setInterval(() => {
+      (window as any).getSignatureList = function (e:iframeObj[]) {
+        let arr =[...e]
+        setSListIframe(arr)
+        console.error(e)
+      }
+    }, 500)
+    return () => clearInterval(timer)
+
   }, []);
 
   useEffect(() => {
+    console.log("=====")
     const newList = sListIframe.map(item => {
       return {
         ...item,
@@ -110,9 +141,8 @@ export default function ViewPdf(props:pdfProps){
         saveAt: new Date().getTime()
       }
     });
-    console.log(newList,sList)
-    setSlist([...newList, ...sList]);
-  }, [sListIframe]);
+    setSlist([...newList]);
+  }, [sListIframe.length]);
 
   const AddresstoShow = (address:string|undefined) => {
     if (!address) return "...";
