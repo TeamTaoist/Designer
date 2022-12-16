@@ -102,25 +102,35 @@ export default function Step4(props:Iprops){
 
     return <Box>
         <UlBox>
-            <TitleBox>
-                Uploaded Document
-            </TitleBox>
-            <div className="w100">
-                <FinishedBox>
-                    <div className="progress-count" />
-                </FinishedBox>
-                <dl>
-                    <dt>
-                        <img src={PDFimg} alt=""/>
-                    </dt>
-                    <dd>
-                        <div className="name">{fileObj.name}</div>
-                    </dd>
-                </dl>
-            </div>
-            <TitleBox>
-               Signers
-            </TitleBox>
+            {
+                !!fileObj?.name &&
+                <TitleBox>
+                    Uploaded Document
+                </TitleBox>
+            }
+            {
+                !!fileObj?.name && <div className="w100">
+                    <FinishedBox>
+                        <div className="progress-count" />
+                    </FinishedBox>
+
+                    <dl>
+                        <dt>
+                            <img src={PDFimg} alt=""/>
+                        </dt>
+                        <dd>
+                            <div className="name">{fileObj?.name}</div>
+                        </dd>
+                    </dl>
+                </div>
+            }
+
+            {
+                !!list.length &&  <TitleBox>
+                    Signers
+                </TitleBox>
+            }
+
             {
                 list.map((item,index)=>(<div className="w100" key={`signer_${index}`}>
 
