@@ -130,25 +130,19 @@ export default function ViewPdf(props:pdfProps){
     return `${month}/${day}/${year}`
   }
 
+  const handleTo = (num:number) =>{
+    (document.querySelector('#iframe') as any).contentWindow.gotoPageFrom(num)
+  }
+
   return <Box>
     <IframeBox>
       <iframe id="iframe"   src={`/pdfviewer/web/viewer.html?file=${fileUrl}`} />
     </IframeBox>
     <Rht>
       <SignBox onClick={() => {handleSign()}}>Add My Signatures</SignBox>
-
-
-      {/*<div*/}
-      {/*     onClick={() => {*/}
-
-      {/*       (document.querySelector('#iframe') as any).contentWindow.gotoPageFrom(2)*/}
-      {/*     }}*/}
-      {/*>*/}
-      {/*  list*/}
-      {/*</div>*/}
       <UlBox>
         {
-          sList.map((item,index)=>(  <li key={index}>
+          sList.map((item,index)=>(  <li key={index} onClick={()=>handleTo(item.page)}>
             <div className="tit"><span>Page</span> {item.page}</div>
             <div className="addr">{AddresstoShow(item?.creator)}</div>
             <div className="time">{FormatDate(item.saveAt)}</div>
