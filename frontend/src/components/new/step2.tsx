@@ -5,6 +5,8 @@ import MeImg from "../../assets/images/icon_person.svg";
 import GroupImg from "../../assets/images/icon_group.svg";
 import {ChangeEvent, useEffect, useState} from "react";
 import {useAccount} from "@gear-js/react-hooks";
+import {encodeAddress,decodeAddress} from "@polkadot/keyring";
+import {hexToU8a,isHex} from "@polkadot/util";
 
 const Box = styled.div`
   padding-top: 40px;
@@ -85,7 +87,7 @@ const Wallet = styled.div`
   }
 `
 
-const NextBtn = styled.div`
+const NextBtn = styled.button`
     display: flex;
   justify-content: center;
   align-items: center;
@@ -97,15 +99,20 @@ const NextBtn = styled.div`
   font-family: "Lato-Regular";
   width: 150px;
   margin-top: 40px;
-  height: 46px;
+  height: 50px;
   cursor: pointer;
   margin-left: 20px;
   &:hover{
     opacity: 0.8;
   }
+  &:disabled{
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 `
 
 const InputBox = styled.div`
+  position: relative;
     input{
       background: #000;
       border: 0;
@@ -120,6 +127,11 @@ const InputBox = styled.div`
         box-shadow: none;
       }
     }
+  .error{
+    color: red;
+    position: absolute;
+    bottom:-20px;
+  }
 `
 
 const LastLine = styled.div`
@@ -139,6 +151,7 @@ export default function Step2(props:Iprops){
 
     const { checkStep } = props;
     const [ list,setList] = useState<obj[]>([]);
+    const [disabled,setDisabled] = useState(false);
     const { account } = useAccount();
 
     useEffect(()=>{
@@ -153,11 +166,22 @@ export default function Step2(props:Iprops){
 
     },[])
 
+    useEffect(()=>{
+        let arr=new Array(list.length).fill(false);
+
+        list.map((item,index)=>{
+            arr[index] = isValidAddressPolkadotAddress(item.address);
+        });
+
+        const disabledArr = arr.filter(item=>!item);
+        setDisabled(!!disabledArr.length)
+
+    },[list])
+
     const handleNext = () =>{
         checkStep(3)
     }
     const addNew = () =>{
-
         let obj ={
             name:"Adding a Participants Address",
             address:''
@@ -180,6 +204,15 @@ export default function Step2(props:Iprops){
         setList(arr)
     }
 
+    const isValidAddressPolkadotAddress = (address:string) => {
+        try {
+            encodeAddress(isHex(address) ? hexToU8a(address) : decodeAddress(address));
+            return true;
+        } catch (error) {
+            return false;
+        }
+    };
+
     return <Box>
         <UlBox>
             {
@@ -188,7 +221,7 @@ export default function Step2(props:Iprops){
                         <img src={CloseImg} alt=""/>
                     </div>
                     <dt>
-                        <img src={MeImg} alt=""/>
+                        <img src={!index?MeImg:GroupImg} alt=""/>
                     </dt>
                     <dd>
                         <div className="name">{item.name}</div>
@@ -207,7 +240,7 @@ export default function Step2(props:Iprops){
         </UlBox>
         <LastLine>
             <Wallet onClick={()=>addNew()}>Add a signer</Wallet>
-            <NextBtn onClick={()=>handleNext()}>Next</NextBtn>
+            <NextBtn onClick={()=>handleNext()} disabled={disabled}>Next</NextBtn>
         </LastLine>
     </Box>
 }

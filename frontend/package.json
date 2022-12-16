@@ -9,6 +9,7 @@
     "@mantine/form": "^4.2.12",
     "@polkadot/api": "^9.10.2",
     "@polkadot/extension-dapp": "^0.43.3",
+    "@polkadot/keyring": "^10.2.1",
     "@polkadot/react-identicon": "^2.9.14",
     "@polkadot/types": "^9.10.2",
     "@polkadot/util": "^9.7.2",
