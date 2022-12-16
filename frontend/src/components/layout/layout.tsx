@@ -20,6 +20,7 @@ const LeftBox = styled.div`
   justify-content: flex-start;
   align-items: center;
   padding: 15px 0;
+  flex-shrink: 0;
 `
 
 const RhtBox = styled.div`
