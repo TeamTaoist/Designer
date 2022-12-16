@@ -140,6 +140,7 @@ const LastLine = styled.div`
 `
 interface Iprops{
     checkStep:Function
+    handleList:Function
 }
 interface obj{
     name:string
@@ -149,7 +150,7 @@ interface obj{
 
 export default function Step2(props:Iprops){
 
-    const { checkStep } = props;
+    const { checkStep,handleList } = props;
     const [ list,setList] = useState<obj[]>([]);
     const [disabled,setDisabled] = useState(false);
     const { account } = useAccount();
@@ -180,6 +181,7 @@ export default function Step2(props:Iprops){
 
     const handleNext = () =>{
         checkStep(3)
+        handleList(list)
     }
     const addNew = () =>{
         let obj ={

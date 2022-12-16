@@ -117,19 +117,21 @@ const Wallet = styled.div`
 `
 interface Iprops{
     checkStep:Function
+    handleUrl:Function
 }
 
 export default function Step1(props:Iprops){
 
-    const { checkStep } = props;
+    const { checkStep,handleUrl } = props;
     const [fileName,setFileName] = useState('');
 
 
     const updateLogo = (e:FormEvent) =>{
         const { files } = e.target as any;
         const { name } = files[0]
-        console.log(name)
+        let url = window.URL.createObjectURL(files[0]);
         setFileName(name)
+        handleUrl(url,files[0])
     }
 
     const handleNext = () =>{

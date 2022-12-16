@@ -2,6 +2,7 @@ import styled from "styled-components";
 import BgImg from "../../assets/images/bg.png";
 import GroupImg from "../../assets/images/icon_group.svg";
 import PDFimg from "../../assets/images/icon_pdf.svg";
+import MeImg from "../../assets/images/icon_person.svg";
 
 const Box = styled.div`
   margin-top: 40px;
@@ -45,6 +46,7 @@ const UlBox = styled.div`
     .name{
       font-size: 18px;
       color: #ffffff;
+      margin-bottom: 10px;
     }
   }
 `
@@ -53,6 +55,8 @@ const FinishedBox = styled.div`
   .progress-count{
     height:30px;
     width:30px;
+    left: 0;
+    top: -10px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -82,7 +86,20 @@ const TitleBox = styled.div`
   font-family: "bold";
   font-size: 20px;
 `
-export default function Step4(){
+
+interface obj{
+    name:string
+    address:string
+}
+
+interface Iprops{
+    list:obj[]
+    fileUrl:string
+    fileObj:any
+}
+export default function Step4(props:Iprops){
+    const {list,fileObj} =props;
+
     return <Box>
         <UlBox>
             <TitleBox>
@@ -97,29 +114,33 @@ export default function Step4(){
                         <img src={PDFimg} alt=""/>
                     </dt>
                     <dd>
-                        <div className="name">123.pdf</div>
+                        <div className="name">{fileObj.name}</div>
                     </dd>
                 </dl>
             </div>
             <TitleBox>
                Signers
             </TitleBox>
-           <div className="w100">
+            {
+                list.map((item,index)=>(<div className="w100" key={`signer_${index}`}>
 
-               <FinishedBox>
-                   <div className="progress-count" />
-               </FinishedBox>
-               <dl>
+                    <FinishedBox>
+                        <div className="progress-count" />
+                    </FinishedBox>
+                    <dl>
 
-                   <dt>
-                       <img src={GroupImg} alt=""/>
-                   </dt>
-                   <dd>
-                       <div className="name">Adding a Participants Address</div>
-                       <div>5GWY4cfLTvqD7fP3GE2Pf2DMvFBZ8s6QMymx3Bv6PE4mdnpj</div>
-                   </dd>
-               </dl>
-           </div>
+                        <dt>
+                            <img src={item.name==='Me'?MeImg:GroupImg} alt=""/>
+                        </dt>
+                        <dd>
+                            <div className="name">{item.name}</div>
+                            <div>{item.address}</div>
+                        </dd>
+                    </dl>
+                </div>))
+            }
+
+
 
         </UlBox>
     </Box>

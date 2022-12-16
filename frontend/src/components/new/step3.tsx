@@ -27,17 +27,18 @@ const Wallet = styled.div`
 `
 interface Iprops{
     checkStep:Function
+    fileUrl:string
 }
 
 export default function Step3(props:Iprops){
 
-    const { checkStep } = props;
+    const { checkStep,fileUrl } = props;
     const handleNext = () =>{
         checkStep(4)
     }
 
     return <Box>
-        <ViewPdf />
+        <ViewPdf fileUrl={fileUrl}/>
         <div>
             <Wallet onClick={()=>handleNext()}>Next</Wallet>
         </div>
