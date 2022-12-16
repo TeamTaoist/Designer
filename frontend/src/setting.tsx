@@ -1,9 +1,17 @@
 import Layout from "./components/layout/layout";
+import styled from "styled-components";
+
+const Box = styled.div`
+    padding: 40px;
+`
 
 export default function Setting(){
     return <div>
         <Layout>
-            Setting
+            <Box>
+                Setting
+            </Box>
+
         </Layout>
     </div>
 }
