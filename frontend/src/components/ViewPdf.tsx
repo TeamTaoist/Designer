@@ -12,6 +12,7 @@ flex-grow: 1;
   iframe{
     width: 100%;
     height: 100vh;
+    border: 0;
   }
 `
 const Rht = styled.div`
@@ -25,6 +26,23 @@ export default function ViewPdf(){
     <IframeBox>
       <iframe id="iframe"   src={`/pdfviewer/web/viewer.html?file=${demo}`} />
     </IframeBox>
-    <Rht>dd</Rht>
+    <Rht>
+      <div
+           onClick={() => {
+             (document.querySelector('#iframe') as any).contentWindow.showSignature()
+             // (document.querySelector('#iframe') as any).contentWindow.gotoPageFrom(2)
+           }}
+      >
+        My Signatures
+      </div>
+      <div
+           onClick={() => {
+
+             (document.querySelector('#iframe') as any).contentWindow.gotoPageFrom(2)
+           }}
+      >
+        list
+      </div>
+    </Rht>
   </Box>
 }
