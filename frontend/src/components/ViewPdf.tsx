@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import {useState,useEffect} from "react";
+import {useAccount} from "@gear-js/react-hooks";
 
 const Box = styled.div`
   display: flex;
@@ -62,14 +64,70 @@ const UlBox = styled.ul`
 interface pdfProps {
   fileUrl:string
 }
-
+interface signObj{
+  creator?:string
+  saveAt?:number
+  base64:string
+  left:number
+  page:number
+  top:number
+}
+interface iframeObj{
+  base64:string
+  left:number
+  page:number
+  top:number
+}
 
 export default function ViewPdf(props:pdfProps){
 
   const { fileUrl } = props;
+  const [sList,setSlist] = useState<signObj[]>([]);
+  const [sListIframe,setSListIframe] = useState<iframeObj[]>([]);
+  const { account } = useAccount();
 
   const handleSign = () =>{
     (document.querySelector('#iframe') as any).contentWindow.showSignature()
+  }
+
+  useEffect(() => {
+    (window as any).getSignatureList = function (e:any) {
+      setSListIframe(e)
+    }
+    // const timer = setInterval(() => {
+    //   setCount(Date.now())
+    // }, 500)
+    // return () => {
+    //   clearInterval(timer)
+    // }
+  }, []);
+
+  useEffect(() => {
+    const newList = sListIframe.map(item => {
+      return {
+        ...item,
+        creator: account?.address,
+        saveAt: new Date().getTime()
+      }
+    });
+    console.log(newList,sList)
+    setSlist([...newList, ...sList]);
+  }, [sListIframe]);
+
+  const AddresstoShow = (address:string|undefined) => {
+    if (!address) return "...";
+    let frontStr = address.substring(0,4);
+    let afterStr = address.substring(address.length - 4, address.length);
+    return `${frontStr}...${afterStr}`
+  }
+
+  const FormatDate = (dateTime:number|undefined) =>{
+    if (!dateTime) return "...";
+    const t = new Date(dateTime);
+    const year = t.getFullYear();
+    const month = t.getMonth() + 1;
+    const day = t.getDate();
+    return `${month}/${day}/${year}`
   }
 
   return <Box>
@@ -77,7 +135,7 @@ export default function ViewPdf(props:pdfProps){
       <iframe id="iframe"   src={`/pdfviewer/web/viewer.html?file=${fileUrl}`} />
     </IframeBox>
     <Rht>
-      {/*<SignBox onClick={() => {handleSign()}}>Add My Signatures</SignBox>*/}
+      <SignBox onClick={() => {handleSign()}}>Add My Signatures</SignBox>
 
 
       {/*<div*/}
@@ -90,10 +148,10 @@ export default function ViewPdf(props:pdfProps){
       {/*</div>*/}
       <UlBox>
         {
-          [...Array(3)].map((item,index)=>(  <li key={index}>
-            <div className="tit">AccountName</div>
-            <div className="addr">5GWY...mdnpj</div>
-            <div className="time">12/16/2022</div>
+          sList.map((item,index)=>(  <li key={index}>
+            <div className="tit"><span>Page</span> {item.page}</div>
+            <div className="addr">{AddresstoShow(item?.creator)}</div>
+            <div className="time">{FormatDate(item.saveAt)}</div>
           </li>))
         }
 
