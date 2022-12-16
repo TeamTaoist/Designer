@@ -20,37 +20,95 @@ const TabBox = styled.ul`
       color: #ffffff;
     }
   }
- 
+`
+
+const UlBox = styled.ul`
+  width: 100%;
+  li{
+    margin-top: 30px;
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    background: #040404;
+    border-radius: 4px;
+    background: linear-gradient(180deg,#468a4d,#263d7f);
+    padding: 1px 1px 1px 5px;
+  }
+  .bg{
+    background: #040404;
+    border-radius: 4px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    padding: 20px;
+    align-items: flex-start;
+    flex-direction: column;
+    .inner{
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      width: 100%;
+      border-bottom: 1px dashed rgba(255,255,255,0.2);
+      padding-bottom: 10px;
+    }
+  }
+  .name{
+    font-family: "bold";
+    font-size: 20px;
+    padding-bottom: 5px;
+  }
+  .time{
+    font-family: "Lato-Light";
+    opacity: 0.5;
+  }
+`
+
+const LineBox = styled.div`
+  .addrBox{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+  }
+  .tit{
+    margin-right: 20px;
+  }
 `
 
 export default function Mine(){
     return <div>
         <Layout>
-
             <Box>
                 <TabBox>
                     <li className="active">My Contracts</li>
                 </TabBox>
-                <div className="tableBox">
-                    <table cellPadding="0" cellSpacing="0">
-                        <tr>
-                            <th>Scheme</th>
-                            <th>State</th>
-                            <th>Founder</th>
-                            <th>Signtory</th>
-                            <th>Operation</th>
-                        </tr>
-                        {
-                            [...Array(10)].map((item,index)=>(  <tr key={index}>
-                                <td>Scheme</td>
-                                <td>State</td>
-                                <td>State</td>
-                                <td>State</td>
-                                <td>State</td>
-                            </tr>))
-                        }
-                    </table>
-                </div>
+                <UlBox>
+                    {
+                        [...Array(5)].map((item,index)=>(<li key={index}>
+                            <div className="bg">
+                                <div className="inner">
+                                    <div>
+                                        <div className="name">namecheap-order-109043863</div>
+                                        <div className="time">December 16, 2022 01:03 AM</div>
+                                    </div>
+                                    <div className="status">Pending Signature</div>
+                                    <div>ddd</div>
+                                </div>
+                                <LineBox>
+                                    <div className="addrBox">
+                                        <div className="tit">created</div>
+                                        <div className="addr">5GWE...mdnpj</div>
+                                    </div>
+                                    <div className="addrBox">
+                                        <div className="tit">created</div>
+                                        <div className="addr">5GWE...mdnpj</div>
+                                    </div>
+                                </LineBox>
+                            </div>
+                        </li>))
+                    }
+
+                </UlBox>
             </Box>
         </Layout>
     </div>
