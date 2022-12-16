@@ -26,13 +26,14 @@ const Rht = styled.div`
 const SignBox = styled.div`
   border-radius: 4px;
   height: 54px;
-  width: 180px;
-  border: 1px dashed #3198f9;
+  width: 100%;
+  border: 1px solid #3198f9;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
   background: linear-gradient(120deg,#3198f910 , #00c1ff30);
+  margin-bottom: 40px;
 `
 
 const UlBox = styled.ul`
@@ -72,7 +73,7 @@ export default function ViewPdf(){
       <iframe id="iframe"   src={`/pdfviewer/web/viewer.html?file=${demo}`} />
     </IframeBox>
     <Rht>
-      {/*<SignBox onClick={() => {handleSign()}}>Add My Signatures</SignBox>*/}
+      <SignBox onClick={() => {handleSign()}}>Add My Signatures</SignBox>
 
 
       {/*<div*/}
