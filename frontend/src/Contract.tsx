@@ -40,6 +40,7 @@ const UlBox = styled.ul`
     border-radius: 4px 4px 0 0;
   }
    dl {
+     cursor: pointer;
     }
   dt{
     display: flex;
