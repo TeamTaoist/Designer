@@ -2757,11 +2757,13 @@ html[dir="rtl"] #documentPropertiesOverlay .row > * {
 }
 .signature-wrap{
   position: absolute;
-  padding: 5px;
+  padding: 10px;
   /* border: 1px solid gray; */
   width: 210px;
   height: 110px;
   z-index: 9;
+  background: #fff;
+  box-shadow: 0 0 20px #00000010;
 }
 .signature-wrap img, .signature-remove, .page-mask-del{
   width: 20px;
@@ -2770,9 +2772,19 @@ html[dir="rtl"] #documentPropertiesOverlay .row > * {
   right: 10px;
   top: 10px;
   z-index: 99;
+
 }
 .signature-wrap .signature-del{
   right: 40px;
+}
+
+.signature-wrap input[type='text']{
+  margin-top: 40px;
+  height: 40px;
+  padding: 0 20px;
+  border-radius: 8px;
+  border: 0;
+  background: #00000010;
 }
 .js-drag{
   position: absolute;
@@ -2787,4 +2799,17 @@ html[dir="rtl"] #documentPropertiesOverlay .row > * {
 }
 .base64-wrap div{
   background-color: #fff;
+}
+
+@font-face {
+  font-family: "Arabella";
+  src: url('./Arabella.ttf');
+}
+
+.signature-show{
+  font-family: "Arabella";
+  font-size: 30px;
+  font-weight: bold;
+  text-indent: 3px;
+  padding: 15px;
 }

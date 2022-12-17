@@ -72,7 +72,7 @@ const defaultOptions = {
     kind: OptionKind.VIEWER + OptionKind.PREFERENCE
   },
   defaultUrl: {
-    value: "compressed.tracemonkey-pldi-09.pdf",
+    value: "",
     kind: OptionKind.VIEWER
   },
   defaultZoomValue: {
@@ -1304,35 +1304,34 @@ const PDFViewerApplication = {
           if ($(`#signature-${signatureLen}`).length) {
             return;
           }
-
           var $this = $(this);
           $(this).append(`
             <div class="signature-wrap" id="signature-wrap-${signatureLen}">
               <img class="signature-del" id="signature-del-${signatureLen}" src="images/del.svg" />
               <img class="signature-save" id="signature-save-${signatureLen}" src="images/ok.svg" />
-              <div class="signature" id="signature-${signatureLen}"></div>
+               <input type="text" id="signature-${signatureLen}" />
             </div>`);
           $(`#signature-wrap-${signatureLen}`).css({
             left: e.offsetX + 'px',
             top: e.offsetY + 'px'
           });
-          $(`#signature-${signatureLen}`).jqSignature({
-            autoFit: true
-          });
-          $(`#signature-wrap-${signatureLen}`).resizable(function (e) {
-            console.log(e);
-          });
-          $(`#signature-wrap-${signatureLen}`).resize(function (e) {
-            $(`#signature-${signatureLen}`).jqSignature("clearCanvas");
-          });
+          // $(`#signature-${signatureLen}`).jqSignature({
+          //   autoFit: true
+          // });
+          // $(`#signature-wrap-${signatureLen}`).resizable(function (e) {
+          //   console.log(e);
+          // });
+          // $(`#signature-wrap-${signatureLen}`).resize(function (e) {
+          //   $(`#signature-${signatureLen}`).jqSignature("clearCanvas");
+          // });
           $(`#signature-save-${signatureLen}`).on('click', function () {
-            var base64 = $(`#signature-${signatureLen}`).jqSignature("getDataURL");
+            var base64 = $(`#signature-${signatureLen}`).val();
+            console.error(base64)
             $(`#page-mask-${signatureLen}`).remove();
             $(nowPages[1]).append(`
               <div class="base64-wrap" id="base64-wrap-${signatureLen}">
                 <img class="signature-remove" id="signature-remove-${signatureLen}" src="images/del.svg" />
-                <div>
-                  <img class="base64" id="js-base64-${signatureLen}" src="${base64}" />
+                <div class="signature-show">${base64}
                 </div>
               </div>`);
             console.log(e.offsetX, e.offsetY);
