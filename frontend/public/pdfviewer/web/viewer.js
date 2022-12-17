@@ -1309,7 +1309,7 @@ const PDFViewerApplication = {
             <div class="signature-wrap" id="signature-wrap-${signatureLen}">
               <img class="signature-del" id="signature-del-${signatureLen}" src="images/del.svg" />
               <img class="signature-save" id="signature-save-${signatureLen}" src="images/ok.svg" />
-               <input type="text" id="signature-${signatureLen}" />
+               <input type="text" id="signature-${signatureLen}" autocomplete="off" />
             </div>`);
           $(`#signature-wrap-${signatureLen}`).css({
             left: e.offsetX + 'px',
