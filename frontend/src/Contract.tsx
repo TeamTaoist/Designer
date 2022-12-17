@@ -2,6 +2,9 @@ import {useState} from "react";
 import styled from "styled-components";
 import Layout from "./components/layout/layout";
 import { useNavigate } from "react-router-dom";
+import DownImg from "./assets/images/icon_down_arrow_outline.svg";
+import CheckImg from "./assets/images/icon_check.svg";
+import Wait from "./components/wait";
 
 const Box = styled.div`
     padding:20px 40px 40px;
@@ -58,7 +61,13 @@ const UlBox = styled.ul`
       text-align: center;
     }
     .status{
-      text-align: right;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      .rht img{
+        width: 20px;
+        margin:6px 0 0 10px;
+      }
     }
   }
   dd{
@@ -116,17 +125,8 @@ const TimeLine = styled.div`
     align-items: center;
     justify-content: center;
     position: relative;
-    &:before{
-      content: "";
-      height: 8px;
-      width: 15px;
-      border-left: 3px solid #000;
-      border-bottom: 3px solid #000;
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -60%) rotate(-45deg);
-      transform-origin: center center;
+    img{
+      width:30px;
     }
   }
 `
@@ -209,14 +209,21 @@ export default function Contract(){
                                 <dt>
                                     <div className="name">namecheap-order-109043863</div>
                                     <div className="time">December 16, 2022 01:03 AM</div>
-                                    <div className="status">Pending Signature</div>
+                                    <div className="status">
+                                        <div>Pending Signature</div>
+                                        <div className="rht">
+                                            <img src={DownImg} alt=""/>
+                                        </div>
+                                    </div>
                                 </dt>
                                 <dd className={showArr[index]?'show':'none'}>
                                     <LftBox>
                                         <TimeLine className="brdr">
                                             <div className="liBox">
                                                 <div className="tit">
-                                                    <div className="icon" />
+                                                    <div className="icon">
+                                                        <Wait />
+                                                    </div>
                                                     <span>Pending</span>
                                                 </div>
                                                 <ContentBox >
@@ -228,7 +235,9 @@ export default function Contract(){
                                         <TimeLine className="brdr">
                                             <div className="liBox">
                                                 <div className="tit">
-                                                    <div className="icon" />
+                                                    <div className="icon">
+                                                        <img src={CheckImg} alt=""/>
+                                                    </div>
                                                     <span>Pending</span>
                                                 </div>
                                                 <ContentBox >

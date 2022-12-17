@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import {useState,useEffect} from "react";
 import {useAccount} from "@gear-js/react-hooks";
+import AddImg from "../assets/images/add.svg";
 
 const Box = styled.div`
   display: flex;
@@ -35,6 +36,10 @@ const SignBox = styled.div`
   cursor: pointer;
   background: linear-gradient(120deg,#3198f910 , #00c1ff30);
   margin-bottom: 40px;
+  img{
+    width: 16px;
+    margin-right: 10px;
+  }
 `
 
 const UlBox = styled.ul`
@@ -169,7 +174,9 @@ export default function ViewPdf(props:pdfProps){
       <iframe id="iframe"   src={`/pdfviewer/web/viewer.html?file=${fileUrl}`} />
     </IframeBox>
     <Rht>
-      <SignBox onClick={() => {handleSign()}}>Add My Signatures</SignBox>
+      <SignBox onClick={() => {handleSign()}}>
+        <img src={AddImg} alt=""/>
+        <span>Add My Signatures</span></SignBox>
       <UlBox>
         {
           sList.map((item,index)=>(  <li key={index} onClick={()=>handleTo(item.page)}>

@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useAccount } from '@gear-js/react-hooks';
 import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
 import Left from "./left";
-import PublicJs from "../../utils/publicJs";
+import DownImg from "../../assets/images/icon_down_arrow_outline.svg";
 
 const Box = styled.div`
     display: flex;
@@ -55,7 +55,8 @@ const Wallet = styled.div`
 
 const SelectedBox = styled.div`
     margin-right: 20px;
-  background: #21242a;
+  background: #21242a url(${DownImg}) no-repeat 90% center;
+  background-size: 15px;
   border-radius: 4px;
   padding:10px 20px;
  width: 150px;

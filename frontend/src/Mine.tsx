@@ -1,5 +1,9 @@
 import Layout from "./components/layout/layout";
 import styled from "styled-components";
+import ViewImg from "./assets/images/icon_eye.svg";
+import DownImg from "./assets/images/icon_download.svg";
+import History from "./assets/images/icon_history.svg";
+import Finished from "./assets/images/icon_check_handwritten.svg";
 
 const Box = styled.div`
     padding:20px 40px 40px;
@@ -69,10 +73,28 @@ const LineBox = styled.div`
     display: flex;
     align-items: center;
     margin-top: 10px;
+    .finishedImg img{
+      width: 20px;
+      margin-left: 10px;
+    }
   }
   .tit{
     margin-right: 20px;
   }
+`
+const Operation = styled.ul`
+    display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  .li{
+    display: flex;
+    align-items: center;
+  }
+    img{
+      width: 20px;
+      margin-right: 10px;
+      cursor: pointer;
+    }
 `
 
 export default function Mine(){
@@ -92,7 +114,18 @@ export default function Mine(){
                                         <div className="time">December 16, 2022 01:03 AM</div>
                                     </div>
                                     <div className="status">Pending Signature</div>
-                                    <div>ddd</div>
+                                    <Operation>
+                                        <div className="li">
+                                            <img src={ViewImg} alt="View"/>
+                                        </div>
+                                        <div className="li">
+                                            <img src={DownImg} alt="Download"/>
+                                        </div>
+                                        <div className="li">
+                                            <img src={History} alt="History"/>
+                                        </div>
+
+                                    </Operation>
                                 </div>
                                 <LineBox>
                                     <div className="addrBox">
@@ -102,6 +135,9 @@ export default function Mine(){
                                     <div className="addrBox">
                                         <div className="tit">created</div>
                                         <div className="addr">5GWE...mdnpj</div>
+                                        <div className="finishedImg">
+                                            <img src={Finished} alt=""/>
+                                        </div>
                                     </div>
                                 </LineBox>
                             </div>
