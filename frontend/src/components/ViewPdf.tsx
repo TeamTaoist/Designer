@@ -124,13 +124,11 @@ export default function ViewPdf(props:pdfProps){
     (window as any).getSignatureList = function (e:iframeObj[]) {
       let arr =[...e]
       setSListIframe(arr)
-      console.error(e)
     }
     const timer = setInterval(() => {
       (window as any).getSignatureList = function (e:iframeObj[]) {
         let arr =[...e]
         setSListIframe(arr)
-        console.error(e)
       }
     }, 500)
     return () => clearInterval(timer)
@@ -138,7 +136,6 @@ export default function ViewPdf(props:pdfProps){
   }, []);
 
   useEffect(() => {
-    console.log("=====")
     const newList = sListIframe.map(item => {
       return {
         ...item,
