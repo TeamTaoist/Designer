@@ -119,7 +119,7 @@ const InputBox = styled.div`
       height: 40px;
       margin-top: 10px;
       border-radius: 4px;
-      width: 250px;
+      width: 450px;
       color: #ffffff;
       padding: 0 20px;
       &:focus{
