@@ -222,7 +222,8 @@ export default function Contract(){
                                             <div className="liBox">
                                                 <div className="tit">
                                                     <div className="icon">
-                                                        <Wait />
+                                                        <img src={CheckImg} alt=""/>
+
                                                     </div>
                                                     <span>Pending</span>
                                                 </div>
@@ -236,7 +237,7 @@ export default function Contract(){
                                             <div className="liBox">
                                                 <div className="tit">
                                                     <div className="icon">
-                                                        <img src={CheckImg} alt=""/>
+                                                        <Wait />
                                                     </div>
                                                     <span>Pending</span>
                                                 </div>
