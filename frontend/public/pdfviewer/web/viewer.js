@@ -1315,15 +1315,6 @@ const PDFViewerApplication = {
             left: e.offsetX + 'px',
             top: e.offsetY + 'px'
           });
-          // $(`#signature-${signatureLen}`).jqSignature({
-          //   autoFit: true
-          // });
-          // $(`#signature-wrap-${signatureLen}`).resizable(function (e) {
-          //   console.log(e);
-          // });
-          // $(`#signature-wrap-${signatureLen}`).resize(function (e) {
-          //   $(`#signature-${signatureLen}`).jqSignature("clearCanvas");
-          // });
           $(`#signature-save-${signatureLen}`).on('click', function () {
             var base64 = $(`#signature-${signatureLen}`).val();
             console.error(base64)
