@@ -242,7 +242,7 @@ export default function Step2(props:Iprops){
         </UlBox>
         <LastLine>
             <Wallet onClick={()=>addNew()}>Add a signer</Wallet>
-            <NextBtn onClick={()=>handleNext()} disabled={disabled}>Next</NextBtn>
+            <NextBtn onClick={()=>handleNext()} disabled={disabled || list.length<=1}>Next</NextBtn>
         </LastLine>
     </Box>
 }

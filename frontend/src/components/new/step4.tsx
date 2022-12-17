@@ -3,6 +3,7 @@ import BgImg from "../../assets/images/bg.png";
 import GroupImg from "../../assets/images/icon_group.svg";
 import PDFimg from "../../assets/images/icon_pdf.svg";
 import MeImg from "../../assets/images/icon_person.svg";
+import CheckImg from "../../assets/images/icon_check.svg";
 
 const Box = styled.div`
   margin-top: 40px;
@@ -66,17 +67,8 @@ const FinishedBox = styled.div`
     z-index:10;
     color: transparent;
     background: linear-gradient(120deg,#3198f9, #00c1ff);
-    &:before{
-      content: "";
-      height: 8px;
-      width: 15px;
-      border-left: 3px solid #000;
-      border-bottom: 3px solid #000;
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -60%) rotate(-45deg);
-      transform-origin: center center;
+    img{
+      width: 24px;
     }
   }
 `
@@ -111,7 +103,9 @@ export default function Step4(props:Iprops){
             {
                 !!fileObj?.name && <div className="w100">
                     <FinishedBox>
-                        <div className="progress-count" />
+                        <div className="progress-count" >
+                            <img src={CheckImg} alt=""/>
+                        </div>
                     </FinishedBox>
 
                     <dl>
@@ -135,7 +129,9 @@ export default function Step4(props:Iprops){
                 list.map((item,index)=>(<div className="w100" key={`signer_${index}`}>
 
                     <FinishedBox>
-                        <div className="progress-count" />
+                        <div className="progress-count" >
+                            <img src={CheckImg} alt=""/>
+                        </div>
                     </FinishedBox>
                     <dl>
 
