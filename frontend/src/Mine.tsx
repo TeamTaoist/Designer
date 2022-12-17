@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import Layout from "./components/layout/layout";
 import styled from "styled-components";
 import ViewImg from "./assets/images/icon_eye.svg";
@@ -98,6 +99,11 @@ const Operation = styled.ul`
 `
 
 export default function Mine(){
+    const navigate = useNavigate();
+    const handleView = () =>{
+        navigate("/detail")
+    }
+
     return <div>
         <Layout>
             <Box>
@@ -116,7 +122,7 @@ export default function Mine(){
                                     <div className="status">Pending Signature</div>
                                     <Operation>
                                         <div className="li">
-                                            <img src={ViewImg} alt="View"/>
+                                            <img src={ViewImg} alt="View"  onClick={()=>handleView()} />
                                         </div>
                                         <div className="li">
                                             <img src={DownImg} alt="Download"/>
