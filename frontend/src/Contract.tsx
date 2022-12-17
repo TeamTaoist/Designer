@@ -258,7 +258,9 @@ export default function Contract(){
                                         <div className="hashLine">
                                             <div className="top">Created: </div><div>5GWY4cfLTvqD7fP3...npj</div>
                                         </div>
-                                        <LastLine onClick={()=>handleView()}>View</LastLine>
+                                        <LastLine onClick={()=>handleView()}>
+                                            {current?'View':'Sign Now'}
+                                        </LastLine>
                                     </RhtBox>
                                 </dd>
 
