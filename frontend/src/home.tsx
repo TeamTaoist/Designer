@@ -22,6 +22,7 @@ const TitleBox = styled.div`
   font-family: "black";
   font-size: 45px;
   width: 63%;
+  margin: 35px 0 20px;
 `
 
 const TipsBox = styled.div`
