@@ -1,15 +1,18 @@
 import styled from "styled-components";
 import {useEffect, useState} from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import LogoImg from "../../assets/images/logo.png";
 
 const LogoBox = styled.div`
   width: 150px;
   height: 75px;
-  background: #222;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  img{
+    height: 45px;
+  }
 `
 
 const BgBtn = styled.div`
@@ -109,7 +112,9 @@ export default function Left(){
     };
 
     return <div>
-        <LogoBox onClick={()=>toGo('')}>Logo</LogoBox>
+        <LogoBox onClick={()=>toGo('')}>
+            <img src={LogoImg} alt=""/>
+        </LogoBox>
         <BgBtn>
             <NewButton onClick={()=>toGo('new')}>
                 New Contract

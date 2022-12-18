@@ -100,6 +100,7 @@ export default function Layout(props:Props){
     const [ show,setShow] = useState(false);
     const [ showBox,setShowBox] = useState(false);
     const { switchAccount,accounts,account,logout } = useAccount();
+    console.log(account)
 
     const handleShow = () =>{
         setShow(true)
@@ -112,7 +113,8 @@ export default function Layout(props:Props){
     const handleSelected =(account: InjectedAccountWithMeta) =>{
         switchAccount(account);
         localStorage.setItem('account', account.address);
-        setShow(false)
+        setShow(false);
+        window.location.reload();
     }
     const handleLogout =() =>{
         logout()
@@ -132,7 +134,7 @@ export default function Layout(props:Props){
                         {
                             show&& <ul>
                                 {
-                                    accounts?.map((item,index)=>( <li onClick={()=>handleSelected(item)}>{item.meta.name}</li>))
+                                    accounts?.map((item,index)=>( <li onClick={()=>handleSelected(item)} key={index}>{item.meta.name}</li>))
                                 }
 
                             </ul>
