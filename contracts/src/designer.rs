@@ -311,6 +311,7 @@ impl DeSignerState {
         // if agree_on count equal to signers, trigger finished
         if contract.agree_on.len() == contract.signers.len() {
             contract.status = ContractStatus::Finished;
+            msg::reply(DeSignerEvent::AgreeOnContract { id, signer: sender }, 0).unwrap();
         }
 
         msg::reply(DeSignerEvent::AgreeOnContract { id, signer: sender }, 0).unwrap();
@@ -463,7 +464,7 @@ impl DeSignerState {
 
     fn validate_contract_expire(&self, id: u64) {
         let contract = self.contract_map.get(&id).expect("not found contract");
-        if contract.expire > exec::block_timestamp() {
+        if contract.expire <= exec::block_timestamp() {
             panic!("contract has expired")
         }
     }

@@ -3,7 +3,7 @@ name = "de-signer"
 version = "0.1.0"
 edition = "2021"
 license = "MIT"
-authors = ["TeamTaoist"]
+authors = ["de-signer"]
 
 [dependencies]
 gstd = { git = "https://github.com/gear-tech/gear.git", branch = "stable" }

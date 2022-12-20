@@ -63,6 +63,11 @@ pub enum DeSignerEvent {
         id: u64,
         signer: ActorId,
     },
+    SealContract {
+        id: u64,
+        name: String,
+        digest: DigestAlgo,
+    },
     AbrogateContract {
         id: u64,
         sender: ActorId,
