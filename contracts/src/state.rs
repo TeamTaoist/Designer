@@ -1,0 +1,25 @@
+use crate::page::PageParam;
+use crate::Contract;
+use crate::PageRet;
+use gstd::{prelude::*, ActorId};
+
+#[derive(Debug, Encode, Decode, TypeInfo)]
+#[codec(crate = gstd::codec)]
+#[scale_info(crate = gstd::scale_info)]
+pub enum StateReq {
+    QueryContractByCreator(PageParam, ActorId),
+    QueryContractBySigner(PageParam, ActorId),
+    QueryContractById(u64),
+    Owner(),
+    Index(),
+}
+
+#[derive(Debug, Encode, Decode, TypeInfo)]
+#[codec(crate = gstd::codec)]
+#[scale_info(crate = gstd::scale_info)]
+pub enum StateResponse {
+    Contract(Contract),
+    Contracts(PageRet<Contract>),
+    Address(ActorId),
+    U64(u64),
+}
