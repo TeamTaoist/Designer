@@ -53,7 +53,7 @@ pub struct Resource {
 pub enum ContractStatus {
     Created,
     Singing,
-    Finished,
+    Sealed,
     Abrogated,
 }
 
@@ -285,16 +285,6 @@ impl DeSignerState {
                 .entry(sender)
                 .or_insert(vec![])
                 .push(metadata);
-            msg::reply(
-                DeSignerEvent::UploadMetadata {
-                    id,
-                    creator: sender,
-                    digest: resource.digest,
-                    cate: ResourceCate::SignMetadata,
-                },
-                0,
-            )
-            .unwrap();
         }
 
         if contract.agree_on.contains_key(&sender) {
@@ -310,8 +300,7 @@ impl DeSignerState {
 
         // if agree_on count equal to signers, trigger finished
         if contract.agree_on.len() == contract.signers.len() {
-            contract.status = ContractStatus::Finished;
-            msg::reply(DeSignerEvent::AgreeOnContract { id, signer: sender }, 0).unwrap();
+            contract.status = ContractStatus::Sealed;
         }
 
         msg::reply(DeSignerEvent::AgreeOnContract { id, signer: sender }, 0).unwrap();
