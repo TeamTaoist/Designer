@@ -4,6 +4,8 @@ import { useAccount } from '@gear-js/react-hooks';
 import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
 import Left from "./left";
 import DownImg from "../../assets/images/icon_down_arrow_outline.svg";
+import CopyImg from "../../assets/images/icon-copy.svg";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 
 const Box = styled.div`
     display: flex;
@@ -54,7 +56,6 @@ const Wallet = styled.div`
 `
 
 const SelectedBox = styled.div`
-    margin-right: 20px;
   background: #21242a url(${DownImg}) no-repeat 90% center;
   background-size: 15px;
   border-radius: 4px;
@@ -89,6 +90,26 @@ const SelectedBox = styled.div`
   }
 `
 
+const CopiedBtn = styled.div`
+    width: 50px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: #fcca00;
+  border-radius: 4px;
+  margin:0 10px;
+  position: relative;
+  img{
+    width: 24px;
+  }
+  span{
+    position: absolute;
+    top: 45px;
+    left: 0;
+  }
+`
 
 
 interface Props {
@@ -99,8 +120,8 @@ export default function Layout(props:Props){
     const { children} = props;
     const [ show,setShow] = useState(false);
     const [ showBox,setShowBox] = useState(false);
+    const [ showTips,setShowTips] = useState(false);
     const { switchAccount,accounts,account,logout } = useAccount();
-    console.log(account)
 
     const handleShow = () =>{
         setShow(true)
@@ -120,6 +141,12 @@ export default function Layout(props:Props){
         logout()
         localStorage.removeItem('account');
 
+    }
+    const handleCopy = () =>{
+        setShowTips(true)
+        setTimeout(()=>{
+            setShowTips(false)
+        },1000)
     }
 
     return <Box>
@@ -141,6 +168,18 @@ export default function Layout(props:Props){
                         }
 
                     </SelectedBox>
+                }
+                {
+
+                    account && <CopyToClipboard text={account.decodedAddress} onCopy={handleCopy}>
+                        <CopiedBtn>
+                            <img src={CopyImg} alt=""/>
+                            {
+                                showTips &&<span>Copied!</span>
+                            }
+
+                        </CopiedBtn>
+                    </CopyToClipboard>
                 }
 
                 {

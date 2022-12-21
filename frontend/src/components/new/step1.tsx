@@ -4,10 +4,14 @@ import {FormEvent, useState} from "react";
 import PDFimg from "../../assets/images/icon_pdf.svg";
 import BgImg from "../../assets/images/bg.png";
 
+
 const Box = styled.div`
   padding-top: 40px;
   input[type="file"] {
     display: none;
+  }
+  .custom-file-upload{
+    width: 100%;
   }
 `
 const UploadBox = styled.div`
@@ -124,7 +128,38 @@ export default function Step1(props:Iprops){
 
     const { checkStep,handleUrl } = props;
     const [fileName,setFileName] = useState('');
+    // const {metadata,programId} = ADDRESS;
+    // console.error("===programId=",programId)
+    // const sendMessage = useSendMessage(programId, metadata);
+    // console.log(sendMessage)
 
+
+    // const sendMessage = useSendMessage(programId, metadata);
+
+    // const payload = {
+    //     "createContract": {
+    //         "name": "test v1.0",
+    //         "signers": [
+    //             "0x98aa72dae1620f0ec6f24af905620e21662c19cf4846ad36cdcaa7725e341707"
+    //         ],
+    //         "file": {
+    //             "digest": {
+    //                 "sha256": "123"
+    //             },
+    //             "url": "123",
+    //             "memo": null
+    //         },
+    //         "expire": 1671943002000
+    //     }
+    // };
+    // const sendReply = () => sendMessage(payload);
+
+    // const payload ={
+    //     "QueryContractById":0
+    // }
+    // const stateAll = useReadState(programId, metadata, payload);
+
+    // console.error(sendReply)
 
     const updateLogo = (e:FormEvent) =>{
         const { files } = e.target as any;
@@ -139,6 +174,8 @@ export default function Step1(props:Iprops){
     }
 
     return  <Box>
+        {/*<div>{JSON.stringify(stateAll)}</div>*/}
+        {/*<div><button onClick={sendReply} >aa</button></div>*/}
         <TitleBox>Upload Contract</TitleBox>
         <label htmlFor="file-upload" className="custom-file-upload" >
             <UploadBox >

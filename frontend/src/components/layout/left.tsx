@@ -2,6 +2,8 @@ import styled from "styled-components";
 import {useEffect, useState} from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import LogoImg from "../../assets/images/logo.png";
+import {useSubstrate} from "../../api/connect";
+import { ActionType } from "../../utils/types";
 
 const LogoBox = styled.div`
   width: 150px;
@@ -79,7 +81,7 @@ interface navObj {
 }
 
 export default function Left(){
-
+    const {state,dispatch} = useSubstrate();
     const navigate = useNavigate();
     const locationUrl = useLocation();
     const [current, setCurrrent] = useState<null|number>(null);
@@ -103,6 +105,10 @@ export default function Left(){
         const index = list.findIndex((item) => item.value === pathname.split("/")[1]);
         setCurrrent(index);
     }, [locationUrl.pathname]);
+
+    useEffect(()=>{
+        dispatch({type:ActionType.LOAD_MAINCONTRACT});
+    },[])
 
     const handleClick = (item: navObj) => {
         navigate(`/${item.value}`);
