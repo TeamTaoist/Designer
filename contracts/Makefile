@@ -32,7 +32,7 @@ linter:
 	@echo ──────────── Run linter ───────────────────────
 	@cargo +nightly clippy --all-targets -- --no-deps -D warnings
 
-pre-commit: fmt linter test
+pre-commit: fmt linter test build
 
 test:
 	@echo ──────────── Run tests ────────────────────────

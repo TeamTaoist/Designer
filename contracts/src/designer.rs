@@ -69,7 +69,7 @@ pub struct AgreeOnInfo {
 #[codec(crate = gstd::codec)]
 #[scale_info(crate = gstd::scale_info)]
 pub struct Contract {
-    id: u64,
+    pub id: u64,
     creator: ActorId,
     creat_tx: MessageId,
     name: String,

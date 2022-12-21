@@ -105,14 +105,18 @@ fn agree_contract() {
         USERS[1],
         DeSignerAction::AgreeOnContract {
             id: 0,
-            resource: None
+            resource: None,
         },
     );
 
-    assert!(res.contains(&(USERS[1], DeSignerEvent::AgreeOnContract {
-        id: 0,
-        signer: USERS[1].into()
-    }.encode())));
+    assert!(res.contains(&(
+        USERS[1],
+        DeSignerEvent::AgreeOnContract {
+            id: 0,
+            signer: USERS[1].into()
+        }
+        .encode()
+    )));
 }
 
 #[test]
@@ -147,13 +151,17 @@ fn agree_contract_with_res() {
                     "X48E9qOokqqrvdts8nOJRJN3OWDUoyWxBf7kbu9DBPE=".to_string(),
                 ),
                 url: "cess://xx".to_string(),
-                memo: Some("123".to_string())
-            })
+                memo: Some("123".to_string()),
+            }),
         },
     );
 
-    assert!(res.contains(&(USERS[1], DeSignerEvent::AgreeOnContract {
-        id: 0,
-        signer: USERS[1].into()
-    }.encode())));
+    assert!(res.contains(&(
+        USERS[1],
+        DeSignerEvent::AgreeOnContract {
+            id: 0,
+            signer: USERS[1].into()
+        }
+        .encode()
+    )));
 }
