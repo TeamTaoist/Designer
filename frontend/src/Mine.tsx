@@ -5,6 +5,23 @@ import ViewImg from "./assets/images/icon_eye.svg";
 import DownImg from "./assets/images/icon_download.svg";
 import History from "./assets/images/icon_history.svg";
 import Finished from "./assets/images/icon_check_handwritten.svg";
+import {useEffect, useState} from "react";
+import ReactPaginate from 'react-paginate';
+import {ADDRESS} from "./consts";
+import {Hex} from "@gear-js/api";
+import {useAccount, useReadState} from "@gear-js/react-hooks";
+import {ApiLoader} from "./components";
+import publicJs from "./utils/publicJs";
+
+const MaskBox = styled.div`
+    width: 100vw;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background: #000;
+  z-index: 99999;
+`
 
 const Box = styled.div`
     padding:20px 40px 40px;
@@ -65,6 +82,17 @@ const UlBox = styled.ul`
   .time{
     font-family: "Lato-Light";
     opacity: 0.5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+  .timeBtm{
+    padding-top: 10px;
+    opacity: 0.5;
+    span{
+      padding-left: 15px;
+    }
   }
 `
 
@@ -72,7 +100,7 @@ const LineBox = styled.div`
   .addrBox{
     width: 100%;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     margin-top: 10px;
     .finishedImg img{
       width: 20px;
@@ -81,6 +109,11 @@ const LineBox = styled.div`
   }
   .tit{
     margin-right: 20px;
+  }
+  .rhtD{
+    display: flex;
+    align-items: center;
+    padding-bottom: 10px;
   }
 `
 const Operation = styled.ul`
@@ -98,60 +131,202 @@ const Operation = styled.ul`
     }
 `
 
+const PageLine = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 30px;
+  a{
+    text-decoration: none;
+    color: #ffffff;
+  }
+  .page-break{
+    width: 32px;
+    height: 32px;
+    text-align: center;
+    line-height: 32px;
+  }
+  .page-link,.page-left,.page-right{
+    width: 32px;
+    height: 32px;
+    border: 0;
+    text-align: center;
+    line-height: 32px;
+    padding: 0;
+    font-size: 14px;
+    font-weight: 400;
+    cursor: pointer;
+    color: #fff;
+    background: transparent;
+  }
+  .page-link{
+    &:hover{
+      color: #fcca00;
+    }
+    &:focus{
+      box-shadow: none;
+    }
+  }
+
+
+  .disabled {
+    .pageL {
+      color: #f2f2f2 !important;
+    }
+    &:hover{
+        border: none;
+    }
+  }
+  .active{
+    .page-link{
+      color: #fcca00;
+    }
+  }
+`
+
 export default function Mine(){
     const navigate = useNavigate();
-    const handleView = () =>{
-        navigate("/detail")
+    const { account } = useAccount();
+
+    const [list,setList] = useState([]);
+    const [pageCount, setPageCount] = useState(1);
+    const pageSize = 10;
+    const [current, setCurrent] = useState(1);
+    const [total, setTotal] = useState(1);
+    const [show, setShow] = useState(false);
+
+    const {metadata} = ADDRESS;
+    const programId = process.env.REACT_APP_PROGRAM_ID as Hex;
+
+
+    const payload ={
+        "QueryContractByCreator": [
+            {
+                "pageNum": current,
+                "pageSize":pageSize
+            },
+            account?.decodedAddress
+        ]
+    }
+
+    const stateAll = useReadState(programId, metadata, payload);
+    useEffect(()=>{
+        setShow(true);
+        if(!(stateAll as any).state || !(stateAll as any).state!.Contracts)  return;
+        const {total,pages,pageNum,pageSize,data} = (stateAll as any).state.Contracts;
+        if(pageNum == current){
+            setShow(false);
+        }else{
+            setShow(true);
+        }
+        setPageCount(pages);
+        setTotal(total)
+        setList(data)
+    },[(stateAll as any).state,current]);
+
+
+    const handleView = (num:number) =>{
+        navigate(`/detail?id=${num}`)
+    }
+
+    const handlePageClick = (event:{ selected: number }) => {
+        setCurrent((event as any).selected + 1);
+    }
+
+    const formatTime = (time:string) =>{
+        let str = time.replace(/,/g, "");
+        let res =  publicJs.dateFormat(Number(str))
+        return res
     }
 
     return <div>
-        <Layout>
-            <Box>
-                <TabBox>
-                    <li className="active">My Contracts</li>
-                </TabBox>
-                <UlBox>
-                    {
-                        [...Array(5)].map((item,index)=>(<li key={index}>
-                            <div className="bg">
-                                <div className="inner">
-                                    <div>
-                                        <div className="name">namecheap-order-109043863</div>
-                                        <div className="time">December 16, 2022 01:03 AM</div>
-                                    </div>
-                                    <div className="status">Pending Signature</div>
-                                    <Operation>
-                                        <div className="li">
-                                            <img src={ViewImg} alt="View"  onClick={()=>handleView()} />
-                                        </div>
-                                        <div className="li">
-                                            <img src={DownImg} alt="Download"/>
-                                        </div>
-                                        <div className="li">
-                                            <img src={History} alt="History"/>
-                                        </div>
+        {
+            show && <MaskBox><ApiLoader /></MaskBox>
+        }
+         <Layout>
+                <Box>
+                    <TabBox>
+                        <li className="active">My Contracts</li>
+                    </TabBox>
+                    <UlBox>
+                        {
+                            list.map((item:any,index)=>(<li key={index}>
+                                <div className="bg">
+                                    <div className="inner">
+                                        <div className="fir">
+                                            <div className="name">{item.name}</div>
+                                            <div className="time">Created: {formatTime(item.createAt)}</div>
 
-                                    </Operation>
+                                        </div>
+                                        <div className="status">{item.status}</div>
+                                        <Operation>
+                                            <div className="li">
+                                                <img src={ViewImg} alt="View"  onClick={()=>handleView(item.id)} />
+                                            </div>
+                                            {/*<div className="li">*/}
+                                            {/*    <img src={DownImg} alt="Download"/>*/}
+                                            {/*</div>*/}
+                                            {/*<div className="li">*/}
+                                            {/*    <img src={History} alt="History"/>*/}
+                                            {/*</div>*/}
+
+                                        </Operation>
+                                    </div>
+                                    <LineBox>
+
+                                        <div className="addrBox">
+                                            <div className="tit">Creator</div>
+                                            <div className="addr">{publicJs.AddresstoShow(item.creator)}</div>
+                                        </div>
+                                        <div className="addrBox">
+                                            <div className="tit">Signers</div>
+                                            <div >
+                                                {
+                                                    item.signers.map((item:string,index:number)=><div className="rhtD" key={`signers_${index}`}>
+                                                        <div className="addr">{publicJs.AddresstoShow(item)}</div>
+                                                        {
+
+                                                        }
+                                                        {/*<div className="finishedImg">*/}
+                                                        {/*    <img src={Finished} alt=""/>*/}
+                                                        {/*</div>*/}
+                                                    </div> )
+                                                }
+                                            </div>
+
+                                        </div>
+                                        <div className="timeBtm">Expired <span>{formatTime(item.expire)}</span></div>
+                                    </LineBox>
                                 </div>
-                                <LineBox>
-                                    <div className="addrBox">
-                                        <div className="tit">created</div>
-                                        <div className="addr">5GWE...mdnpj</div>
-                                    </div>
-                                    <div className="addrBox">
-                                        <div className="tit">created</div>
-                                        <div className="addr">5GWE...mdnpj</div>
-                                        <div className="finishedImg">
-                                            <img src={Finished} alt=""/>
-                                        </div>
-                                    </div>
-                                </LineBox>
-                            </div>
-                        </li>))
-                    }
+                            </li>))
+                        }
 
-                </UlBox>
-            </Box>
-        </Layout>
+                    </UlBox>
+                    <PageLine>
+                        <ReactPaginate
+                            previousLabel="<"
+                            nextLabel=">"
+                            pageClassName="page-item"
+                            pageLinkClassName="page-link"
+                            previousClassName="page-left"
+                            previousLinkClassName="pageL"
+                            nextClassName="page-right"
+                            nextLinkClassName="pageR"
+                            breakLabel="..."
+                            breakClassName="page-break"
+                            breakLinkClassName="page-break"
+                            pageCount={pageCount}
+                            marginPagesDisplayed={1}
+                            pageRangeDisplayed={5}
+                            onPageChange={(e)=>handlePageClick(e)}
+                            containerClassName="pagination"
+                            activeClassName="active"
+                        />
+                    </PageLine>
+
+                </Box>
+            </Layout>
+
     </div>
 }
