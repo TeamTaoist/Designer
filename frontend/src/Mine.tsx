@@ -227,7 +227,7 @@ export default function Mine(){
 
 
     const handleView = (num:number) =>{
-        navigate(`/detail?id=${num}`)
+        navigate(`/detail/${num}`)
     }
 
     const handlePageClick = (event:{ selected: number }) => {

@@ -294,7 +294,7 @@ export default function Contract(){
     }
 
     const handleView = (num:number) =>{
-        navigate(`/detail?id=${num}`)
+        navigate(`/detail/${num}`)
     }
 
     const {metadata} = ADDRESS;
