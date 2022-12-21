@@ -14,7 +14,7 @@ const routes = [
   { path: 'contracts', Page: Contracts },
   { path: 'mine', Page: Mine },
   { path: 'setting', Page: Setting },
-  { path: 'detail', Page: Detail },
+  { path: 'detail/:id', Page: Detail },
 ];
 
 function Routing() {
