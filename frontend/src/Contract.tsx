@@ -1,13 +1,31 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import styled from "styled-components";
 import Layout from "./components/layout/layout";
 import { useNavigate } from "react-router-dom";
 import DownImg from "./assets/images/icon_down_arrow_outline.svg";
 import CheckImg from "./assets/images/icon_check.svg";
 import Wait from "./components/wait";
+import {ADDRESS} from "./consts";
+import {Hex} from "@gear-js/api";
+import {useAccount, useReadState} from "@gear-js/react-hooks";
+import ReactPaginate from 'react-paginate';
+import publicJs from "./utils/publicJs";
+import { CopyToClipboard } from "react-copy-to-clipboard";
+import CopyImg from "./assets/images/icon-copyWhite.svg";
+import {ApiLoader} from "./components";
 
 const Box = styled.div`
     padding:20px 40px 40px;
+`
+
+const MaskBox = styled.div`
+    width: 100vw;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background: #000;
+  z-index: 99999;
 `
 
 const TabBox = styled.ul`
@@ -90,8 +108,10 @@ const TimeLine = styled.div`
   flex-direction: column;
   align-items: center;
   margin-left: 40px;
+
   .liBox{
     padding-left: 40px;
+    width: 100%;
   }
   .tit{
     display: flex;
@@ -143,15 +163,17 @@ const LftBox = styled.div`
 
 const ContentBox = styled.div`
     padding: 10px 0 30px;
+  width: 100%;
   .addr{
     padding:10px 20px;
     opacity: 0.5;
+    width: 100%;
   }
 `
 
 const RhtBox = styled.div`
     padding: 40px;
-  width: 30%;
+  width: 40%;
   border-left: 1px dashed rgba(255,255,255,0.1);
   .hashLine{
     margin-bottom: 30px;
@@ -174,14 +196,95 @@ const LastLine = styled.div`
   cursor: pointer;
   width: 100px;
 `
+const PageLine = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 30px;
+  a{
+    text-decoration: none;
+    color: #ffffff;
+  }
+  .page-break{
+    width: 32px;
+    height: 32px;
+    text-align: center;
+    line-height: 32px;
+  }
+  .page-link,.page-left,.page-right{
+    width: 32px;
+    height: 32px;
+    border: 0;
+    text-align: center;
+    line-height: 32px;
+    padding: 0;
+    font-size: 14px;
+    font-weight: 400;
+    cursor: pointer;
+    color: #fff;
+    background: transparent;
+  }
+  .page-link{
+    &:hover{
+      color: #fcca00;
+    }
+    &:focus{
+      box-shadow: none;
+    }
+  }
+
+
+  .disabled {
+    .pageL {
+      color: #f2f2f2 !important;
+    }
+    &:hover{
+        border: none;
+    }
+  }
+  .active{
+    .page-link{
+      color: #fcca00;
+    }
+  }
+`
+
+const CopiedBtn = styled.div`
+  position: relative;
+  img{
+    width: 24px;
+  }
+  span{
+    position: absolute;
+    top: 25px;
+    left: 0;
+  }
+`
+const FL =styled.div`
+  display: flex;
+  align-items: center;
+`
 
 export default function Contract(){
     const navigate = useNavigate();
-    const [current, setCurrrent] = useState<number>(0);
-    const [ list ] = useState(['Queue','History']);
+    const { account } = useAccount();
+    const [currentNav, setCurrrentNav] = useState<number>(0);
+    const [ Nav ] = useState(['Queue','History']);
     const [ showArr,setShowArr ] = useState(new Array(6).fill(false));
+
+    const [list,setList] = useState([]);
+    const [pageCount, setPageCount] = useState(1);
+    const pageSize = 10;
+    const [current, setCurrent] = useState(1);
+    const [total, setTotal] = useState(1);
+    const [show, setShow] = useState(false);
+
+    const [ showTips,setShowTips] = useState(false);
+    const [ showTips2,setShowTips2] = useState(false);
+
     const handleClick = (i:number) => {
-        setCurrrent(i);
+        setCurrrentNav(i);
     };
 
     const handleShow = (num:number) =>{
@@ -190,27 +293,83 @@ export default function Contract(){
         setShowArr(arr)
     }
 
-    const handleView = () =>{
-        navigate("/detail")
+    const handleView = (num:number) =>{
+        navigate(`/detail?id=${num}`)
     }
 
-    return<Layout>
+    const {metadata} = ADDRESS;
+    const programId = process.env.REACT_APP_PROGRAM_ID as Hex;
+
+
+    const payload ={
+        "QueryContractBySigner": [
+            {
+                "pageNum": current,
+                "pageSize":pageSize
+            },
+            account?.decodedAddress
+        ]
+    }
+
+    const stateAll = useReadState(programId, metadata, payload);
+    useEffect(()=>{
+        setShow(true);
+        if(!(stateAll as any).state || !(stateAll as any).state!.Contracts)  return;
+        const {total,pages,pageNum,data} = (stateAll as any).state.Contracts;
+        if(pageNum == current){
+            setShow(false);
+        }else{
+            setShow(true);
+        }
+        setPageCount(pages);
+        setTotal(total)
+        setList(data)
+    },[(stateAll as any).state,current]);
+
+    const handlePageClick = (event:{ selected: number }) => {
+        setCurrent((event as any).selected + 1);
+    }
+
+    const formatTime = (time:string) =>{
+        let str = time.replace(/,/g, "");
+        let res =  publicJs.dateFormat(Number(str))
+        return res
+    }
+
+    const handleCopy = () =>{
+        setShowTips(true)
+        setTimeout(()=>{
+            setShowTips(false)
+        },1000)
+    }
+    const handleCopy2 = () =>{
+        setShowTips2(true)
+        setTimeout(()=>{
+            setShowTips2(false)
+        },1000)
+    }
+
+    return  <div>
+        {
+            show && <MaskBox><ApiLoader /></MaskBox>
+        }
+        <Layout>
             <Box>
                 <TabBox>
                     {
-                        list.map((item,index)=><li className={current === index ? "active" : ""} onClick={()=>handleClick(index)}>{item}</li>)
+                        Nav.map((item,index)=><li key={`nav_${index}`} className={currentNav === index ? "active" : ""} onClick={()=>handleClick(index)}>{item}</li>)
                     }
                 </TabBox>
                 <UlBox>
                     {
-                        [...Array(6)].map((item,index)=>(<li key={index}>
+                        list.map((item:any,index:number)=>(<li key={index}>
                             <div className="line" />
                             <dl onClick={()=>handleShow(index)}>
                                 <dt>
-                                    <div className="name">namecheap-order-109043863</div>
-                                    <div className="time">December 16, 2022 01:03 AM</div>
+                                    <div className="name">{item.name}</div>
+                                    <div className="time">{formatTime(item.expire)}</div>
                                     <div className="status">
-                                        <div>Pending Signature</div>
+                                        <div>{item.status}</div>
                                         <div className="rht">
                                             <img src={DownImg} alt=""/>
                                         </div>
@@ -225,11 +384,10 @@ export default function Contract(){
                                                         <img src={CheckImg} alt=""/>
 
                                                     </div>
-                                                    <span>Pending</span>
+                                                    <span>Creator</span>
                                                 </div>
                                                 <ContentBox >
-                                                    <div className="addr">5GWY4cfLTvqD7fP3GE2Pf2DMvFBZ8s6QMymx3Bv6PE4mdnpj</div>
-                                                    <div className="addr">5GWY4cfLTvqD7fP3GE2Pf2DMvFBZ8s6QMymx3Bv6PE4mdnpj</div>
+                                                    <div className="addr">{publicJs.AddresstoShow(item.creator)}</div>
                                                 </ContentBox>
                                             </div>
                                         </TimeLine>
@@ -239,26 +397,52 @@ export default function Contract(){
                                                     <div className="icon">
                                                         <Wait />
                                                     </div>
-                                                    <span>Pending</span>
+                                                    <span>Signers</span>
                                                 </div>
                                                 <ContentBox >
-                                                    <div className="addr">5GWY4cfLTvqD7fP3GE2Pf2DMvFBZ8s6QMymx3Bv6PE4mdnpj</div>
-                                                    <div className="addr">5GWY4cfLTvqD7fP3GE2Pf2DMvFBZ8s6QMymx3Bv6PE4mdnpj</div>
+
+                                                    {
+                                                        item.signers.map((Th:string,index:number)=>
+                                                            <div key={`signers_${index}`}>{
+                                                                Th!==item.creator && <div className="addr">{publicJs.AddresstoShow(Th)}</div>
+                                                            }
+
+                                                            </div>
+                                                            )
+                                                    }
                                                 </ContentBox>
                                             </div>
                                         </TimeLine>
                                     </LftBox>
                                     <RhtBox>
                                         <div className="hashLine">
-                                            <div className="top">TX Hash: </div><div>5GWY4cfLTvqD7fP3...npj</div>
+                                            <div className="top">TX Hash: </div><FL><div>{publicJs.AddresstoShow(item.creatTx)}</div><CopyToClipboard text={item.creatTx} onCopy={handleCopy}>
+                                            <CopiedBtn>
+                                                <img src={CopyImg} alt=""/>
+                                                {
+                                                    showTips &&<span>Copied!</span>
+                                                }
+
+                                            </CopiedBtn>
+                                        </CopyToClipboard>
+                                        </FL>
                                         </div>
                                         <div className="hashLine">
-                                            <div className="top">File Hash: </div><div>5GWY4cfLTvqD7fP3...npj</div>
+                                            <div className="top">File Hash: </div><FL><div>{item.file.digest.SHA256}</div><CopyToClipboard text={item.file.digest.SHA256} onCopy={handleCopy2}>
+                                            <CopiedBtn>
+                                                <img src={CopyImg} alt=""/>
+                                                {
+                                                    showTips2 &&<span>Copied!</span>
+                                                }
+
+                                            </CopiedBtn>
+                                        </CopyToClipboard>
+                                        </FL>
                                         </div>
                                         <div className="hashLine">
-                                            <div className="top">Created: </div><div>5GWY4cfLTvqD7fP3...npj</div>
+                                            <div className="top">Created: </div><div>{formatTime(item.createAt)}</div>
                                         </div>
-                                        <LastLine onClick={()=>handleView()}>
+                                        <LastLine onClick={()=>handleView(item.id)}>
                                             {current?'View':'Sign Now'}
                                         </LastLine>
                                     </RhtBox>
@@ -267,9 +451,29 @@ export default function Contract(){
                             </dl>
                         </li>))
                     }
-
-
                 </UlBox>
+                <PageLine>
+                    <ReactPaginate
+                        previousLabel="<"
+                        nextLabel=">"
+                        pageClassName="page-item"
+                        pageLinkClassName="page-link"
+                        previousClassName="page-left"
+                        previousLinkClassName="pageL"
+                        nextClassName="page-right"
+                        nextLinkClassName="pageR"
+                        breakLabel="..."
+                        breakClassName="page-break"
+                        breakLinkClassName="page-break"
+                        pageCount={pageCount}
+                        marginPagesDisplayed={1}
+                        pageRangeDisplayed={5}
+                        onPageChange={(e)=>handlePageClick(e)}
+                        containerClassName="pagination"
+                        activeClassName="active"
+                    />
+                </PageLine>
             </Box>
         </Layout>
+    </div>
 }
