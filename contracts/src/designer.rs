@@ -1,7 +1,7 @@
 use crate::io::DeSignerEvent;
 use crate::page::{PageParam, PageRet};
 use alloc::collections::btree_map::Entry;
-use gstd::{exec, msg, prelude::*, ActorId, MessageId, debug};
+use gstd::{exec, msg, prelude::*, ActorId, MessageId};
 
 #[derive(Debug, Encode, Decode, TypeInfo, Clone)]
 #[codec(crate = gstd::codec)]
@@ -102,7 +102,7 @@ impl DeSignerState {
         signers: Vec<ActorId>,
         res: ResourceParam,
         expire: u64,
-        send_reply: bool
+        send_reply: bool,
     ) -> u64 {
         self.validate_great_than_block_timestamp(expire);
         self.validate_str(&name);
@@ -159,7 +159,7 @@ impl DeSignerState {
                 },
                 0,
             )
-                .unwrap();
+            .unwrap();
         }
         id
     }
@@ -392,13 +392,18 @@ impl DeSignerState {
         }
         PageRet::new(param, total, res)
     }
-    pub fn query_contract_by_signer_and_status(&self, param: PageParam, addr: ActorId, statuses: Vec<ContractStatus>) -> PageRet<Contract> {
+    pub fn query_contract_by_signer_and_status(
+        &self,
+        param: PageParam,
+        addr: ActorId,
+        statuses: Vec<ContractStatus>,
+    ) -> PageRet<Contract> {
         let id_list = self
             .contract_map_by_signer
             .get(&addr)
             .expect("not found contracts");
         let mut filter_list = Vec::with_capacity(id_list.len());
-        for i in 0..id_list.len() {
+        for i in id_list.iter().copied() {
             let contract = self
                 .contract_map
                 .get(&id_list[i as usize])

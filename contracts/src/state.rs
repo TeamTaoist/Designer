@@ -1,6 +1,6 @@
 use crate::page::PageParam;
-use crate::{Contract, ContractStatus};
 use crate::PageRet;
+use crate::{Contract, ContractStatus};
 use gstd::{prelude::*, ActorId};
 
 #[derive(Debug, Encode, Decode, TypeInfo)]

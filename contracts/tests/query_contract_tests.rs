@@ -325,7 +325,7 @@ fn query_contract_by_signer_and_status() {
                 ),
                 url: "cess://xx".to_string(),
                 memo: Some("important!!".to_string()),
-            }
+            },
         },
     );
     assert!(!res.main_failed());
@@ -336,7 +336,7 @@ fn query_contract_by_signer_and_status() {
             page_size: 1,
         },
         USERS[0].into(),
-        vec![ContractStatus::Created, ContractStatus::Singing]
+        vec![ContractStatus::Created, ContractStatus::Singing],
     ));
     match res.unwrap() {
         StateResponse::Contracts(ret) => {
@@ -357,7 +357,7 @@ fn query_contract_by_signer_and_status() {
             page_size: 1,
         },
         USERS[0].into(),
-        vec![ContractStatus::Created, ContractStatus::Singing]
+        vec![ContractStatus::Created, ContractStatus::Singing],
     ));
     match res.unwrap() {
         StateResponse::Contracts(ret) => {
@@ -378,7 +378,7 @@ fn query_contract_by_signer_and_status() {
             page_size: 1,
         },
         USERS[0].into(),
-        vec![ContractStatus::Sealed, ContractStatus::Abrogated]
+        vec![ContractStatus::Sealed, ContractStatus::Abrogated],
     ));
     match res.unwrap() {
         StateResponse::Contracts(ret) => {
@@ -399,7 +399,7 @@ fn query_contract_by_signer_and_status() {
             page_size: 1,
         },
         USERS[0].into(),
-        vec![ContractStatus::Sealed, ContractStatus::Abrogated]
+        vec![ContractStatus::Sealed, ContractStatus::Abrogated],
     ));
     match res.unwrap() {
         StateResponse::Contracts(ret) => {

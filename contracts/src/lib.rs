@@ -85,7 +85,9 @@ pub unsafe extern "C" fn meta_state() -> *mut [i32; 2] {
             StateResponse::Contracts(state.query_contract_by_signer(param, addr))
         }
         StateReq::QueryContractBySignerAndStatus(param, addr, statuses) => {
-            StateResponse::Contracts(state.query_contract_by_signer_and_status(param, addr, statuses))
+            StateResponse::Contracts(
+                state.query_contract_by_signer_and_status(param, addr, statuses),
+            )
         }
         StateReq::QueryContractById(param) => {
             StateResponse::Contract(state.query_contract_by_id(param))

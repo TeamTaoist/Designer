@@ -184,7 +184,7 @@ fn creat_contract_with_agree() {
                 url: "cess://xx".to_string(),
                 memo: Some("123".to_string()),
             },
-            expire: sys.block_timestamp() + 1000
+            expire: sys.block_timestamp() + 1000,
         },
     );
 
@@ -226,10 +226,12 @@ fn upload_attachment() {
         DeSignerAction::UploadAttachment {
             id: 0,
             attachment: ResourceParam {
-                digest: DigestAlgo::SHA256("X48E9qOokqqrvdts8nOJRJN3OWDUoyWxBf7kbu9DBPE=".to_string()),
+                digest: DigestAlgo::SHA256(
+                    "X48E9qOokqqrvdts8nOJRJN3OWDUoyWxBf7kbu9DBPE=".to_string(),
+                ),
                 url: "0x123".to_string(),
-                memo: Some("123".to_string())
-            }
+                memo: Some("123".to_string()),
+            },
         },
     );
 
@@ -241,7 +243,7 @@ fn upload_attachment() {
             digest: DigestAlgo::SHA256("X48E9qOokqqrvdts8nOJRJN3OWDUoyWxBf7kbu9DBPE=".to_string()),
             cate: ResourceCate::Attachment
         }
-            .encode()
+        .encode()
     )));
 }
 
@@ -273,10 +275,12 @@ fn upload_resource() {
         DeSignerAction::UploadResource {
             id: 0,
             resource: ResourceParam {
-                digest: DigestAlgo::SHA256("X48E9qOokqqrvdts8nOJRJN3OWDUoyWxBf7kbu9DBPE=".to_string()),
+                digest: DigestAlgo::SHA256(
+                    "X48E9qOokqqrvdts8nOJRJN3OWDUoyWxBf7kbu9DBPE=".to_string(),
+                ),
                 url: "0x123".to_string(),
-                memo: Some("123".to_string())
-            }
+                memo: Some("123".to_string()),
+            },
         },
     );
 
@@ -288,7 +292,7 @@ fn upload_resource() {
             digest: DigestAlgo::SHA256("X48E9qOokqqrvdts8nOJRJN3OWDUoyWxBf7kbu9DBPE=".to_string()),
             cate: ResourceCate::FileMetadata
         }
-            .encode()
+        .encode()
     )));
 }
 
@@ -320,10 +324,12 @@ fn abrogate_contract() {
         DeSignerAction::AbrogateContract {
             id: 0,
             resource: ResourceParam {
-                digest: DigestAlgo::SHA256("X48E9qOokqqrvdts8nOJRJN3OWDUoyWxBf7kbu9DBPE=".to_string()),
+                digest: DigestAlgo::SHA256(
+                    "X48E9qOokqqrvdts8nOJRJN3OWDUoyWxBf7kbu9DBPE=".to_string(),
+                ),
                 url: "0x123".to_string(),
-                memo: Some("123".to_string())
-            }
+                memo: Some("123".to_string()),
+            },
         },
     );
 
@@ -333,7 +339,7 @@ fn abrogate_contract() {
             id: 0,
             sender: USERS[1].into()
         }
-            .encode()
+        .encode()
     )));
 }
 
@@ -374,10 +380,12 @@ fn abrogate_contract_fail() {
         DeSignerAction::AbrogateContract {
             id: 0,
             resource: ResourceParam {
-                digest: DigestAlgo::SHA256("X48E9qOokqqrvdts8nOJRJN3OWDUoyWxBf7kbu9DBPE=".to_string()),
+                digest: DigestAlgo::SHA256(
+                    "X48E9qOokqqrvdts8nOJRJN3OWDUoyWxBf7kbu9DBPE=".to_string(),
+                ),
                 url: "0x123".to_string(),
-                memo: Some("123".to_string())
-            }
+                memo: Some("123".to_string()),
+            },
         },
     );
     assert!(res.main_failed());
