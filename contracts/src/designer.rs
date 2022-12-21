@@ -1,7 +1,7 @@
 use crate::io::DeSignerEvent;
 use crate::page::{PageParam, PageRet};
 use alloc::collections::btree_map::Entry;
-use gstd::{exec, msg, prelude::*, ActorId, MessageId};
+use gstd::{exec, msg, prelude::*, ActorId, MessageId, debug};
 
 #[derive(Debug, Encode, Decode, TypeInfo, Clone)]
 #[codec(crate = gstd::codec)]
@@ -47,7 +47,7 @@ pub struct Resource {
     creat_at: u64,
 }
 
-#[derive(Debug, Encode, Decode, TypeInfo, Clone, PartialEq)]
+#[derive(Debug, Encode, Decode, TypeInfo, Clone, Eq, PartialEq)]
 #[codec(crate = gstd::codec)]
 #[scale_info(crate = gstd::scale_info)]
 pub enum ContractStatus {
@@ -102,6 +102,7 @@ impl DeSignerState {
         signers: Vec<ActorId>,
         res: ResourceParam,
         expire: u64,
+        send_reply: bool
     ) -> u64 {
         self.validate_great_than_block_timestamp(expire);
         self.validate_str(&name);
@@ -148,16 +149,18 @@ impl DeSignerState {
                 other_res: Default::default(),
             },
         );
-        msg::reply(
-            DeSignerEvent::CreateContract {
-                id,
-                name,
-                creator,
-                digest: res.digest,
-            },
-            0,
-        )
-        .unwrap();
+        if send_reply {
+            msg::reply(
+                DeSignerEvent::CreateContract {
+                    id,
+                    name,
+                    creator,
+                    digest: res.digest,
+                },
+                0,
+            )
+                .unwrap();
+        }
         id
     }
 
@@ -168,7 +171,7 @@ impl DeSignerState {
         file: ResourceParam,
         expire: u64,
     ) {
-        let id = self.create_contract(name, signers, file, expire);
+        let id = self.create_contract(name, signers, file, expire, false);
         self.agree_on_contract(id, None);
     }
 
@@ -316,7 +319,7 @@ impl DeSignerState {
             Entry::Occupied(entry) => entry.into_mut(),
             Entry::Vacant(_) => panic!("not found contract"),
         };
-        if contract.status != ContractStatus::Created || contract.status != ContractStatus::Singing
+        if contract.status != ContractStatus::Created && contract.status != ContractStatus::Singing
         {
             panic!("not in correct status")
         }
@@ -335,16 +338,6 @@ impl DeSignerState {
             .entry(sender)
             .or_insert(vec![])
             .push(resource);
-        msg::reply(
-            DeSignerEvent::UploadMetadata {
-                id,
-                creator: sender,
-                digest: res.digest,
-                cate: ResourceCate::AbrogateMetadata,
-            },
-            0,
-        )
-        .unwrap();
 
         msg::reply(DeSignerEvent::AbrogateContract { id, sender }, 0).unwrap();
     }
@@ -394,6 +387,33 @@ impl DeSignerState {
             let contract = self
                 .contract_map
                 .get(&id_list[i as usize])
+                .expect("not found contract");
+            res.push((*contract).clone())
+        }
+        PageRet::new(param, total, res)
+    }
+    pub fn query_contract_by_signer_and_status(&self, param: PageParam, addr: ActorId, statuses: Vec<ContractStatus>) -> PageRet<Contract> {
+        let id_list = self
+            .contract_map_by_signer
+            .get(&addr)
+            .expect("not found contracts");
+        let mut filter_list = Vec::with_capacity(id_list.len());
+        for i in 0..id_list.len() {
+            let contract = self
+                .contract_map
+                .get(&id_list[i as usize])
+                .expect("not found contract");
+            if statuses.contains(&contract.status) {
+                filter_list.push(id_list[i as usize]);
+            }
+        }
+        let total = filter_list.len() as u64;
+        let (start, end) = param.find_index(total);
+        let mut res = Vec::with_capacity((end - start) as usize);
+        for i in start..end {
+            let contract = self
+                .contract_map
+                .get(&filter_list[i as usize])
                 .expect("not found contract");
             res.push((*contract).clone())
         }

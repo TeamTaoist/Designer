@@ -52,7 +52,7 @@ pub unsafe extern "C" fn handle() {
             file,
             expire,
         } => {
-            state.create_contract(name, signers, file, expire);
+            state.create_contract(name, signers, file, expire, true);
         }
         DeSignerAction::CreateContractWithAgree {
             name,
@@ -83,6 +83,9 @@ pub unsafe extern "C" fn meta_state() -> *mut [i32; 2] {
         }
         StateReq::QueryContractBySigner(param, addr) => {
             StateResponse::Contracts(state.query_contract_by_signer(param, addr))
+        }
+        StateReq::QueryContractBySignerAndStatus(param, addr, statuses) => {
+            StateResponse::Contracts(state.query_contract_by_signer_and_status(param, addr, statuses))
         }
         StateReq::QueryContractById(param) => {
             StateResponse::Contract(state.query_contract_by_id(param))

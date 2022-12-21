@@ -1,5 +1,5 @@
 use crate::page::PageParam;
-use crate::Contract;
+use crate::{Contract, ContractStatus};
 use crate::PageRet;
 use gstd::{prelude::*, ActorId};
 
@@ -9,6 +9,7 @@ use gstd::{prelude::*, ActorId};
 pub enum StateReq {
     QueryContractByCreator(PageParam, ActorId),
     QueryContractBySigner(PageParam, ActorId),
+    QueryContractBySignerAndStatus(PageParam, ActorId, Vec<ContractStatus>),
     QueryContractById(u64),
     Owner(),
     Index(),

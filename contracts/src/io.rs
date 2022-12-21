@@ -54,11 +54,6 @@ pub enum DeSignerEvent {
         digest: DigestAlgo,
         cate: ResourceCate,
     },
-    UploadResource {
-        id: u64,
-        creator: ActorId,
-        digest: DigestAlgo,
-    },
     AgreeOnContract {
         id: u64,
         signer: ActorId,
