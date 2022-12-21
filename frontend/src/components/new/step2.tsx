@@ -145,6 +145,7 @@ interface Iprops{
 interface obj{
     name:string
     address:string
+    decodedAddress:string
 }
 
 
@@ -159,7 +160,8 @@ export default function Step2(props:Iprops){
         if(!account) return;
         let obj ={
             name:"Me",
-            address:account.address
+            address:account.address,
+            decodedAddress:account.decodedAddress
         }
         let arr:obj[] = [];
         arr.push(obj);
@@ -167,17 +169,17 @@ export default function Step2(props:Iprops){
 
     },[])
 
-    useEffect(()=>{
-        let arr=new Array(list.length).fill(false);
-
-        list.map((item,index)=>{
-            arr[index] = isValidAddressPolkadotAddress(item.address);
-        });
-
-        const disabledArr = arr.filter(item=>!item);
-        setDisabled(!!disabledArr.length)
-
-    },[list])
+    // useEffect(()=>{
+    //     let arr=new Array(list.length).fill(false);
+    //
+    //     list.map((item,index)=>{
+    //         arr[index] = isValidAddressPolkadotAddress(item.address);
+    //     });
+    //
+    //     const disabledArr = arr.filter(item=>!item);
+    //     setDisabled(!!disabledArr.length)
+    //
+    // },[list])
 
     const handleNext = () =>{
         checkStep(3)
@@ -186,7 +188,8 @@ export default function Step2(props:Iprops){
     const addNew = () =>{
         let obj ={
             name:"Adding a Participants Address",
-            address:''
+            address:'',
+            decodedAddress:''
         }
         let arr:obj[] = [...list];
         arr.push(obj);
@@ -196,7 +199,8 @@ export default function Step2(props:Iprops){
     const handleInput = (e:ChangeEvent,num:number) =>{
         let arr:obj[] = [...list];
         const {value} = e.target as HTMLInputElement;
-        arr[num].address = value;
+        // arr[num].address = value;
+        arr[num].decodedAddress = value;
         setList(arr);
     }
     const removeItem = (num:number)=>{
@@ -228,11 +232,11 @@ export default function Step2(props:Iprops){
                     <dd>
                         <div className="name">{item.name}</div>
                         {
-                            !index &&<div>{item.address}</div>
+                            !index &&<div>{item.decodedAddress}</div>
                         }
                         {
                             !!index && <InputBox>
-                                <input type="text" placeholder="please fill the address to sign" value={list[index].address} onChange={(e)=>handleInput(e,index)}/>
+                                <input type="text" placeholder="please fill the Address to sign" value={list[index].decodedAddress} onChange={(e)=>handleInput(e,index)}/>
                             </InputBox>
                         }
 
@@ -242,7 +246,8 @@ export default function Step2(props:Iprops){
         </UlBox>
         <LastLine>
             <Wallet onClick={()=>addNew()}>Add a signer</Wallet>
-            <NextBtn onClick={()=>handleNext()} disabled={disabled || list.length<=1}>Next</NextBtn>
+            {/*<NextBtn onClick={()=>handleNext()} disabled={disabled || list.length<=1}>Next</NextBtn>*/}
+            <NextBtn onClick={()=>handleNext()} disabled={disabled}>Next</NextBtn>
         </LastLine>
     </Box>
 }

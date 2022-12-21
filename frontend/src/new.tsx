@@ -14,6 +14,7 @@ const Box = styled.div`
 interface obj{
     name:string
     address:string
+    decodedAddress:string
 }
 
 
@@ -35,7 +36,6 @@ export default function New(){
     const handleList = (arr:obj[]) =>{
         setList(arr)
     }
-
 
     return <div>
         <Layout>

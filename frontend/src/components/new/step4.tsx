@@ -3,7 +3,14 @@ import BgImg from "../../assets/images/bg.png";
 import GroupImg from "../../assets/images/icon_group.svg";
 import PDFimg from "../../assets/images/icon_pdf.svg";
 import MeImg from "../../assets/images/icon_person.svg";
-import CheckImg from "../../assets/images/icon_check.svg";
+import Wait from "../wait";
+
+import {ADDRESS} from "../../consts";
+import {Hex} from "@gear-js/api";
+import {useSendMessage} from "@gear-js/react-hooks";
+import {useEffect, useState} from "react";
+import {useSubstrate} from "../../api/connect";
+import {useNavigate} from "react-router-dom";
 
 const Box = styled.div`
   margin-top: 40px;
@@ -51,6 +58,8 @@ const UlBox = styled.div`
     }
   }
 `
+
+
 const FinishedBox = styled.div`
   
   .progress-count{
@@ -73,6 +82,24 @@ const FinishedBox = styled.div`
   }
 `
 
+const Wallet = styled.div`
+    display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #000;
+  color: #fcca00;
+  padding: 0 20px;
+  border-radius: 4px;
+  border: 2px solid #fcca00;
+  font-family: "Lato-Regular";
+  width: 150px;
+  margin-top: 40px;
+  height: 46px;
+  cursor: pointer;
+  &:hover{
+    opacity: 0.8;
+  }
+`
 const TitleBox = styled.div`
     margin-bottom: 10px;
   font-family: "bold";
@@ -82,6 +109,7 @@ const TitleBox = styled.div`
 interface obj{
     name:string
     address:string
+    decodedAddress:string
 }
 
 interface Iprops{
@@ -90,9 +118,52 @@ interface Iprops{
     fileObj:any
 }
 export default function Step4(props:Iprops){
+    const {state} = useSubstrate();
+    const {iframeList} = state;
+    const navigate = useNavigate();
+
     const {list,fileObj} =props;
+    const [signers,setSigners]= useState<string[]>([]);
+
+    useEffect(()=>{
+        let arr:string[]=[];
+        list.map((item:obj)=>{
+            arr.push(item.decodedAddress);
+        })
+        setSigners(arr);
+    },[list])
+
+    const {metadata} = ADDRESS;
+    const programId = process.env.REACT_APP_PROGRAM_ID as Hex;
+    const sendMessage = useSendMessage(programId, metadata);
+
+    const dateTime = (new Date()).valueOf() + 30 * 24 * 3600 * 1000;
+    console.log(dateTime)
+
+    const payload = {
+        "createContract": {
+            "name": fileObj?.name,
+            "signers":signers,
+            "file": {
+                "digest": {
+                    "sha256": "123"
+                },
+                "url": "cess://123456",
+                "memo": JSON.stringify(iframeList![0])
+            },
+            "expire": dateTime
+        }
+    };
+
+    console.error(payload);
+
+    const reset = () =>{
+        navigate(`/mine`);
+    }
+    const sendReply = () => sendMessage(payload, { onSuccess: reset });
 
     return <Box>
+
         <UlBox>
             {
                 !!fileObj?.name &&
@@ -104,7 +175,8 @@ export default function Step4(props:Iprops){
                 !!fileObj?.name && <div className="w100">
                     <FinishedBox>
                         <div className="progress-count" >
-                            <img src={CheckImg} alt=""/>
+                            {/*<img src={CheckImg} alt=""/>*/}
+                            <Wait />
                         </div>
                     </FinishedBox>
 
@@ -130,7 +202,8 @@ export default function Step4(props:Iprops){
 
                     <FinishedBox>
                         <div className="progress-count" >
-                            <img src={CheckImg} alt=""/>
+                            {/*<img src={CheckImg} alt=""/>*/}
+                            <Wait />
                         </div>
                     </FinishedBox>
                     <dl>
@@ -140,14 +213,14 @@ export default function Step4(props:Iprops){
                         </dt>
                         <dd>
                             <div className="name">{item.name}</div>
-                            <div>{item.address}</div>
+                            <div>{item.decodedAddress}</div>
                         </dd>
                     </dl>
                 </div>))
             }
-
-
-
         </UlBox>
+        <div>
+            <Wallet onClick={()=>sendReply()}>Submit</Wallet>
+        </div>
     </Box>
 }

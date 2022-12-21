@@ -2,6 +2,8 @@ import styled from "styled-components";
 import {useState,useEffect} from "react";
 import {useAccount} from "@gear-js/react-hooks";
 import AddImg from "../assets/images/add.svg";
+import {useSubstrate} from "../api/connect";
+import {ActionType} from "../utils/types";
 
 const Box = styled.div`
   display: flex;
@@ -85,7 +87,7 @@ interface iframeObj{
 }
 
 export default function ViewPdf(props:pdfProps){
-
+  const {dispatch} = useSubstrate();
   const { fileUrl } = props;
   const [sList,setSlist] = useState<signObj[]>([]);
   const [sListIframe,setSListIframe] = useState<iframeObj[]>([]);
@@ -135,6 +137,8 @@ export default function ViewPdf(props:pdfProps){
 
   }, []);
 
+
+
   useEffect(() => {
     const newList = sListIframe.map(item => {
       return {
@@ -143,6 +147,7 @@ export default function ViewPdf(props:pdfProps){
         saveAt: new Date().getTime()
       }
     });
+    dispatch({ type: ActionType.SET_IFRAME, payload: [...newList]});
     setSlist([...newList]);
   }, [sListIframe.length]);
 
