@@ -82,6 +82,62 @@ fn query_contract_by_id() {
 }
 
 #[test]
+fn query_contract_empty() {
+    let sys = System::new();
+    let designer = common_init(&sys, USERS[0]);
+
+    sys.mint_to(USERS[0], 1_000_000_000);
+    let res: Result<StateResponse> = designer.meta_state(StateReq::QueryContractByCreator(
+        PageParam {
+            page_num: 1,
+            page_size: 1,
+        },
+        USERS[0].into(),
+    ));
+    match res.unwrap() {
+        StateResponse::Contracts(ret) => {
+            assert_eq!(ret.pages, 0);
+        }
+        _ => {
+            panic!("wrong")
+        }
+    }
+
+    let res: Result<StateResponse> = designer.meta_state(StateReq::QueryContractBySigner(
+        PageParam {
+            page_num: 2,
+            page_size: 1,
+        },
+        USERS[0].into(),
+    ));
+    match res.unwrap() {
+        StateResponse::Contracts(ret) => {
+            assert_eq!(ret.pages, 0);
+        }
+        _ => {
+            panic!("wrong")
+        }
+    }
+
+    let res: Result<StateResponse> = designer.meta_state(StateReq::QueryContractBySignerAndStatus(
+        PageParam {
+            page_num: 2,
+            page_size: 1,
+        },
+        USERS[0].into(),
+        vec![ContractStatus::Created, ContractStatus::Signing],
+    ));
+    match res.unwrap() {
+        StateResponse::Contracts(ret) => {
+            assert_eq!(ret.pages, 0);
+        }
+        _ => {
+            panic!("wrong")
+        }
+    }
+}
+
+#[test]
 fn query_contract_by_creator() {
     let sys = System::new();
     let designer = common_init(&sys, USERS[0]);
@@ -276,6 +332,11 @@ fn query_contract_by_signer_and_status() {
                 url: "cess://xx".to_string(),
                 memo: Some("important!!".to_string()),
             },
+            resource: Some(ResourceParam {
+                digest: DigestAlgo::SHA256("123".to_string()),
+                url: "cess://xx".to_string(),
+                memo: Some("123".to_string()),
+            }),
             expire: sys.block_timestamp() + 1000,
         },
     );
@@ -293,6 +354,11 @@ fn query_contract_by_signer_and_status() {
                 url: "cess://xx".to_string(),
                 memo: Some("important!!".to_string()),
             },
+            resource: Some(ResourceParam {
+                digest: DigestAlgo::SHA256("123".to_string()),
+                url: "cess://xx".to_string(),
+                memo: Some("123".to_string()),
+            }),
             expire: sys.block_timestamp() + 1000,
         },
     );
@@ -310,6 +376,11 @@ fn query_contract_by_signer_and_status() {
                 url: "cess://xx".to_string(),
                 memo: Some("important!!".to_string()),
             },
+            resource: Some(ResourceParam {
+                digest: DigestAlgo::SHA256("123".to_string()),
+                url: "cess://xx".to_string(),
+                memo: Some("123".to_string()),
+            }),
             expire: sys.block_timestamp() + 1000,
         },
     );
@@ -336,7 +407,7 @@ fn query_contract_by_signer_and_status() {
             page_size: 1,
         },
         USERS[0].into(),
-        vec![ContractStatus::Created, ContractStatus::Singing],
+        vec![ContractStatus::Created, ContractStatus::Signing],
     ));
     match res.unwrap() {
         StateResponse::Contracts(ret) => {
@@ -357,7 +428,7 @@ fn query_contract_by_signer_and_status() {
             page_size: 1,
         },
         USERS[0].into(),
-        vec![ContractStatus::Created, ContractStatus::Singing],
+        vec![ContractStatus::Created, ContractStatus::Signing],
     ));
     match res.unwrap() {
         StateResponse::Contracts(ret) => {

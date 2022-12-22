@@ -15,6 +15,7 @@ pub enum DeSignerAction {
         name: String,
         signers: Vec<ActorId>,
         file: ResourceParam,
+        resource: Option<ResourceParam>,
         expire: u64,
     },
     UploadAttachment {

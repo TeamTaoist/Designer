@@ -184,6 +184,11 @@ fn creat_contract_with_agree() {
                 url: "cess://xx".to_string(),
                 memo: Some("123".to_string()),
             },
+            resource: Some(ResourceParam {
+                digest: DigestAlgo::SHA256("123".to_string()),
+                url: "cess://xx".to_string(),
+                memo: Some("123".to_string()),
+            }),
             expire: sys.block_timestamp() + 1000,
         },
     );

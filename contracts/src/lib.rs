@@ -59,7 +59,8 @@ pub unsafe extern "C" fn handle() {
             signers,
             file,
             expire,
-        } => state.create_contract_with_agree(name, signers, file, expire),
+            resource,
+        } => state.create_contract_with_agree(name, signers, file, expire, resource),
         DeSignerAction::UploadAttachment { id, attachment } => {
             state.upload_attachment(id, attachment)
         }

@@ -52,7 +52,7 @@ pub struct Resource {
 #[scale_info(crate = gstd::scale_info)]
 pub enum ContractStatus {
     Created,
-    Singing,
+    Signing,
     Sealed,
     Abrogated,
 }
@@ -170,9 +170,10 @@ impl DeSignerState {
         signers: Vec<ActorId>,
         file: ResourceParam,
         expire: u64,
+        resource: Option<ResourceParam>,
     ) {
         let id = self.create_contract(name, signers, file, expire, false);
-        self.agree_on_contract(id, None);
+        self.agree_on_contract(id, resource);
     }
 
     pub fn upload_attachment(&mut self, id: u64, res: ResourceParam) {
@@ -267,9 +268,9 @@ impl DeSignerState {
 
         // trigger signing when start sign
         if contract.status == ContractStatus::Created {
-            contract.status = ContractStatus::Singing;
+            contract.status = ContractStatus::Signing;
         }
-        if contract.status != ContractStatus::Singing {
+        if contract.status != ContractStatus::Signing {
             panic!("not in correct status")
         }
 
@@ -319,7 +320,7 @@ impl DeSignerState {
             Entry::Occupied(entry) => entry.into_mut(),
             Entry::Vacant(_) => panic!("not found contract"),
         };
-        if contract.status != ContractStatus::Created && contract.status != ContractStatus::Singing
+        if contract.status != ContractStatus::Created && contract.status != ContractStatus::Signing
         {
             panic!("not in correct status")
         }
@@ -358,39 +359,39 @@ impl DeSignerState {
     }
 
     pub fn query_contract_by_creator(&self, param: PageParam, addr: ActorId) -> PageRet<Contract> {
-        let id_list = self
-            .contract_map_by_creator
-            .get(&addr)
-            .expect("not found contracts");
-        let total = id_list.len() as u64;
-        let (start, end) = param.find_index(total);
-        let mut res = Vec::with_capacity((end - start) as usize);
-        for i in start..end {
-            let contract = self
-                .contract_map
-                .get(&id_list[i as usize])
-                .expect("not found contract");
-            res.push((*contract).clone())
+        if let Some(id_list) = self.contract_map_by_creator.get(&addr) {
+            let total = id_list.len() as u64;
+            let (start, end) = param.find_index(total);
+            let mut res = Vec::with_capacity((end - start) as usize);
+            for i in start..end {
+                let contract = self
+                    .contract_map
+                    .get(&id_list[i as usize])
+                    .expect("not found contract");
+                res.push((*contract).clone())
+            }
+            PageRet::new(param, total, res)
+        } else {
+            PageRet::new(param, 0, Vec::new())
         }
-        PageRet::new(param, total, res)
     }
 
     pub fn query_contract_by_signer(&self, param: PageParam, addr: ActorId) -> PageRet<Contract> {
-        let id_list = self
-            .contract_map_by_signer
-            .get(&addr)
-            .expect("not found contracts");
-        let total = id_list.len() as u64;
-        let (start, end) = param.find_index(total);
-        let mut res = Vec::with_capacity((end - start) as usize);
-        for i in start..end {
-            let contract = self
-                .contract_map
-                .get(&id_list[i as usize])
-                .expect("not found contract");
-            res.push((*contract).clone())
+        if let Some(id_list) = self.contract_map_by_signer.get(&addr) {
+            let total = id_list.len() as u64;
+            let (start, end) = param.find_index(total);
+            let mut res = Vec::with_capacity((end - start) as usize);
+            for i in start..end {
+                let contract = self
+                    .contract_map
+                    .get(&id_list[i as usize])
+                    .expect("not found contract");
+                res.push((*contract).clone())
+            }
+            PageRet::new(param, total, res)
+        } else {
+            PageRet::new(param, 0, Vec::new())
         }
-        PageRet::new(param, total, res)
     }
     pub fn query_contract_by_signer_and_status(
         &self,
@@ -398,31 +399,31 @@ impl DeSignerState {
         addr: ActorId,
         statuses: Vec<ContractStatus>,
     ) -> PageRet<Contract> {
-        let id_list = self
-            .contract_map_by_signer
-            .get(&addr)
-            .expect("not found contracts");
-        let mut filter_list = Vec::with_capacity(id_list.len());
-        for i in id_list.iter().copied() {
-            let contract = self
-                .contract_map
-                .get(&id_list[i as usize])
-                .expect("not found contract");
-            if statuses.contains(&contract.status) {
-                filter_list.push(id_list[i as usize]);
+        if let Some(id_list) = self.contract_map_by_signer.get(&addr) {
+            let mut filter_list = Vec::with_capacity(id_list.len());
+            for i in id_list.iter().copied() {
+                let contract = self
+                    .contract_map
+                    .get(&id_list[i as usize])
+                    .expect("not found contract");
+                if statuses.contains(&contract.status) {
+                    filter_list.push(id_list[i as usize]);
+                }
             }
+            let total = filter_list.len() as u64;
+            let (start, end) = param.find_index(total);
+            let mut res = Vec::with_capacity((end - start) as usize);
+            for i in start..end {
+                let contract = self
+                    .contract_map
+                    .get(&filter_list[i as usize])
+                    .expect("not found contract");
+                res.push((*contract).clone())
+            }
+            PageRet::new(param, total, res)
+        } else {
+            PageRet::new(param, 0, Vec::new())
         }
-        let total = filter_list.len() as u64;
-        let (start, end) = param.find_index(total);
-        let mut res = Vec::with_capacity((end - start) as usize);
-        for i in start..end {
-            let contract = self
-                .contract_map
-                .get(&filter_list[i as usize])
-                .expect("not found contract");
-            res.push((*contract).clone())
-        }
-        PageRet::new(param, total, res)
     }
 
     pub fn query_contract_by_id(&self, param: u64) -> Contract {
