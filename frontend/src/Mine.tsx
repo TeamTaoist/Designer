@@ -106,6 +106,7 @@ const LineBox = styled.div`
     .finishedImg img{
       width: 20px;
       margin-left: 10px;
+      margin-top: -6px;
     }
   }
   .tit{
@@ -114,9 +115,6 @@ const LineBox = styled.div`
   .rhtD{
     display: flex;
     align-items: center;
-    .addr{
-      padding-bottom: 10px;
-    }
 
   }
 `
@@ -227,6 +225,7 @@ export default function Mine(){
         setPageCount(pages);
         setTotal(total)
         setList(data)
+        console.log(data)
     },[(stateAll as any).state,current]);
 
 
@@ -282,6 +281,7 @@ export default function Mine(){
                                         <div className="addrBox">
                                             <div className="tit">Creator</div>
                                             <div className="addr">{publicJs.AddresstoShow(item.creator)}</div>
+                                            <div className="finishedImg"><img src={Finished} alt=""/></div>
                                         </div>
                                         <div className="addrBox">
                                             <div className="tit">Signers</div>
@@ -293,11 +293,11 @@ export default function Mine(){
                                                             <div className="addr">{publicJs.AddresstoShow(Th)}</div>
                                                         }
                                                         {
-
+                                                            !!item.agreeOn[Th] && Th !== item.creator && <div className="finishedImg">
+                                                                <img src={Finished} alt=""/>
+                                                            </div>
                                                         }
-                                                        {/*<div className="finishedImg">*/}
-                                                        {/*    <img src={Finished} alt=""/>*/}
-                                                        {/*</div>*/}
+
                                                     </div> )
                                                 }
                                             </div>

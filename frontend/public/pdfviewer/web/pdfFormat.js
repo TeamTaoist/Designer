@@ -81,7 +81,7 @@ function PdfFormat(){
 
     window.showHaveSignedList = function (page) {
         var parentTimer = setInterval(() => {
-            if (window.haveSignedList.length) {
+            if (window.haveSignedList?.length) {
                 clearInterval(parentTimer);
                 var haveSignedList = window.haveSignedList || [];
                 var haveShowPageList = window.haveShowPageList || '';

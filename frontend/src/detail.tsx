@@ -23,11 +23,15 @@ const MaskBox = styled.div`
 const Box = styled.div`
   height: 100vh;
   padding: 40px;
+  box-sizing: border-box;
 `
+
 export default function Detail(){
     const [show, setShow] = useState(true);
     const [agreeList,setAgreeList] = useState<any[]>([]);
-    const { id} = useParams();
+    const [contract,setContract] = useState<any[]>([]);
+
+    const {id} = useParams();
     const payload ={
         "QueryContractById":id
     }
@@ -43,11 +47,11 @@ export default function Detail(){
         console.log((stateAll as any).state.Contract)
         const str = JSON.parse((stateAll as any).state!.Contract.file.memo)
         setAgreeList([str])
+        setContract((stateAll as any).state!.Contract)
 
     },[stateAll.state])
 
      const [ fileUrl,setFileUrl] = useState('');
-
 
 
     return <div>
@@ -57,8 +61,9 @@ export default function Detail(){
         <Layout>
             <Box>
                 {/*<ViewPdf fileUrl={fileUrl}/>*/}
-                <ViewPdf fileUrl={pdfdemo} agreeList={agreeList}/>
+                <ViewPdf fileUrl={pdfdemo} agreeList={agreeList} showBtn={true} id={id} contract={contract} />
             </Box>
+
         </Layout>
     </div>
 }

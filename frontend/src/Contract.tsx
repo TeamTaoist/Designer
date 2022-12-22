@@ -13,6 +13,7 @@ import publicJs from "./utils/publicJs";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import CopyImg from "./assets/images/icon-copyWhite.svg";
 import {ApiLoader} from "./components";
+import Finished from "./assets/images/icon_check_handwritten.svg";
 
 const Box = styled.div`
     padding:20px 40px 40px;
@@ -195,6 +196,7 @@ const LastLine = styled.div`
   height: 40px;
   cursor: pointer;
   width: 100px;
+  white-space: nowrap;
 `
 const PageLine = styled.div`
   width: 100%;
@@ -316,6 +318,7 @@ export default function Contract(){
         setShow(true);
         if(!(stateAll as any).state || !(stateAll as any).state!.Contracts)  return;
         const {total,pages,pageNum,data} = (stateAll as any).state.Contracts;
+        console.table(data)
         if(pageNum == current){
             setShow(false);
         }else{
@@ -347,6 +350,15 @@ export default function Contract(){
         setTimeout(()=>{
             setShowTips2(false)
         },1000)
+    }
+    const handleWait = (obj:any) =>{
+
+        let res = false;
+        obj.signers.map((item:string)=>{
+            res = !!obj.agreeOn[item]
+        })
+
+        return res
     }
 
     return  <div>
@@ -395,18 +407,22 @@ export default function Contract(){
                                             <div className="liBox">
                                                 <div className="tit">
                                                     <div className="icon">
-                                                        <Wait />
+                                                        {
+                                                          !handleWait(item) &&<Wait />
+                                                        }
+                                                        {
+                                                          handleWait(item) && <img src={CheckImg} alt=""/>
+                                                        }
+
                                                     </div>
                                                     <span>Signers</span>
                                                 </div>
                                                 <ContentBox >
-
                                                     {
                                                         item.signers.map((Th:string,index:number)=>
                                                             <div key={`signers_${index}`}>{
                                                                 Th!==item.creator && <div className="addr">{publicJs.AddresstoShow(Th)}</div>
                                                             }
-
                                                             </div>
                                                             )
                                                     }
@@ -443,7 +459,7 @@ export default function Contract(){
                                             <div className="top">Created: </div><div>{formatTime(item.createAt)}</div>
                                         </div>
                                         <LastLine onClick={()=>handleView(item.id)}>
-                                            {current?'View':'Sign Now'}
+                                            {currentNav?'View':'Sign Now'}
                                         </LastLine>
                                     </RhtBox>
                                 </dd>

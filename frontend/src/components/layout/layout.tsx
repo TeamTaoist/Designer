@@ -6,6 +6,7 @@ import Left from "./left";
 import DownImg from "../../assets/images/icon_down_arrow_outline.svg";
 import CopyImg from "../../assets/images/icon-copy.svg";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import {useNavigate} from "react-router-dom";
 
 const Box = styled.div`
     display: flex;
@@ -53,6 +54,7 @@ const Wallet = styled.div`
   font-family: "Lato-Light";
   height: 40px;
   cursor: pointer;
+  margin-left: 10px;
 `
 
 const SelectedBox = styled.div`
@@ -99,7 +101,7 @@ const CopiedBtn = styled.div`
   cursor: pointer;
   background: #fcca00;
   border-radius: 4px;
-  margin:0 10px;
+  margin-left:10px;
   position: relative;
   img{
     width: 24px;
@@ -118,6 +120,7 @@ interface Props {
 
 export default function Layout(props:Props){
     const { children} = props;
+    const navigate = useNavigate();
     const [ show,setShow] = useState(false);
     const [ showBox,setShowBox] = useState(false);
     const [ showTips,setShowTips] = useState(false);
@@ -140,7 +143,7 @@ export default function Layout(props:Props){
     const handleLogout =() =>{
         logout()
         localStorage.removeItem('account');
-
+        navigate(`/`)
     }
     const handleCopy = () =>{
         setShowTips(true)

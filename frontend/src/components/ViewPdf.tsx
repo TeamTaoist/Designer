@@ -1,11 +1,14 @@
 import styled from "styled-components";
 import {useState,useEffect} from "react";
-import {useAccount} from "@gear-js/react-hooks";
+import {useAccount, useSendMessage} from "@gear-js/react-hooks";
 import AddImg from "../assets/images/add.svg";
 import {useSubstrate} from "../api/connect";
 import {ActionType} from "../utils/types";
 import FinishedImg from "../assets/images/hand.svg";
 import PenImg from "../assets/images/icon_pen.svg";
+import {ADDRESS} from "../consts";
+import {Hex} from "@gear-js/api";
+import {useNavigate} from "react-router-dom";
 
 const Box = styled.div`
   display: flex;
@@ -27,6 +30,11 @@ const Rht = styled.div`
   background: #f1f2f7;
   box-sizing: border-box;
   padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch;
+  margin-bottom: 6px;
 `
 
 const SignBox = styled.div`
@@ -99,9 +107,30 @@ const After = styled.ul`
     font-size: 12px;
   }
 `
+
+const SubmitBox = styled.div`
+  border-radius: 4px;
+  height: 54px;
+  width: 100%;
+  border: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  //background: linear-gradient(0deg,#3198f9 , #00c1ff);
+  background: #3198f9;
+  margin-bottom: 40px;
+  color: #fff;
+`
+
+
+
 interface pdfProps {
   fileUrl:string
   agreeList?:any
+  showBtn?:boolean
+  id?:string
+  contract?:any
 }
 interface signObj{
   creator?:string
@@ -122,11 +151,10 @@ interface iframeObj{
 
 export default function ViewPdf(props:pdfProps){
   const {dispatch} = useSubstrate();
-  const { fileUrl,agreeList } = props;
+  const navigate = useNavigate();
+  const { fileUrl,agreeList,showBtn,id,contract } = props;
   const [sList,setSlist] = useState<signObj[]>([]);
   const [sListIframe,setSListIframe] = useState<iframeObj[]>([]);
-  const [finishList,setFinishList] = useState<iframeObj[]>([]);
-  // const [agreeList,setAgreeList] = useState([]);
   const { account } = useAccount();
 
   const handleSign = () =>{
@@ -135,23 +163,6 @@ export default function ViewPdf(props:pdfProps){
 
   useEffect(() => {
     const getResourcesInfo =  () => {
-      // let newResources = [];
-
-      // if (agreeList.resources) {
-      //   for(let k = 0; k < agreeList.resources.length; k++) {
-      //     const item = agreeList.resources[k]
-      //     const sourceKey = item.url.slice(item.url.lastIndexOf('/') + 1)
-      //     // const fileResult = await actionsApp.fleekGet(sourceKey)
-      //     const signInfo = String.fromCharCode.apply(null, fileResult.data)
-      //     newResources.push({
-      //       ...item,
-      //       ...(JSON.parse(signInfo)[0] as any)
-      //     })
-      //   }
-      // }
-      //
-      // setSlist(newResources);
-      // console.error(agreeList);
       (document.querySelector('#iframe') as any).contentWindow.haveSignedList = agreeList
     }
     getResourcesInfo()
@@ -164,28 +175,13 @@ export default function ViewPdf(props:pdfProps){
       setSListIframe(arr)
     };
 
-    (window as any).getFinishList = function (e:iframeObj[]) {
-      let arr =[...e]
-      setFinishList(arr)
-    }
-    // const timer = setInterval(() => {
-    //   (window as any).getSignatureList = function (e:iframeObj[]) {
-    //     let arr =[...e]
-    //     setSListIframe(arr)
-    //
-    //   }
-    // }, 500)
-    // return () => clearInterval(timer)
-
   }, []);
-
-
 
   useEffect(() => {
     const newList = sListIframe.map(item => {
       return {
         ...item,
-        creator: account?.address,
+        creator: account?.decodedAddress,
         saveAt: new Date().getTime()
       }
     });
@@ -213,35 +209,71 @@ export default function ViewPdf(props:pdfProps){
     (document.querySelector('#iframe') as any).contentWindow.gotoPageFrom(num)
   }
 
+  const {metadata} = ADDRESS;
+  const programId = process.env.REACT_APP_PROGRAM_ID as Hex;
+  const sendMessage = useSendMessage(programId, metadata);
+
+  console.error(contract)
+  let sig = JSON.stringify(sList[sList.length-1]);
+
+  const payload = {
+        "agreeOnContract": {
+          "id": id,
+          "resource": {
+            "digest": {
+              "sha256": contract?.file?.digest.sha256
+            },
+            "url": contract?.file?.url,
+            "memo":sig
+          }
+        }
+      }
+  ;
+
+  const reset = () =>{
+    // navigate(`/mine`);
+    console.log("============")
+  }
+
+  const handleSubmit = () => sendMessage(payload, { onSuccess: reset })
+
   return <Box>
     <IframeBox>
       <iframe id="iframe"   src={`/pdfviewer/web/viewer.html?file=${fileUrl}`} />
     </IframeBox>
     <Rht>
-      <SignBox onClick={() => {handleSign()}}>
-        <img src={AddImg} alt=""/>
-        <span>Add My Signatures</span></SignBox>
-      <After>
-        {
-          agreeList.map((item:iframeObj,index:number)=>(  <li key={index} onClick={()=>handleTo(item.page)}>
-            <div className="tit"><span>Page</span> {item.page}</div>
-            <div className="addr">{AddresstoShow(item?.creator)}</div>
-            <div className="time">{FormatDate(item.saveAt)}</div>
-            <div className="time">{item.base64}</div>
-          </li>))
-        }
-      </After>
+      <div>
+        <SignBox onClick={() => {handleSign()}}>
+          <img src={AddImg} alt=""/>
+          <span>Add My Signatures</span></SignBox>
+        <After>
+          {
+            agreeList?.map((item:iframeObj,index:number)=>(  <li key={index} onClick={()=>handleTo(item.page)}>
+              <div className="tit"><span>Page</span> {item.page}</div>
+              <div className="addr">{AddresstoShow(item?.creator)}</div>
+              <div className="time">{FormatDate(item.saveAt)}</div>
+              <div className="time">{item.base64}</div>
+            </li>))
+          }
+        </After>
         <UlBox>
+          {
+            sList?.map((item,index)=>(  <li key={index} onClick={()=>handleTo(item.page)}>
+              <div className="tit"><span>Page</span> {item.page}</div>
+              <div className="addr">{AddresstoShow(item?.creator)}</div>
+              <div className="time">{FormatDate(item.saveAt)}</div>
+              <div className="time">{item.base64}</div>
+            </li>))
+          }
+        </UlBox>
+      </div>
+
+      <div>
         {
-          sList.map((item,index)=>(  <li key={index} onClick={()=>handleTo(item.page)}>
-            <div className="tit"><span>Page</span> {item.page}</div>
-            <div className="addr">{AddresstoShow(item?.creator)}</div>
-            <div className="time">{FormatDate(item.saveAt)}</div>
-            <div className="time">{item.base64}</div>
-          </li>))
+          !!sList?.length && showBtn &&<SubmitBox onClick={()=>handleSubmit()}>Submit</SubmitBox>
         }
 
-      </UlBox>
+      </div>
     </Rht>
   </Box>
 }
