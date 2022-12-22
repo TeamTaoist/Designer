@@ -4,6 +4,8 @@ import {useAccount} from "@gear-js/react-hooks";
 import AddImg from "../assets/images/add.svg";
 import {useSubstrate} from "../api/connect";
 import {ActionType} from "../utils/types";
+import FinishedImg from "../assets/images/hand.svg";
+import PenImg from "../assets/images/icon_pen.svg";
 
 const Box = styled.div`
   display: flex;
@@ -52,7 +54,36 @@ const UlBox = styled.ul`
     border: 1px dashed #3198f9;
     padding: 20px;
     cursor: pointer;
-    background: linear-gradient(120deg,#3198f910 , #00c1ff30);
+    //background: linear-gradient(120deg,#3198f910 , #00c1ff30) ;
+    background:#3198f910 url(${PenImg}) no-repeat 90% center;
+    background-size: 60px;
+    margin-bottom: 20px;
+  }
+  .tit{
+    font-size: 18px;
+    font-family: "bold";
+  }
+  .addr{
+    font-size: 14px;
+  }
+  .time{
+    opacity: 0.5;
+    padding-top: 10px;
+    font-size: 12px;
+  }
+`
+
+const After = styled.ul`
+
+  li{
+    border-radius: 4px;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px dashed #ccc;
+    padding: 20px;
+    cursor: pointer;
+    background: #eee url(${FinishedImg}) no-repeat 90% center;
+    background-size: 50px;
     margin-bottom: 20px;
   }
   .tit{
@@ -70,6 +101,7 @@ const UlBox = styled.ul`
 `
 interface pdfProps {
   fileUrl:string
+  agreeList?:any
 }
 interface signObj{
   creator?:string
@@ -81,6 +113,8 @@ interface signObj{
 }
 interface iframeObj{
   base64:string
+  creator?:string
+  saveAt?:number
   left:number
   page:number
   top:number
@@ -88,52 +122,60 @@ interface iframeObj{
 
 export default function ViewPdf(props:pdfProps){
   const {dispatch} = useSubstrate();
-  const { fileUrl } = props;
+  const { fileUrl,agreeList } = props;
   const [sList,setSlist] = useState<signObj[]>([]);
   const [sListIframe,setSListIframe] = useState<iframeObj[]>([]);
+  const [finishList,setFinishList] = useState<iframeObj[]>([]);
   // const [agreeList,setAgreeList] = useState([]);
   const { account } = useAccount();
 
   const handleSign = () =>{
-    (document.querySelector('#iframe') as any).contentWindow.showSignature()
+    (document.querySelector('#iframe') as any).contentWindow.displaySignature()
   }
 
-  // useEffect(() => {
-  //   const getResourcesInfo = async () => {
-  //     const newResources = []
-  //     if (agreeList.resources) {
-  //       for(let k = 0; k < agreeList.resources.length; k++) {
-  //         const item = agreeList.resources[k]
-  //         const sourceKey = item.url.slice(item.url.lastIndexOf('/') + 1)
-  //         // const fileResult = await actionsApp.fleekGet(sourceKey)
-  //         const signInfo = String.fromCharCode.apply(null, fileResult.data)
-  //         newResources.push({
-  //           ...item,
-  //           ...(JSON.parse(signInfo)[0] as any)
-  //         })
-  //       }
-  //     }
-  //
-  //     setSlist(newResources);
-  //     console.log(newResources);
-  //     (document.querySelector('#iframe') as any).contentWindow.haveSignedList = newResources
-  //   }
-  //   getResourcesInfo()
-  // }, [agreeList])
+  useEffect(() => {
+    const getResourcesInfo =  () => {
+      // let newResources = [];
+
+      // if (agreeList.resources) {
+      //   for(let k = 0; k < agreeList.resources.length; k++) {
+      //     const item = agreeList.resources[k]
+      //     const sourceKey = item.url.slice(item.url.lastIndexOf('/') + 1)
+      //     // const fileResult = await actionsApp.fleekGet(sourceKey)
+      //     const signInfo = String.fromCharCode.apply(null, fileResult.data)
+      //     newResources.push({
+      //       ...item,
+      //       ...(JSON.parse(signInfo)[0] as any)
+      //     })
+      //   }
+      // }
+      //
+      // setSlist(newResources);
+      // console.error(agreeList);
+      (document.querySelector('#iframe') as any).contentWindow.haveSignedList = agreeList
+    }
+    getResourcesInfo()
+  }, [agreeList])
 
 
   useEffect(() => {
     (window as any).getSignatureList = function (e:iframeObj[]) {
       let arr =[...e]
       setSListIframe(arr)
+    };
+
+    (window as any).getFinishList = function (e:iframeObj[]) {
+      let arr =[...e]
+      setFinishList(arr)
     }
-    const timer = setInterval(() => {
-      (window as any).getSignatureList = function (e:iframeObj[]) {
-        let arr =[...e]
-        setSListIframe(arr)
-      }
-    }, 500)
-    return () => clearInterval(timer)
+    // const timer = setInterval(() => {
+    //   (window as any).getSignatureList = function (e:iframeObj[]) {
+    //     let arr =[...e]
+    //     setSListIframe(arr)
+    //
+    //   }
+    // }, 500)
+    // return () => clearInterval(timer)
 
   }, []);
 
@@ -179,12 +221,23 @@ export default function ViewPdf(props:pdfProps){
       <SignBox onClick={() => {handleSign()}}>
         <img src={AddImg} alt=""/>
         <span>Add My Signatures</span></SignBox>
-      <UlBox>
+      <After>
+        {
+          agreeList.map((item:iframeObj,index:number)=>(  <li key={index} onClick={()=>handleTo(item.page)}>
+            <div className="tit"><span>Page</span> {item.page}</div>
+            <div className="addr">{AddresstoShow(item?.creator)}</div>
+            <div className="time">{FormatDate(item.saveAt)}</div>
+            <div className="time">{item.base64}</div>
+          </li>))
+        }
+      </After>
+        <UlBox>
         {
           sList.map((item,index)=>(  <li key={index} onClick={()=>handleTo(item.page)}>
             <div className="tit"><span>Page</span> {item.page}</div>
             <div className="addr">{AddresstoShow(item?.creator)}</div>
             <div className="time">{FormatDate(item.saveAt)}</div>
+            <div className="time">{item.base64}</div>
           </li>))
         }
 

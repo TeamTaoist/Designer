@@ -91,6 +91,7 @@ const UlBox = styled.ul`
     padding-top: 10px;
     opacity: 0.5;
     span{
+      font-family: "Lato-Light";
       padding-left: 15px;
     }
   }
@@ -113,7 +114,10 @@ const LineBox = styled.div`
   .rhtD{
     display: flex;
     align-items: center;
-    padding-bottom: 10px;
+    .addr{
+      padding-bottom: 10px;
+    }
+
   }
 `
 const Operation = styled.ul`
@@ -283,8 +287,11 @@ export default function Mine(){
                                             <div className="tit">Signers</div>
                                             <div >
                                                 {
-                                                    item.signers.map((item:string,index:number)=><div className="rhtD" key={`signers_${index}`}>
-                                                        <div className="addr">{publicJs.AddresstoShow(item)}</div>
+                                                    item.signers.map((Th:string,index:number)=><div className="rhtD" key={`signers_${index}`}>
+                                                        {
+                                                            Th !== item.creator &&
+                                                            <div className="addr">{publicJs.AddresstoShow(Th)}</div>
+                                                        }
                                                         {
 
                                                         }
