@@ -64,11 +64,11 @@ const SelectedBox = styled.div`
   padding:10px 20px;
  width: 150px;
   position: relative;
+  cursor: pointer;
   span{
     display: inline-block;
     width: 100%;
-    cursor: pointer;
-    min-height: 16px;
+    min-height: 100%;
   }
   ul{
     position: absolute;
@@ -162,7 +162,7 @@ export default function Layout(props:Props){
                     (showBox||account) &&<SelectedBox>
                         <span onClick={()=>handleShow()}>{account?.meta.name}</span>
                         {
-                            show&& <ul>
+                            !account&&show&& <ul>
                                 {
                                     accounts?.map((item,index)=>( <li onClick={()=>handleSelected(item)} key={index}>{item.meta.name}</li>))
                                 }
