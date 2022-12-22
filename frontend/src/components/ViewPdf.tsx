@@ -213,15 +213,15 @@ export default function ViewPdf(props:pdfProps){
   const programId = process.env.REACT_APP_PROGRAM_ID as Hex;
   const sendMessage = useSendMessage(programId, metadata);
 
-  console.error(contract)
   let sig = JSON.stringify(sList[sList.length-1]);
+
 
   const payload = {
         "agreeOnContract": {
           "id": id,
           "resource": {
             "digest": {
-              "sha256": contract?.file?.digest.sha256
+              "SHA256": contract?.file?.digest.SHA256
             },
             "url": contract?.file?.url,
             "memo":sig
@@ -231,21 +231,31 @@ export default function ViewPdf(props:pdfProps){
   ;
 
   const reset = () =>{
-    // navigate(`/mine`);
-    console.log("============")
+    window.location.reload();
   }
 
   const handleSubmit = () => sendMessage(payload, { onSuccess: reset })
 
+  const handleShowBtn = () =>{
+    let display = true;
+    // const inArr =
+
+    return display;
+  }
+
   return <Box>
     <IframeBox>
-      <iframe id="iframe"   src={`/pdfviewer/web/viewer.html?file=${fileUrl}`} />
+      <iframe id="iframe" src={`/pdfviewer/web/viewer.html?file=${fileUrl}`} />
     </IframeBox>
     <Rht>
       <div>
-        <SignBox onClick={() => {handleSign()}}>
-          <img src={AddImg} alt=""/>
-          <span>Add My Signatures</span></SignBox>
+        {
+          handleShowBtn() &&  <SignBox onClick={() => {handleSign()}}>
+            <img src={AddImg} alt=""/>
+            <span>Add My Signatures</span>
+          </SignBox>
+        }
+
         <After>
           {
             agreeList?.map((item:iframeObj,index:number)=>(  <li key={index} onClick={()=>handleTo(item.page)}>

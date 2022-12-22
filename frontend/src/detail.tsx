@@ -39,14 +39,28 @@ export default function Detail(){
     const programId = process.env.REACT_APP_PROGRAM_ID as Hex;
     const stateAll = useReadState(programId, metadata, payload);
 
-
     useEffect(()=>{
         if(!stateAll.state)return;
-        setShow(false);
 
-        console.log((stateAll as any).state.Contract)
-        const str = JSON.parse((stateAll as any).state!.Contract.file.memo)
-        setAgreeList([str])
+        setShow(false);
+        let all = (stateAll as any).state.Contract.otherRes;
+        let arr=[];
+        for(let key in all){
+            let item = all[key][0];
+            if(item.cate === "SignMetadata"){
+                const{creatAt,creator} = item;
+                let info = JSON.parse(item.memo);
+                let str = creatAt.replace(/,/g, "");
+                arr.push(
+                    {
+                        ...info,
+                        saveAt:Number(str),
+                        creator
+                    }
+                )
+            }
+        }
+        setAgreeList(arr)
         setContract((stateAll as any).state!.Contract)
 
     },[stateAll.state])

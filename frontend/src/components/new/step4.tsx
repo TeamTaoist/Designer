@@ -141,7 +141,7 @@ export default function Step4(props:Iprops){
     console.log(dateTime)
 
     const payload = {
-        "createContract": {
+        "createContractWithAgree": {
             "name": fileObj?.name,
             "signers":signers,
             "file": {
@@ -149,8 +149,16 @@ export default function Step4(props:Iprops){
                     "sha256": "123"
                 },
                 "url": "cess://123456",
+                "memo":null
+            },
+            "resource": {
+                "digest": {
+                    "sha256": "-"
+                },
+                "url": "-",
                 "memo": JSON.stringify(iframeList![0])
             },
+
             "expire": dateTime
         }
     };

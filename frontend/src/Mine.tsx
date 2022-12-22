@@ -12,6 +12,7 @@ import {Hex} from "@gear-js/api";
 import {useAccount, useReadState} from "@gear-js/react-hooks";
 import {ApiLoader} from "./components";
 import publicJs from "./utils/publicJs";
+import ContractImg from "./assets/images/icon_contract.svg";
 
 const MaskBox = styled.div`
     width: 100vw;
@@ -186,6 +187,13 @@ const PageLine = styled.div`
     }
   }
 `
+const NoEmpty = styled.div`
+    width: 100%;
+  height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
 
 export default function Mine(){
     const navigate = useNavigate();
@@ -254,7 +262,10 @@ export default function Mine(){
                     </TabBox>
                     <UlBox>
                         {
-                            list.map((item:any,index)=>(<li key={index}>
+                            !list.length && <NoEmpty><img src={ContractImg} alt=""/></NoEmpty>
+                        }
+                        {
+                            !!list.length && list.map((item:any,index)=>(<li key={index}>
                                 <div className="bg">
                                     <div className="inner">
                                         <div className="fir">
@@ -310,27 +321,30 @@ export default function Mine(){
                         }
 
                     </UlBox>
-                    <PageLine>
-                        <ReactPaginate
-                            previousLabel="<"
-                            nextLabel=">"
-                            pageClassName="page-item"
-                            pageLinkClassName="page-link"
-                            previousClassName="page-left"
-                            previousLinkClassName="pageL"
-                            nextClassName="page-right"
-                            nextLinkClassName="pageR"
-                            breakLabel="..."
-                            breakClassName="page-break"
-                            breakLinkClassName="page-break"
-                            pageCount={pageCount}
-                            marginPagesDisplayed={1}
-                            pageRangeDisplayed={5}
-                            onPageChange={(e)=>handlePageClick(e)}
-                            containerClassName="pagination"
-                            activeClassName="active"
-                        />
-                    </PageLine>
+                    {
+                        !!list.length &&<PageLine>
+                            <ReactPaginate
+                                previousLabel="<"
+                                nextLabel=">"
+                                pageClassName="page-item"
+                                pageLinkClassName="page-link"
+                                previousClassName="page-left"
+                                previousLinkClassName="pageL"
+                                nextClassName="page-right"
+                                nextLinkClassName="pageR"
+                                breakLabel="..."
+                                breakClassName="page-break"
+                                breakLinkClassName="page-break"
+                                pageCount={pageCount}
+                                marginPagesDisplayed={1}
+                                pageRangeDisplayed={5}
+                                onPageChange={(e)=>handlePageClick(e)}
+                                containerClassName="pagination"
+                                activeClassName="active"
+                            />
+                        </PageLine>
+                    }
+
 
                 </Box>
             </Layout>
