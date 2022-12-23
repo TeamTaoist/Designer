@@ -249,7 +249,6 @@ export default function ViewPdf(props:pdfProps){
         }
       }
   ;
-  console.log(payload)
   const reset = () =>{
     setShow(false);
     window.location.reload();
