@@ -64,11 +64,12 @@ const SelectedBox = styled.div`
   padding:10px 20px;
  width: 150px;
   position: relative;
-  cursor: pointer;
+
   span{
     display: inline-block;
     width: 100%;
     min-height: 100%;
+    cursor: pointer;
   }
   ul{
     position: absolute;
