@@ -267,6 +267,10 @@ const CopiedBtn = styled.div`
 const FL =styled.div`
   display: flex;
   align-items: center;
+  a{
+    color: #ffffff;
+    text-decoration: none;
+  }
 `
 
 const NoEmpty = styled.div`
@@ -309,7 +313,7 @@ export default function Contract(){
         navigate(`/detail/${num}`)
     }
 
-    const {metadata} = ADDRESS;
+    const {metadata,NODE} = ADDRESS;
     const programId = process.env.REACT_APP_PROGRAM_ID as Hex;
 
 
@@ -445,7 +449,7 @@ export default function Contract(){
                                     </LftBox>
                                     <RhtBox>
                                         <div className="hashLine">
-                                            <div className="top">TX Hash: </div><FL><div>{publicJs.AddresstoShow(item.creatTx)}</div><CopyToClipboard text={item.creatTx} onCopy={handleCopy}>
+                                            <div className="top">TX Hash: </div><FL><div><a href={`https://idea.gear-tech.io/messages/${item.creatTx}?node=${NODE}`} target="_blank" rel="noreferrer">{publicJs.AddresstoShow(item.creatTx)}</a></div><CopyToClipboard text={item.creatTx} onCopy={handleCopy}>
                                             <CopiedBtn>
                                                 <img src={CopyImg} alt=""/>
                                                 {
