@@ -24,17 +24,23 @@ flex-grow: 1;
     border: 0;
   }
 `
+const RhtBox = styled.div`
+  background: #f1f2f7;
+  margin-bottom: 6px;
+
+`
+
 const Rht = styled.div`
   width: 300px;
   color: #000000;
-  background: #f1f2f7;
+  padding:20px;
   box-sizing: border-box;
-  padding: 40px;
-  display: flex;
+  height: 100vh;
+  overflow-y: auto;
+  display: flex; 
   flex-direction: column;
   justify-content: space-between;
   align-items: stretch;
-  margin-bottom: 6px;
 `
 
 const SignBox = styled.div`
@@ -151,7 +157,7 @@ interface iframeObj{
 
 export default function ViewPdf(props:pdfProps){
   const {dispatch} = useSubstrate();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { fileUrl,agreeList,showBtn,id,contract } = props;
   const [sList,setSlist] = useState<signObj[]>([]);
   const [sListIframe,setSListIframe] = useState<iframeObj[]>([]);
@@ -229,7 +235,7 @@ export default function ViewPdf(props:pdfProps){
         }
       }
   ;
-
+  console.log(payload)
   const reset = () =>{
     window.location.reload();
   }
@@ -238,8 +244,10 @@ export default function ViewPdf(props:pdfProps){
 
   const handleShowBtn = () =>{
     let display = true;
-    // const inArr =
-
+    const inArr = agreeList?.filter((item:any) => item.creator === account?.decodedAddress);
+    if(inArr?.length){
+      display = false;
+    }
     return display;
   }
 
@@ -247,6 +255,9 @@ export default function ViewPdf(props:pdfProps){
     <IframeBox>
       <iframe id="iframe" src={`/pdfviewer/web/viewer.html?file=${fileUrl}`} />
     </IframeBox>
+    <RhtBox>
+
+
     <Rht>
       <div>
         {
@@ -285,5 +296,6 @@ export default function ViewPdf(props:pdfProps){
 
       </div>
     </Rht>
+    </RhtBox>
   </Box>
 }

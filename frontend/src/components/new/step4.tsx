@@ -146,14 +146,14 @@ export default function Step4(props:Iprops){
             "signers":signers,
             "file": {
                 "digest": {
-                    "sha256": "123"
+                    "SHA256": "123"
                 },
                 "url": "cess://123456",
                 "memo":null
             },
             "resource": {
                 "digest": {
-                    "sha256": "-"
+                    "SHA256": "-"
                 },
                 "url": "-",
                 "memo": JSON.stringify(iframeList![0])
