@@ -17,7 +17,7 @@ const MaskBox = styled.div`
   left: 0;
   top: 0;
   background: #000;
-  z-index: 99999;
+  z-index: 19;
 `
 
 const Box = styled.div`
