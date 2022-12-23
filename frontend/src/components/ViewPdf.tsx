@@ -9,12 +9,24 @@ import PenImg from "../assets/images/icon_pen.svg";
 import {ADDRESS} from "../consts";
 import {Hex} from "@gear-js/api";
 import {useNavigate} from "react-router-dom";
+import {ApiLoader} from "./loaders";
 
 const Box = styled.div`
   display: flex;
   align-items: stretch;
   justify-content: space-between;
 `
+
+const MaskBox = styled.div`
+    width: 100vw;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background: #000;
+  z-index: 19;
+`
+
 
 const IframeBox = styled.div`
 flex-grow: 1;
@@ -161,7 +173,9 @@ export default function ViewPdf(props:pdfProps){
   const { fileUrl,agreeList,showBtn,id,contract } = props;
   const [sList,setSlist] = useState<signObj[]>([]);
   const [sListIframe,setSListIframe] = useState<iframeObj[]>([]);
+  const [show, setShow] = useState(false);
   const { account } = useAccount();
+
 
   const handleSign = () =>{
     (document.querySelector('#iframe') as any).contentWindow.displaySignature()
@@ -237,10 +251,14 @@ export default function ViewPdf(props:pdfProps){
   ;
   console.log(payload)
   const reset = () =>{
+    setShow(false);
     window.location.reload();
   }
 
-  const handleSubmit = () => sendMessage(payload, { onSuccess: reset })
+  const handleSubmit = () =>{
+    setShow(true);
+    return sendMessage(payload, { onSuccess: reset })
+  }
 
   const handleShowBtn = () =>{
     let display = true;
@@ -252,6 +270,9 @@ export default function ViewPdf(props:pdfProps){
   }
 
   return <Box>
+    {
+      show && <MaskBox><ApiLoader /></MaskBox>
+    }
     <IframeBox>
       <iframe id="iframe" src={`/pdfviewer/web/viewer.html?file=${fileUrl}`} />
     </IframeBox>
