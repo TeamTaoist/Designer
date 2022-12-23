@@ -14,6 +14,7 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import CopyImg from "./assets/images/icon-copyWhite.svg";
 import {ApiLoader} from "./components";
 import Finished from "./assets/images/icon_check_handwritten.svg";
+import ContractImg from "./assets/images/icon_contract.svg";
 
 const Box = styled.div`
     padding:20px 40px 40px;
@@ -268,6 +269,15 @@ const FL =styled.div`
   align-items: center;
 `
 
+const NoEmpty = styled.div`
+    width: 100%;
+  height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+
+
 export default function Contract(){
     const navigate = useNavigate();
     const { account } = useAccount();
@@ -318,7 +328,7 @@ export default function Contract(){
         setShow(true);
         if(!(stateAll as any).state || !(stateAll as any).state!.Contracts)  return;
         const {total,pages,pageNum,data} = (stateAll as any).state.Contracts;
-        console.table(data)
+        console.error(data)
         if(pageNum == current){
             setShow(false);
         }else{
@@ -374,7 +384,10 @@ export default function Contract(){
                 </TabBox>
                 <UlBox>
                     {
-                        list.map((item:any,index:number)=>(<li key={index}>
+                        !list.length && <NoEmpty><img src={ContractImg} alt=""/></NoEmpty>
+                    }
+                    {
+                        !!list.length && list.map((item:any,index:number)=>(<li key={index}>
                             <div className="line" />
                             <dl onClick={()=>handleShow(index)}>
                                 <dt>
@@ -468,27 +481,30 @@ export default function Contract(){
                         </li>))
                     }
                 </UlBox>
-                <PageLine>
-                    <ReactPaginate
-                        previousLabel="<"
-                        nextLabel=">"
-                        pageClassName="page-item"
-                        pageLinkClassName="page-link"
-                        previousClassName="page-left"
-                        previousLinkClassName="pageL"
-                        nextClassName="page-right"
-                        nextLinkClassName="pageR"
-                        breakLabel="..."
-                        breakClassName="page-break"
-                        breakLinkClassName="page-break"
-                        pageCount={pageCount}
-                        marginPagesDisplayed={1}
-                        pageRangeDisplayed={5}
-                        onPageChange={(e)=>handlePageClick(e)}
-                        containerClassName="pagination"
-                        activeClassName="active"
-                    />
-                </PageLine>
+                {
+                    !!list.length &&
+                    <PageLine>
+                        <ReactPaginate
+                            previousLabel="<"
+                            nextLabel=">"
+                            pageClassName="page-item"
+                            pageLinkClassName="page-link"
+                            previousClassName="page-left"
+                            previousLinkClassName="pageL"
+                            nextClassName="page-right"
+                            nextLinkClassName="pageR"
+                            breakLabel="..."
+                            breakClassName="page-break"
+                            breakLinkClassName="page-break"
+                            pageCount={pageCount}
+                            marginPagesDisplayed={1}
+                            pageRangeDisplayed={5}
+                            onPageChange={(e) => handlePageClick(e)}
+                            containerClassName="pagination"
+                            activeClassName="active"
+                        />
+                    </PageLine>
+                }
             </Box>
         </Layout>
     </div>
