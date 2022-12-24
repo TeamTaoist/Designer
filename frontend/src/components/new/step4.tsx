@@ -119,7 +119,7 @@ interface Iprops{
 }
 export default function Step4(props:Iprops){
     const {state} = useSubstrate();
-    const {iframeList} = state;
+    const {iframeList,pdf} = state;
     const navigate = useNavigate();
 
     const {list,fileObj} =props;
@@ -138,7 +138,9 @@ export default function Step4(props:Iprops){
     const sendMessage = useSendMessage(programId, metadata);
 
     const dateTime = (new Date()).valueOf() + 30 * 24 * 3600 * 1000;
-    console.log(dateTime)
+    console.log(dateTime,pdf)
+
+    const IPFS_URL = process.env.REACT_APP_IPFS_URL;
 
     const payload = {
         "createContractWithAgree": {
@@ -146,9 +148,10 @@ export default function Step4(props:Iprops){
             "signers":signers,
             "file": {
                 "digest": {
-                    "SHA256": "123"
+                    "SHA256": pdf.cid
                 },
-                "url": "cess://123456",
+                // "url": "cess://123456",
+                "url": `${IPFS_URL}/${pdf.cid}`,
                 "memo":null
             },
             "resource": {

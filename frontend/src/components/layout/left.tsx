@@ -106,9 +106,6 @@ export default function Left(){
         setCurrrent(index);
     }, [locationUrl.pathname]);
 
-    useEffect(()=>{
-        dispatch({type:ActionType.LOAD_MAINCONTRACT});
-    },[])
 
     const handleClick = (item: navObj) => {
         navigate(`/${item.value}`);

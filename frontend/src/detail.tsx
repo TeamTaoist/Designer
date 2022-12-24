@@ -3,7 +3,6 @@ import ViewPdf from "./components/ViewPdf";
 import Layout from "./components/layout/layout";
 import {useEffect, useState} from "react";
 import { useParams } from "react-router-dom";
-import pdfdemo from "./assets/Introduction.pdf";
 import {useReadState} from "@gear-js/react-hooks";
 import {ADDRESS} from "./consts";
 import {Hex} from "@gear-js/api";
@@ -30,6 +29,7 @@ export default function Detail(){
     const [show, setShow] = useState(true);
     const [agreeList,setAgreeList] = useState<any[]>([]);
     const [contract,setContract] = useState<any[]>([]);
+    const [url,setUrl] = useState('');
 
     const {id} = useParams();
     const payload ={
@@ -41,7 +41,6 @@ export default function Detail(){
 
     useEffect(()=>{
         if(!stateAll.state)return;
-
         setShow(false);
         let all = (stateAll as any).state.Contract.otherRes;
         let arr=[];
@@ -62,11 +61,10 @@ export default function Detail(){
         }
         setAgreeList(arr)
         setContract((stateAll as any).state!.Contract)
-
+        const {file } = (stateAll as any).state.Contract;
+        const {url} = file;
+        setUrl(url);
     },[stateAll.state])
-
-     const [ fileUrl,setFileUrl] = useState('');
-
 
     return <div>
         {
@@ -74,8 +72,7 @@ export default function Detail(){
         }
         <Layout>
             <Box>
-                {/*<ViewPdf fileUrl={fileUrl}/>*/}
-                <ViewPdf fileUrl={pdfdemo} agreeList={agreeList} showBtn={true} id={id} contract={contract} />
+                <ViewPdf fileUrl={url} agreeList={agreeList} showBtn={true} id={id} contract={contract} />
             </Box>
 
         </Layout>

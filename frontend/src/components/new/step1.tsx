@@ -3,7 +3,9 @@ import styled from "styled-components";
 import {FormEvent, useState} from "react";
 import PDFimg from "../../assets/images/icon_pdf.svg";
 import BgImg from "../../assets/images/bg.png";
-
+import axios from "axios";
+import {useSubstrate} from "../../api/connect";
+import {ActionType} from "../../utils/types";
 
 const Box = styled.div`
   padding-top: 40px;
@@ -125,20 +127,47 @@ interface Iprops{
 }
 
 export default function Step1(props:Iprops){
-
+    const {dispatch} = useSubstrate();
     const { checkStep,handleUrl } = props;
     const [fileName,setFileName] = useState('');
+    const [file,setFile] = useState();
 
     const updateLogo = (e:FormEvent) =>{
         const { files } = e.target as any;
         const { name } = files[0]
         let url = window.URL.createObjectURL(files[0]);
-        setFileName(name)
-        handleUrl(url,files[0])
+        setFileName(name);
+        handleUrl(url,files[0]);
+        setFile(files[0]);
     }
 
-    const handleNext = () =>{
-        checkStep(2)
+    const BASE_URL = process.env.REACT_APP_BASE_URL;
+
+    const request = axios.create({
+        baseURL: BASE_URL,
+        timeout: 6000,
+        headers: { "Content-Type": "multipart/form-data" },
+    });
+
+    const upload = (fileData: File) => {
+        const formData = new FormData();
+        formData.append("file", fileData);
+        return request.post("/upload", formData);
+    };
+
+
+    const handleNext = async () =>{
+        if(!file)return;
+        try {
+            const res = await upload(file);
+            console.log(res.data.data)
+            dispatch({ type: ActionType.SET_PDF, payload:res.data.data });
+            checkStep(2)
+
+        } catch (error:any) {
+            console.error(error?.message);
+
+        }
     }
 
     return  <Box>

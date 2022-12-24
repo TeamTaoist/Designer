@@ -11,9 +11,8 @@ interface signObj{
 
 export type State = {
     loading: string | null
-    mainContract:any
-    maincontractState: string | null
     iframeList: signObj[] | null
+    pdf: any
 }
 
 export type Action = {
@@ -29,9 +28,7 @@ export interface ContextType {
 
 export const enum ActionType {
     SET_LOADING = 'SET_LOADING',
-    LOAD_MAINCONTRACT = 'LOAD_MAINCONTRACT',
-    SET_MAINCONTRACT = 'SET_MAINCONTRACT',
-    MAINCONTRACT_ERROR = 'MAINCONTRACT_ERROR',
     SET_IFRAME = 'SET_IFRAME',
+    SET_PDF = 'SET_PDF',
 
 }
