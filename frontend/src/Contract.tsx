@@ -400,6 +400,20 @@ export default function Contract(){
 
         return res
     }
+    const showTit = (item:any) =>{
+        if(currentNav){
+            return'View'
+        } else{
+            let res =false;
+            for(let key in item.agreeOn){
+               if(key == account?.decodedAddress){
+                   res = true;
+                   break;
+               }
+            }
+            return !res?'Sign Now':'View'
+        }
+    }
 
     return  <div>
         {
@@ -492,7 +506,7 @@ export default function Contract(){
                                         </FL>
                                         </div>
                                         <div className="hashLine">
-                                            <div className="top">File Hash: </div><FL><div>{item.file.digest.SHA256}</div><CopyToClipboard text={item.file.digest.SHA256} onCopy={handleCopy2}>
+                                            <div className="top">File Hash: </div><FL><div>{publicJs.AddresstoShow(item.file.digest.SHA256)}</div><CopyToClipboard text={item.file.digest.SHA256} onCopy={handleCopy2}>
                                             <CopiedBtn>
                                                 <img src={CopyImg} alt=""/>
                                                 {
@@ -507,7 +521,7 @@ export default function Contract(){
                                             <div className="top">Created: </div><div>{formatTime(item.createAt)}</div>
                                         </div>
                                         <LastLine onClick={()=>handleView(item.id)}>
-                                            {currentNav?'View':'Sign Now'}
+                                            {showTit(item)}
                                         </LastLine>
                                     </RhtBox>
                                 </dd>
