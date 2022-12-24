@@ -45,8 +45,13 @@ function PdfFormat(){
                 $(`#base64-wrap-${signatureLen}`).Tdrag({
                     scope: '.page',
                     cbEnd: function () {
-                        window.signatureList[signatureLen-1].left = parseInt($(`#base64-wrap-${signatureLen}`).css('left'));
-                        window.signatureList[signatureLen-1].top = parseInt($(`#base64-wrap-${signatureLen}`).css('top'));
+                        // window.signatureList[signatureLen-1].left = parseInt($(`#base64-wrap-${signatureLen}`).css('left'));
+                        // window.signatureList[signatureLen-1].top = parseInt($(`#base64-wrap-${signatureLen}`).css('top'));
+                        let obj = window.signatureList.find((item) => item.index === signatureLen)
+                        if (obj) {
+                            obj.left = parseInt($(`#base64-wrap-${signatureLen}`).css('left'));
+                            obj.top = parseInt($(`#base64-wrap-${signatureLen}`).css('top'));
+                        }
                     }
                 });
                 $(`#signature-remove-${signatureLen}`).on('click', function () {

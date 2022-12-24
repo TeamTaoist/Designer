@@ -190,7 +190,6 @@ export default function Step4(props:Iprops){
                             <Wait />
                         </div>
                     </FinishedBox>
-
                     <dl>
                         <dt>
                             <img src={PDFimg} alt=""/>

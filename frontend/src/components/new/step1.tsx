@@ -8,7 +8,7 @@ import {useSubstrate} from "../../api/connect";
 import {ActionType} from "../../utils/types";
 
 const Box = styled.div`
-  padding-top: 40px;
+  padding-top: 20px;
   input[type="file"] {
     display: none;
   }
@@ -20,7 +20,7 @@ const UploadBox = styled.div`
   //border: 4px solid #fcca00;
   border: 1px dashed #fcca00;
   border-radius: 4px;
-  padding:100px 20px;
+  padding:50px 20px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -114,7 +114,7 @@ const Wallet = styled.div`
   border: 2px solid #fcca00;
   font-family: "Lato-Regular";
   width: 150px;
-  margin-top: 40px;
+  //margin-top: 20px;
   height: 46px;
   cursor: pointer;
   &:hover{
@@ -176,7 +176,7 @@ export default function Step1(props:Iprops){
             <UploadBox >
                 <div className="center">
                     <div><img src={UploadImg} alt="" className="uploadImg"/></div>
-                    <div>Drop a PDF contract file here</div>
+                    <div>Add a PDF contract file here</div>
                     <UploadBtn>Upload</UploadBtn>
                 </div>
             </UploadBox>

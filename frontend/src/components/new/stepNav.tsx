@@ -4,7 +4,7 @@ import {useEffect, useState} from "react";
 const Box = styled.div`
   background: #1c1d22;
   box-shadow: 2px 0 5px rgb(0 0 0 / 20%);
-  padding: 20px;
+  padding:0 20px;
   border-radius: 4px;
   li{
     cursor: pointer;

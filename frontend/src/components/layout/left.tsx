@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import {useEffect, useState} from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import LogoImg from "../../assets/images/logo.png";
+import LogoImg from "../../assets/images/logo2.png";
 import {useSubstrate} from "../../api/connect";
 import { ActionType } from "../../utils/types";
 
@@ -13,7 +13,8 @@ const LogoBox = styled.div`
   align-items: center;
   cursor: pointer;
   img{
-    height: 45px;
+    width: 160px;
+    //height: 45px;
   }
 `
 

@@ -147,8 +147,10 @@ interface pdfProps {
   fileUrl:string
   agreeList?:any
   showBtn?:boolean
+  showNext?:boolean
   id?:string
   contract?:any
+  handleNext?:Function
 }
 interface signObj{
   creator?:string
@@ -170,7 +172,7 @@ interface iframeObj{
 export default function ViewPdf(props:pdfProps){
   const {dispatch} = useSubstrate();
   // const navigate = useNavigate();
-  const { fileUrl,agreeList,showBtn,id,contract } = props;
+  const { fileUrl,agreeList,showBtn,id,contract,showNext,handleNext } = props;
   const [sList,setSlist] = useState<signObj[]>([]);
   const [sListIframe,setSListIframe] = useState<iframeObj[]>([]);
   const [show, setShow] = useState(false);
@@ -268,6 +270,11 @@ export default function ViewPdf(props:pdfProps){
     return display;
   }
 
+  const toNext = () =>{
+    handleNext && handleNext();
+  }
+
+
   return <Box>
     {
       show && <MaskBox><ApiLoader /></MaskBox>
@@ -313,7 +320,9 @@ export default function ViewPdf(props:pdfProps){
         {
           !!sList?.length && showBtn &&<SubmitBox onClick={()=>handleSubmit()}>Submit</SubmitBox>
         }
-
+        {
+          !!sList?.length && showNext &&<SubmitBox onClick={()=>toNext()}>Next</SubmitBox>
+        }
       </div>
     </Rht>
     </RhtBox>

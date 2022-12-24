@@ -38,9 +38,9 @@ export default function Step3(props:Iprops){
     }
 
     return <Box>
-        <ViewPdf fileUrl={fileUrl}/>
-        <div>
-            <Wallet onClick={()=>handleNext()}>Next</Wallet>
-        </div>
+        <ViewPdf fileUrl={fileUrl} showNext={true} handleNext={handleNext}/>
+        {/*<div>*/}
+        {/*    <Wallet onClick={()=>handleNext()}>Next</Wallet>*/}
+        {/*</div>*/}
     </Box>
 }
