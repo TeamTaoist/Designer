@@ -269,7 +269,6 @@ const FL =styled.div`
   align-items: center;
   a{
     color: #ffffff;
-    text-decoration: none;
   }
 `
 
