@@ -27,7 +27,7 @@ const MaskBox = styled.div`
   left: 0;
   top: 0;
   background: #000;
-  z-index: 99999;
+  z-index: 19;
 `
 
 const TabBox = styled.ul`
@@ -301,12 +301,13 @@ export default function Contract(){
 
     const handleClick = (i:number) => {
         setCurrrentNav(i);
+        setCurrent(1)
     };
 
     const handleShow = (num:number) =>{
         let arr:boolean[] =new Array(6).fill(false);
         arr[num] = true;
-        setShowArr(arr)
+        setShowArr(arr);
     }
 
     const handleView = (num:number) =>{
@@ -316,7 +317,29 @@ export default function Contract(){
     const {metadata,NODE} = ADDRESS;
     const programId = process.env.REACT_APP_PROGRAM_ID as Hex;
 
+    let arr = currentNav === 0 ? [
+        {
+            "Created": null
+        },
+        {
+            "Signing": null
+        }
+    ]:  [
+        {
+            "Sealed": null
+        }
+    ]
 
+    // const payload ={
+    //     "QueryContractBySignerAndStatus": [
+    //         {
+    //             "pageNum": current,
+    //             "pageSize":pageSize
+    //         },
+    //         account?.decodedAddress,
+    //         arr
+    //     ]
+    // }
     const payload ={
         "QueryContractBySigner": [
             {
@@ -326,6 +349,9 @@ export default function Contract(){
             account?.decodedAddress
         ]
     }
+
+
+    console.error(payload)
 
     const stateAll = useReadState(programId, metadata, payload);
     useEffect(()=>{
@@ -449,15 +475,20 @@ export default function Contract(){
                                     </LftBox>
                                     <RhtBox>
                                         <div className="hashLine">
-                                            <div className="top">TX Hash: </div><FL><div><a href={`https://idea.gear-tech.io/messages/${item.creatTx}?node=${NODE}`} target="_blank" rel="noreferrer">{publicJs.AddresstoShow(item.creatTx)}</a></div><CopyToClipboard text={item.creatTx} onCopy={handleCopy}>
-                                            <CopiedBtn>
-                                                <img src={CopyImg} alt=""/>
-                                                {
-                                                    showTips &&<span>Copied!</span>
-                                                }
+                                            <div className="top">TX Hash: </div>
+                                            <FL>
+                                                <div>
+                                                    <a href={`https://idea.gear-tech.io/messages/${item.creatTx}?node=${NODE}`} target="_blank" rel="noreferrer">{publicJs.AddresstoShow(item.creatTx)}</a>
+                                                </div>
+                                                <CopyToClipboard text={item.creatTx} onCopy={handleCopy}>
+                                                    <CopiedBtn>
+                                                        <img src={CopyImg} alt=""/>
+                                                        {
+                                                            showTips &&<span>Copied!</span>
+                                                        }
 
-                                            </CopiedBtn>
-                                        </CopyToClipboard>
+                                                    </CopiedBtn>
+                                                </CopyToClipboard>
                                         </FL>
                                         </div>
                                         <div className="hashLine">
