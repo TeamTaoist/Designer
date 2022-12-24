@@ -2,21 +2,42 @@ import Layout from "./components/layout/layout";
 import styled from "styled-components";
 import EmptyImg from "./assets/images/icon_empty.svg";
 import RhtImg from "./assets/images/icon_arrow_down.svg";
+import CloseImg from "./assets/images/icon_closeWhite.svg";
+import {useState} from "react";
 
-// const Box = styled.div`
-//     padding: 40px;
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   height: 100%;
-//   font-size: 24px;
-//   text-align: center;
-//   color: #666;
-//   img{
-//     width: 200px;
-//     margin-bottom: 20px;
-//   }
-// `
+const Mask = styled.div`
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.5);
+  z-index: 999;
+  left: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+
+const Box = styled.div`
+    padding: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  text-align: center;
+  color: #666;
+  width: 400px;
+  height: 400px;
+  position: relative;
+  background: #1c1d22;
+  box-shadow: 2px 0 5px rgb(0 0 0 / 20%);
+  border-radius: 4px;
+
+  img{
+    width: 150px;
+    margin-bottom: 20px;
+  }
+`
 
 const MainContent = styled.div`
   padding:20px 40px 40px;
@@ -52,6 +73,7 @@ const DlBox = styled.div`
     align-items: center;
     margin: 0 20px;
     padding: 20px 0;
+    cursor: pointer;
     border-bottom: 1px dashed rgba(255,255,255,0.2);
     &:last-child{
       border-bottom: 0;
@@ -62,6 +84,7 @@ const DlBox = styled.div`
     font-family: "Lato-Light";
   }
   dd{
+  
     display: flex;
     align-items: center;
     img{
@@ -72,30 +95,63 @@ const DlBox = styled.div`
     }
   }
 `
+const CloseBox = styled.div`
+    position: absolute;
+  right: 10px;
+  top: 10px;
+  z-index: 999;
+  cursor: pointer;
+  img{
+    width: 20px;
+  }
+`
 
 export default function Setting(){
+
+    const [ show, setShow] = useState(false);
+
+    const handleShow = () =>{
+        setShow(true)
+        setTimeout(()=>{
+            setShow(false)
+        },1500)
+    }
+
+    const handleClose = () =>{
+        setShow(false)
+    }
+
     return <div>
         <Layout>
-            {/*<Box>*/}
-            {/*    <div>*/}
-            {/*        <img src={EmptyImg} alt=""/>*/}
-            {/*        <div>Setting's page is in development</div>*/}
-            {/*    </div>*/}
+            {
+                show &&<Mask>
+                    <Box>
+                        <CloseBox onClick={()=>handleClose()}>
+                            <img src={CloseImg} alt=""/>
+                        </CloseBox>
+                        <div>
+                            <img src={EmptyImg} alt=""/>
+                            <div>Coming soon</div>
+                        </div>
 
-            {/*</Box>*/}
+                    </Box>
+                </Mask>
+            }
+
+
             <MainContent>
                 <TabBox>
                     <li className="active">Settings</li>
                 </TabBox>
                 <DlBox>
-                    <dl>
+                    <dl onClick={()=>handleShow()}>
                         <dt>Language</dt>
                         <dd>
                             <span>English</span>
                             <img src={RhtImg} alt=""/>
                         </dd>
                     </dl>
-                    <dl>
+                    <dl onClick={()=>handleShow()}>
                         <dt>Appearance</dt>
                         <dd>
                             <span>Follow system settings</span>
@@ -104,7 +160,7 @@ export default function Setting(){
                     </dl>
                 </DlBox>
                 <DlBox>
-                    <dl>
+                    <dl onClick={()=>handleShow()}>
                         <dt>Manage your Account</dt>
                         <dd>
                             <img src={RhtImg} alt=""/>
@@ -112,19 +168,19 @@ export default function Setting(){
                     </dl>
                 </DlBox>
                 <DlBox>
-                    <dl>
+                    <dl onClick={()=>handleShow()}>
                         <dt>Debug Mode</dt>
                         <dd>
                             <img src={RhtImg} alt=""/>
                         </dd>
                     </dl>
-                    <dl>
+                    <dl onClick={()=>handleShow()}>
                         <dt>Privacy Guide</dt>
                         <dd>
                             <img src={RhtImg} alt=""/>
                         </dd>
                     </dl>
-                    <dl>
+                    <dl onClick={()=>handleShow()}>
                         <dt>Security</dt>
                         <dd>
                             <img src={RhtImg} alt=""/>
