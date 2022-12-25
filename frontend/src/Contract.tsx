@@ -329,25 +329,25 @@ export default function Contract(){
         }
     ]
 
-    // const payload ={
-    //     "QueryContractBySignerAndStatus": [
-    //         {
-    //             "pageNum": current,
-    //             "pageSize":pageSize
-    //         },
-    //         account?.decodedAddress,
-    //         arr
-    //     ]
-    // }
     const payload ={
-        "QueryContractBySigner": [
+        "QueryContractBySignerAndStatus": [
             {
                 "pageNum": current,
                 "pageSize":pageSize
             },
-            account?.decodedAddress
+            account?.decodedAddress,
+            arr
         ]
     }
+    // const payload ={
+    //     "QueryContractBySigner": [
+    //         {
+    //             "pageNum": current,
+    //             "pageSize":pageSize
+    //         },
+    //         account?.decodedAddress
+    //     ]
+    // }
 
 
     console.error(payload)
