@@ -14,9 +14,9 @@ impl PageParam {
             panic!("wrong page_size")
         }
 
-        let start = (self.page_num - 1) * self.page_size;
+        let mut start = (self.page_num - 1) * self.page_size;
         if start >= total {
-            panic!("wrong page_num or page_size")
+            start = total
         }
 
         let mut end = start + self.page_size;

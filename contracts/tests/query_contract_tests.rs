@@ -485,3 +485,164 @@ fn query_contract_by_signer_and_status() {
         }
     }
 }
+
+#[test]
+fn query_contract_by_signer_and_status2() {
+    let sys = System::new();
+    let designer = common_init(&sys, USERS[0]);
+
+    sys.mint_to(USERS[0], 1_000_000_000);
+    let res = designer.send(
+        USERS[0],
+        DeSignerAction::CreateContract {
+            name: "test contract v1.0".to_string(),
+            signers: vec![USERS[0].into()],
+            file: ResourceParam {
+                digest: DigestAlgo::SHA256(
+                    "X48E9qOokqqrvdts8nOJRJN3OWDUoyWxBf7kbu9DBPE=".to_string(),
+                ),
+                url: "cess://xx".to_string(),
+                memo: Some("important!!".to_string()),
+            },
+            expire: sys.block_timestamp() + 1000,
+        },
+    );
+    assert!(!res.main_failed());
+
+    let res: Result<StateResponse> = designer.meta_state(StateReq::QueryContractBySignerAndStatus(
+        PageParam {
+            page_num: 1,
+            page_size: 1,
+        },
+        USERS[0].into(),
+        vec![ContractStatus::Sealed, ContractStatus::Abrogated],
+    ));
+    match res.unwrap() {
+        StateResponse::Contracts(ret) => {
+            assert_eq!(ret.pages, 0);
+            assert_eq!(ret.page_num, 1);
+            assert_eq!(ret.page_size, 1);
+        }
+        _ => {
+            panic!("wrong")
+        }
+    }
+}
+
+#[test]
+fn query_contract_by_signer_and_status3() {
+    let sys = System::new();
+    let designer = common_init(&sys, USERS[0]);
+
+    sys.mint_to(USERS[0], 1_000_000_000);
+    let res = designer.send(
+        USERS[0],
+        DeSignerAction::CreateContractWithAgree {
+            name: "test contract v1.0".to_string(),
+            signers: vec![USERS[0].into()],
+            file: ResourceParam {
+                digest: DigestAlgo::SHA256(
+                    "X48E9qOokqqrvdts8nOJRJN3OWDUoyWxBf7kbu9DBPE=".to_string(),
+                ),
+                url: "cess://xx".to_string(),
+                memo: Some("important!!".to_string()),
+            },
+            resource: None,
+            expire: sys.block_timestamp() + 1000,
+        },
+    );
+    assert!(!res.main_failed());
+
+    let res = designer.send(
+        USERS[0],
+        DeSignerAction::CreateContractWithAgree {
+            name: "test contract v2.0".to_string(),
+            signers: vec![USERS[0].into()],
+            file: ResourceParam {
+                digest: DigestAlgo::SHA256(
+                    "X48E9qOokqqrvdts8nOJRJN3OWDUoyWxBf7kbu9DBPE=".to_string(),
+                ),
+                url: "cess://xx".to_string(),
+                memo: Some("important!!".to_string()),
+            },
+            resource: None,
+            expire: sys.block_timestamp() + 1000,
+        },
+    );
+    assert!(!res.main_failed());
+
+    let res = designer.send(
+        USERS[0],
+        DeSignerAction::CreateContractWithAgree {
+            name: "test contract v2.0".to_string(),
+            signers: vec![USERS[0].into(), USERS[1].into()],
+            file: ResourceParam {
+                digest: DigestAlgo::SHA256(
+                    "X48E9qOokqqrvdts8nOJRJN3OWDUoyWxBf7kbu9DBPE=".to_string(),
+                ),
+                url: "cess://xx".to_string(),
+                memo: Some("important!!".to_string()),
+            },
+            resource: None,
+            expire: sys.block_timestamp() + 1000,
+        },
+    );
+    assert!(!res.main_failed());
+
+    let res: Result<StateResponse> = designer.meta_state(StateReq::QueryContractBySignerAndStatus(
+        PageParam {
+            page_num: 1,
+            page_size: 1,
+        },
+        USERS[0].into(),
+        vec![ContractStatus::Sealed],
+    ));
+    match res.unwrap() {
+        StateResponse::Contracts(ret) => {
+            assert_eq!(ret.pages, 2);
+            assert_eq!(ret.page_num, 1);
+            assert_eq!(ret.page_size, 1);
+        }
+        _ => {
+            panic!("wrong")
+        }
+    }
+
+    let res: Result<StateResponse> = designer.meta_state(StateReq::QueryContractBySignerAndStatus(
+        PageParam {
+            page_num: 1,
+            page_size: 1,
+        },
+        USERS[0].into(),
+        vec![ContractStatus::Created],
+    ));
+    match res.unwrap() {
+        StateResponse::Contracts(ret) => {
+            assert_eq!(ret.pages, 0);
+            assert_eq!(ret.page_num, 1);
+            assert_eq!(ret.page_size, 1);
+        }
+        _ => {
+            panic!("wrong")
+        }
+    }
+
+    let res: Result<StateResponse> = designer.meta_state(StateReq::QueryContractBySignerAndStatus(
+        PageParam {
+            page_num: 1,
+            page_size: 1,
+        },
+        USERS[0].into(),
+        vec![ContractStatus::Signing, ContractStatus::Sealed],
+    ));
+    match res.unwrap() {
+        StateResponse::Contracts(ret) => {
+            assert_eq!(ret.pages, 3);
+            assert_eq!(ret.page_num, 1);
+            assert_eq!(ret.page_size, 1);
+        }
+        _ => {
+            panic!("wrong")
+        }
+    }
+}

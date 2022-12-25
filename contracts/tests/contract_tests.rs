@@ -88,7 +88,7 @@ fn agree_contract() {
         USERS[0],
         DeSignerAction::CreateContract {
             name: "test v1.0".to_string(),
-            signers: vec![USERS[1].into()],
+            signers: vec![USERS[0].into(), USERS[1].into()],
             file: ResourceParam {
                 digest: DigestAlgo::SHA256(
                     "X48E9qOokqqrvdts8nOJRJN3OWDUoyWxBf7kbu9DBPE=".to_string(),
@@ -117,6 +117,15 @@ fn agree_contract() {
         }
         .encode()
     )));
+
+    let res = designer.send(
+        USERS[1],
+        DeSignerAction::AgreeOnContract {
+            id: 0,
+            resource: None,
+        },
+    );
+    assert!(res.main_failed());
 }
 
 #[test]
@@ -259,7 +268,7 @@ fn upload_resource() {
 
     sys.mint_to(USERS[0], 1_000_000_000);
     let res = designer.send(
-        USERS[0],
+        USERS[1],
         DeSignerAction::CreateContract {
             name: "test v1.0".to_string(),
             signers: vec![USERS[1].into()],
