@@ -140,18 +140,18 @@ export default function Step4(props:Iprops){
     const dateTime = (new Date()).valueOf() + 30 * 24 * 3600 * 1000;
     console.log(dateTime,pdf)
 
-    const IPFS_URL = process.env.REACT_APP_IPFS_URL;
-
+    // const IPFS_URL = process.env.REACT_APP_IPFS_URL;
+    const CESS_URL = process.env.REACT_APP_CESS_URL;
     const payload = {
         "createContractWithAgree": {
             "name": fileObj?.name,
             "signers":signers,
             "file": {
                 "digest": {
-                    "SHA256": pdf.cid
+                    "SHA256": pdf.fid
                 },
                 // "url": "cess://123456",
-                "url": `${IPFS_URL}/${pdf.cid}`,
+                "url": `${CESS_URL}/preview/${pdf.fid}`,
                 "memo":null
             },
             "resource": {

@@ -13,6 +13,7 @@
     "@polkadot/react-identicon": "^2.9.14",
     "@polkadot/types": "^9.10.2",
     "@polkadot/util": "^9.7.2",
+    "@polkadot/util-crypto": "^10.2.1",
     "@polkadot/wasm-crypto": "^6.4.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",

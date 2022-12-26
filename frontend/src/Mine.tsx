@@ -233,7 +233,6 @@ export default function Mine(){
         setPageCount(pages);
         setTotal(total)
         setList(data)
-        console.log(data)
     },[(stateAll as any).state,current]);
 
 

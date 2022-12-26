@@ -3,9 +3,13 @@ import styled from "styled-components";
 import {FormEvent, useState} from "react";
 import PDFimg from "../../assets/images/icon_pdf.svg";
 import BgImg from "../../assets/images/bg.png";
-import axios from "axios";
 import {useSubstrate} from "../../api/connect";
 import {ActionType} from "../../utils/types";
+import { stringToU8a,stringToHex } from '@polkadot/util';
+import { decodeAddress, encodeAddress } from "@polkadot/util-crypto"
+import { web3FromSource} from '@polkadot/extension-dapp';
+import {useAccount} from "@gear-js/react-hooks";
+import {Auth, Upload} from "../../api/apiHttp";
 
 const Box = styled.div`
   padding-top: 20px;
@@ -125,12 +129,12 @@ interface Iprops{
     checkStep:Function
     handleUrl:Function
 }
-
 export default function Step1(props:Iprops){
     const {dispatch} = useSubstrate();
     const { checkStep,handleUrl } = props;
     const [fileName,setFileName] = useState('');
     const [file,setFile] = useState();
+    const { account } = useAccount();
 
     const updateLogo = (e:FormEvent) =>{
         const { files } = e.target as any;
@@ -141,27 +145,53 @@ export default function Step1(props:Iprops){
         setFile(files[0]);
     }
 
-    const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-    const request = axios.create({
-        baseURL: BASE_URL,
-        timeout: 6000,
-        headers: { "Content-Type": "multipart/form-data" },
-    });
+    const auth = async() =>{
+        let accountFormat = encodeAddress(decodeAddress(account?.address), 11330)
+        console.log(account)
+        let message = "hello"
+        const messageU8a = stringToU8a(message);
+        console.log(messageU8a)
+        const {meta} = account!;
+        // const {signer} = await web3FromSource(meta.source);
+        const injector = await web3FromSource(meta.source);
+        const signRaw = injector?.signer?.signRaw;
 
-    const upload = (fileData: File) => {
-        const formData = new FormData();
-        formData.append("file", fileData);
-        return request.post("/upload", formData);
-    };
+        if (!signRaw && !account?.address)return;
+        // const { signature } = await (signRaw as any)({
+        //     address: account?.address,
+        //     data: stringToHex(message),
+        //     type: 'bytes'
+        // });
+        // let signatureArr = stringToU8a(signature)
+
+        let obj = {
+            "account": accountFormat,
+            "message": "",
+            "signature": []
+        }
+        let res = await Auth(obj);
+        localStorage.setItem("token",res.token);
+        console.log(res.token)
+    }
+
+    // const upload = (fileData: File) => {
+    //     const formData = new FormData();
+    //     formData.append("file", fileData);
+    //     return request.post("/upload", formData);
+    // };
 
 
     const handleNext = async () =>{
         if(!file)return;
         try {
-            const res = await upload(file);
-            console.log(res.data.data)
-            dispatch({ type: ActionType.SET_PDF, payload:res.data.data });
+            await auth();
+            const res = await Upload(file);
+                console.log(res)
+            let obj ={
+                    fid:res.fid,
+            }
+            dispatch({ type: ActionType.SET_PDF, payload:obj });
             checkStep(2)
 
         } catch (error:any) {

@@ -103,7 +103,7 @@ export default function Home(){
                 <Banner>
                     <LftTitle>
                         <TitleBox>
-                            Hi,<br/>Welcome to de-signer
+                            Hi,<br/>Welcome to Designer
                         </TitleBox>
                         <TipsBox>
                             Great to have you onboard! Feel free to explore or get a headstart by following the below steps.

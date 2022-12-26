@@ -10,7 +10,7 @@ export default function BannerRht(){
 
     return <Box id="ui">
         {
-            [...Array(50)].map((item,index)=>(<div className="text" key={index}>Welcome To<br/> de-signer !</div>))
+            [...Array(50)].map((item,index)=>(<div className="text" key={index}>Welcome To<br/> Designer !</div>))
         }
 
     </Box>
