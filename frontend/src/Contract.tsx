@@ -15,6 +15,10 @@ import CopyImg from "./assets/images/icon-copyWhite.svg";
 import {ApiLoader} from "./components";
 import Finished from "./assets/images/icon_check_handwritten.svg";
 import ContractImg from "./assets/images/icon_contract.svg";
+import FontUrl from "./assets/fonts/Arabella.ttf";
+import {PDFDocument, rgb} from "pdf-lib";
+import fontkit from "@pdf-lib/fontkit";
+import download from "downloadjs";
 
 const Box = styled.div`
     padding:20px 40px 40px;
@@ -187,17 +191,32 @@ const RhtBox = styled.div`
 `
 const LastLine = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  background: #fcca00;
-  color: #000000;
-  padding: 0 20px;
-  border-radius: 4px;
-  font-family: "Lato-Light";
-  height: 40px;
-  cursor: pointer;
-  width: 100px;
-  white-space: nowrap;
+  .btnT,.rhtBtn{
+    border: 1px solid #fcca00;
+    font-family: "Lato-Light";
+    cursor: pointer;
+    width: 100px;
+    height: 40px;
+    white-space: nowrap;
+    border-radius: 4px;
+    text-align: center;
+    line-height: 35px;
+    &:hover{
+      opacity: 0.8;
+    }
+  }
+  .btnT{
+    margin-right: 10px;
+    background: #fcca00;
+    color: #000000;
+  }
+  .rhtBtn{
+    background:transparent;
+    color: #fcca00;
+  }
+
 `
 const PageLine = styled.div`
   width: 100%;
@@ -414,6 +433,64 @@ export default function Contract(){
         }
     }
 
+    const handleDownload = async(item:any) =>{
+        console.log(item)
+        const all = item.otherRes;
+
+        const fontBytes = await fetch(FontUrl).then(res => res.arrayBuffer());
+
+
+        let arr=[];
+        for(let key in all){
+            let item = all[key][0];
+            if(item.cate === "SignMetadata"){
+                let info = JSON.parse(item.memo);
+                arr.push(info);
+            }
+        }
+
+
+        const fileUrl = item.file.url;
+        const existingPdfBytes = await fetch(fileUrl).then(res => res.arrayBuffer());
+
+        const pdfDoc = await PDFDocument.load(existingPdfBytes);
+        pdfDoc.registerFontkit(fontkit);
+
+        const customFont = await pdfDoc.embedFont(fontBytes)
+        const textSize = 30;
+        const pages = pdfDoc.getPages();
+
+        arr.map((item)=>{
+            const textWidth = customFont.widthOfTextAtSize(item.base64, textSize)
+            const textHeight = customFont.heightAtSize(textSize);
+
+            const itemPage = pages[item.page-1];
+            const { height } = itemPage.getSize()
+
+            itemPage.drawRectangle({
+                x: item.left,
+                y:  height - item.top,
+                width: textWidth + 20,
+                height: textHeight + 20,
+                color:rgb(0.89,0.92,0.97),
+                opacity:0.9
+                // borderColor: rgb(1, 0, 0),
+                // borderWidth: 1.5,
+            })
+
+            itemPage.drawText(item.base64, {
+                x: item.left + 10,
+                y: height - item.top + 10 ,
+                size: textSize,
+                font: customFont,
+                color: rgb(0, 0, 0),
+            })
+        })
+
+        const pdfBytes = await pdfDoc.save();
+        download(pdfBytes, item.name, "application/pdf");
+    }
+
     return  <div>
         {
             show && <MaskBox><ApiLoader /></MaskBox>
@@ -519,9 +596,11 @@ export default function Contract(){
                                         <div className="hashLine">
                                             <div className="top">Created: </div><div>{formatTime(item.createAt)}</div>
                                         </div>
-                                        <LastLine onClick={()=>handleView(item.id)}>
-                                            {showTit(item)}
+                                        <LastLine>
+                                            <div className="btnT" onClick={()=>handleView(item.id)}>  {showTit(item)}</div>
+                                            <div className="rhtBtn" onClick={()=>handleDownload(item)}>download</div>
                                         </LastLine>
+
                                     </RhtBox>
                                 </dd>
 
