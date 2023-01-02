@@ -1,5 +1,6 @@
 declare module '*.png';
 declare module '*.pdf';
+declare module '*.ttf';
 
 
 declare module "*.svg" {

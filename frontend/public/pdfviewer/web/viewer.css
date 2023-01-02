@@ -2798,7 +2798,18 @@ html[dir="rtl"] #documentPropertiesOverlay .row > * {
   z-index: 99;
 }
 .base64-wrap div{
-  background-color: #fff;
+  /*border-radius: 4px;*/
+  width: 100%;
+  box-sizing: border-box;
+  /*border: 1px dashed #3198f9;*/
+  padding: 10px;
+  opacity: 0.9;
+  /*cursor: pointer;*/
+ /*background: linear-gradient(120deg,#3198f910 , #00c1ff30) ;*/
+  background: #e3eaf7;
+  /*background:#3198f910 url(${PenImg}) no-repeat 90% center;*/
+  /*background-size: 60px;*/
+  /*margin-bottom: 20px;*/
 }
 
 @font-face {

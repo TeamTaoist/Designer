@@ -13,6 +13,11 @@ import {useAccount, useReadState} from "@gear-js/react-hooks";
 import {ApiLoader} from "./components";
 import publicJs from "./utils/publicJs";
 import ContractImg from "./assets/images/icon_contract.svg";
+import { PDFDocument, rgb } from 'pdf-lib';
+import download from "downloadjs";
+import FontUrl from "./assets/fonts/Arabella.ttf";
+import fontkit from '@pdf-lib/fontkit';
+
 
 const MaskBox = styled.div`
     width: 100vw;
@@ -250,6 +255,65 @@ export default function Mine(){
         return res
     }
 
+    const handleDownload = async(item:any) =>{
+        console.log(item)
+        const all = item.otherRes;
+
+        const fontBytes = await fetch(FontUrl).then(res => res.arrayBuffer());
+
+
+        let arr=[];
+        for(let key in all){
+            let item = all[key][0];
+            if(item.cate === "SignMetadata"){
+                let info = JSON.parse(item.memo);
+                arr.push(info);
+            }
+        }
+
+
+        const fileUrl = item.file.url;
+
+        const existingPdfBytes = await fetch(fileUrl).then(res => res.arrayBuffer());
+
+        const pdfDoc = await PDFDocument.load(existingPdfBytes);
+        pdfDoc.registerFontkit(fontkit);
+
+        const customFont = await pdfDoc.embedFont(fontBytes)
+        const textSize = 30;
+        const pages = pdfDoc.getPages();
+
+        arr.map((item)=>{
+            const textWidth = customFont.widthOfTextAtSize(item.base64, textSize)
+            const textHeight = customFont.heightAtSize(textSize);
+
+            const itemPage = pages[item.page-1];
+            const { height } = itemPage.getSize()
+
+            itemPage.drawRectangle({
+                x: item.left,
+                y:  height - item.top,
+                width: textWidth + 20,
+                height: textHeight + 20,
+                color:rgb(0.89,0.92,0.97),
+                opacity:0.9
+                // borderColor: rgb(1, 0, 0),
+                // borderWidth: 1.5,
+            })
+
+            itemPage.drawText(item.base64, {
+                x: item.left + 10,
+                y: height - item.top + 10 ,
+                size: textSize,
+                font: customFont,
+                color: rgb(0, 0, 0),
+            })
+        })
+
+        const pdfBytes = await pdfDoc.save();
+        download(pdfBytes, item.name, "application/pdf");
+    }
+
     return <div>
         {
             show && <MaskBox><ApiLoader /></MaskBox>
@@ -277,9 +341,9 @@ export default function Mine(){
                                             <div className="li">
                                                 <img src={ViewImg} alt="View"  onClick={()=>handleView(item.id)} />
                                             </div>
-                                            {/*<div className="li">*/}
-                                            {/*    <img src={DownImg} alt="Download"/>*/}
-                                            {/*</div>*/}
+                                            <div className="li">
+                                                <img src={DownImg} alt="Download" onClick={()=>handleDownload(item)} />
+                                            </div>
                                             {/*<div className="li">*/}
                                             {/*    <img src={History} alt="History"/>*/}
                                             {/*</div>*/}
