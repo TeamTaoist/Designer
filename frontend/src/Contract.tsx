@@ -376,7 +376,6 @@ export default function Contract(){
         setShow(true);
         if(!(stateAll as any).state || !(stateAll as any).state!.Contracts)  return;
         const {total,pages,pageNum,data} = (stateAll as any).state.Contracts;
-        console.error(data)
         if(pageNum == current){
             setShow(false);
         }else{
