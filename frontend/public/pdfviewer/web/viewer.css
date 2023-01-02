@@ -2806,7 +2806,8 @@ html[dir="rtl"] #documentPropertiesOverlay .row > * {
   opacity: 0.9;
   /*cursor: pointer;*/
  /*background: linear-gradient(120deg,#3198f910 , #00c1ff30) ;*/
-  background: #e3eaf7;
+ /* background: #e3eaf7;*/
+  background: #fff;
   /*background:#3198f910 url(${PenImg}) no-repeat 90% center;*/
   /*background-size: 60px;*/
   /*margin-bottom: 20px;*/

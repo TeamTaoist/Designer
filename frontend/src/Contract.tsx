@@ -471,7 +471,7 @@ export default function Contract(){
                 y:  height - item.top,
                 width: textWidth + 20,
                 height: textHeight + 20,
-                color:rgb(0.89,0.92,0.97),
+                color:rgb(1,1,1),
                 opacity:0.9
                 // borderColor: rgb(1, 0, 0),
                 // borderWidth: 1.5,
