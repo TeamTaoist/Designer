@@ -177,7 +177,7 @@ export default function ViewPdf(props:pdfProps){
   const [sListIframe,setSListIframe] = useState<iframeObj[]>([]);
   const [show, setShow] = useState(false);
   const { account } = useAccount();
-
+  const CESS_URL = process.env.REACT_APP_CESS_URL;
 
   const handleSign = () =>{
     (document.querySelector('#iframe') as any).contentWindow.displaySignature()
@@ -280,7 +280,7 @@ export default function ViewPdf(props:pdfProps){
       show && <MaskBox><ApiLoader /></MaskBox>
     }
     <IframeBox>
-      <iframe id="iframe" src={`/pdfviewer/web/viewer.html?file=${fileUrl}`} />
+      <iframe id="iframe" src={`/pdfviewer/web/viewer.html?file=${CESS_URL}${fileUrl}`} />
     </IframeBox>
     <RhtBox>
 
