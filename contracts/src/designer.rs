@@ -401,13 +401,13 @@ impl DeSignerState {
     ) -> PageRet<Contract> {
         if let Some(id_list) = self.contract_map_by_signer.get(&addr) {
             let mut filter_list = Vec::with_capacity(id_list.len());
-            for i in id_list.iter().copied() {
+            for index in id_list.iter().copied() {
                 let contract = self
                     .contract_map
-                    .get(&id_list[i as usize])
+                    .get(&index)
                     .expect("not found contract");
                 if statuses.contains(&contract.status) {
-                    filter_list.push(id_list[i as usize]);
+                    filter_list.push(index);
                 }
             }
             let total = filter_list.len() as u64;
