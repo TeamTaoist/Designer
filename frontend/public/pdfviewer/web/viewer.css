@@ -2794,7 +2794,7 @@ html[dir="rtl"] #documentPropertiesOverlay .row > * {
 }
 .base64-wrap{
   position: absolute;
-  padding: 5px;
+  padding: 0 5px;
   z-index: 99;
 }
 .base64-wrap div{
@@ -2817,11 +2817,10 @@ html[dir="rtl"] #documentPropertiesOverlay .row > * {
   font-family: "Arabella";
   src: url('./Arabella.ttf');
 }
-
 .signature-show{
   font-family: "Arabella";
   font-size: 30px;
   font-weight: bold;
   text-indent: 3px;
-  padding: 15px;
+  /*padding: 15px;*/
 }

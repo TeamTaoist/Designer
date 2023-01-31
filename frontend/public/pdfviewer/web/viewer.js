@@ -15604,7 +15604,13 @@ function webViewerLoad() {
 if (document.blockUnblockOnload) {
   document.blockUnblockOnload(true);
 }
+window.onresize = function (){
+  webViewerLoad();
+  setTimeout(()=>{
+    Signing();
+  },900)
 
+}
 if (document.readyState === "interactive" || document.readyState === "complete") {
   webViewerLoad();
 } else {
