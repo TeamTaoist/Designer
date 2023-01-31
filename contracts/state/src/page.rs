@@ -1,4 +1,5 @@
-use gstd::prelude::*;
+use gstd::{prelude::*, ActorId};
+use designer_io::*;
 
 #[derive(Debug, Encode, Decode, TypeInfo)]
 #[codec(crate = gstd::codec)]
@@ -6,6 +7,8 @@ use gstd::prelude::*;
 pub struct PageParam {
     pub page_num: u64,
     pub page_size: u64,
+    pub addr: ActorId,
+    pub statuses: Vec<ContractStatus>,
 }
 
 impl PageParam {
