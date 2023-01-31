@@ -17,6 +17,7 @@ import { PDFDocument, rgb } from 'pdf-lib';
 import download from "downloadjs";
 import FontUrl from "./assets/fonts/Arabella.ttf";
 import fontkit from '@pdf-lib/fontkit';
+import Modal from "./components/modal";
 
 
 const MaskBox = styled.div`
@@ -210,6 +211,8 @@ export default function Mine(){
     const [current, setCurrent] = useState(1);
     const [total, setTotal] = useState(1);
     const [show, setShow] = useState(false);
+    const [showConfirm,setShowConfirm] = useState(false);
+    const [currentItem,setCurrentItem] = useState<any>();
 
     const {metadata} = ADDRESS;
     const programId = process.env.REACT_APP_PROGRAM_ID as Hex;
@@ -314,11 +317,28 @@ export default function Mine(){
         download(pdfBytes, item.name, "application/pdf");
     }
 
+    const handleCancel = (item:any) =>{
+        console.log(item)
+        setCurrentItem(item)
+        setShowConfirm(true);
+    }
+    const handleCloseModal = (item:any) =>{
+        console.log(item)
+        setShowConfirm(false);
+    }
+    const handleWithdraw = () =>{
+        console.log(currentItem)
+    }
+
     return <div>
         {
             show && <MaskBox><ApiLoader /></MaskBox>
         }
-         <Layout>
+        {
+            showConfirm &&<Modal closeModal={handleCloseModal} handleWithdraw={handleWithdraw} />
+        }
+
+        <Layout>
                 <Box>
                     <TabBox>
                         <li className="active">My Contracts</li>

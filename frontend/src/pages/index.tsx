@@ -6,7 +6,7 @@ import New from "../new";
 import Contracts from "../Contract";
 import Mine from "../Mine";
 import Setting from "../setting";
-import Detail from "../detail";
+import Detail from "../detailFrame";
 
 const routes = [
   { path: '/', Page: Home },
