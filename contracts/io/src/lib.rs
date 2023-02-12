@@ -81,6 +81,7 @@ pub struct Contract {
 
 #[derive(Debug, Default, Encode, Decode, TypeInfo, Hash, PartialEq, Eq, PartialOrd, Ord, Clone)]
 pub struct DeSignerState {
+    pub version: u64,
     pub owner: ActorId,
     pub index: u64,
     pub contract_map: BTreeMap<u64, Contract>,

@@ -6,8 +6,13 @@ use gstd::{debug, errors::Result, exec, msg, prelude::*, ActorId, MessageId};
 use designer_io::*;
 use alloc::collections::btree_map::Entry;
 
+// define designer contract version
+// ver = 1, impl basic contract create, sign, index function
+const DESIGNER_VER: u64 = 1;
+
 #[derive(Default)]
 pub struct DeSigner {
+    version: u64,
     owner: ActorId,
     index: u64,
     contract_map: BTreeMap<u64, Contract>,
@@ -343,6 +348,7 @@ extern "C" fn init() {
     debug!("init(): {:?}", params);
 
     let mut state = DeSigner::default();
+    state.version = DESIGNER_VER;
     state.set_owner(params.owner);
     unsafe { GLOBAL = Some(state) };
 }
@@ -381,6 +387,7 @@ async unsafe fn main() {
 #[no_mangle]
 extern "C" fn state() {
     let DeSigner {
+        version,
         owner,
         index,
         contract_map,
@@ -389,6 +396,7 @@ extern "C" fn state() {
     } = unsafe { GLOBAL.as_mut().expect("globalState not init") };
 
     let state = DeSignerState {
+        version: *version,
         owner: *owner,
         index: *index,
         contract_map: contract_map.iter().map(|(k, v)| (*k, v.clone())).collect(),

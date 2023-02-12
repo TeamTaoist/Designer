@@ -1,9 +1,7 @@
 use gstd::{prelude::*, ActorId};
 use designer_io::*;
 
-#[derive(Debug, Encode, Decode, TypeInfo)]
-#[codec(crate = gstd::codec)]
-#[scale_info(crate = gstd::scale_info)]
+#[derive(Debug, Default, Encode, Decode, TypeInfo, Hash, PartialEq, Eq, PartialOrd, Ord, Clone)]
 pub struct PageParam {
     pub page_num: u64,
     pub page_size: u64,
@@ -31,9 +29,7 @@ impl PageParam {
     }
 }
 
-#[derive(Debug, Encode, Decode, TypeInfo)]
-#[codec(crate = gstd::codec)]
-#[scale_info(crate = gstd::scale_info)]
+#[derive(Debug, Default, Encode, Decode, TypeInfo, Hash, PartialEq, Eq, PartialOrd, Ord, Clone)]
 pub struct PageRet<T> {
     pub total: u64,
     pub pages: u64,
