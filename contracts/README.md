@@ -82,6 +82,58 @@ make all
 make
 ```
 
+### Interface
+
+- `createContractWithAgree` with no resource
+
+```json
+{
+"createContractWithAgree": {
+            "name": "test1.0",
+            "signers": [
+                "0x98aa72dae1620f0ec6f24af905620e21662c19cf4846ad36cdcaa7725e341707"
+            ],
+            "file": {
+                "digest": {
+                     "SHA256": "0x98aa72dae1620f0ec6f24af905620e21662c19cf4846ad36cdcaa7725e341707"
+                },
+                "url": "-",
+                "memo":  null
+            },
+            "resource": null,
+            "expire": "1686187807000"
+        }
+}
+```
+
+- `createContractWithAgree` with resource
+
+```json
+{
+"createContractWithAgree": {
+            "name": "test1.0",
+            "signers": [
+                "0x98aa72dae1620f0ec6f24af905620e21662c19cf4846ad36cdcaa7725e341707"
+            ],
+            "file": {
+                "digest": {
+                     "SHA256": "0x98aa72dae1620f0ec6f24af905620e21662c19cf4846ad36cdcaa7725e341707"
+                },
+                "url": "-",
+                "memo":  "-"
+            },
+            "resource": {
+                        "digest": {
+                                "SHA256": "0x98aa72dae1620f0ec6f24af905620e21662c19cf4846ad36cdcaa7725e341707"
+                        },
+                        "url": "-",
+                        "memo": "-"
+            },
+            "expire": "1686187807000"
+        }
+}
+```
+
 ## License
 
 The source code is licensed under the [MIT license](LICENSE).

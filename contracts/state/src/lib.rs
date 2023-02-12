@@ -19,6 +19,10 @@ pub trait Metawasm {
         state.index
     }
 
+    fn version(state: Self::State) -> u64 {
+        state.version
+    }
+
     fn query_contract_by_creator(param: PageParam, state: Self::State) -> PageRet<Contract> {
         if let Some(id_list) = state.contract_map_by_creator.get(&param.addr) {
             let total = id_list.len() as u64;
