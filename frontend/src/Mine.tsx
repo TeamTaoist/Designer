@@ -3,7 +3,7 @@ import Layout from "./components/layout/layout";
 import styled from "styled-components";
 import ViewImg from "./assets/images/icon_eye.svg";
 import DownImg from "./assets/images/icon_download.svg";
-import History from "./assets/images/icon_history.svg";
+// import History from "./assets/images/icon_history.svg";
 import Finished from "./assets/images/icon_check_handwritten.svg";
 import {useEffect, useState} from "react";
 import ReactPaginate from 'react-paginate';
@@ -18,7 +18,6 @@ import FontUrl from "./assets/fonts/Arabella.ttf";
 import fontkit from '@pdf-lib/fontkit';
 import Modal from "./components/modal";
 import { getStateMetadata,GearApi } from '@gear-js/api';
-import metaWasm from "./wasm/designer_state.meta.wasm";
 
 
 const MaskBox = styled.div`
@@ -220,6 +219,7 @@ export default function Mine(){
 
     useEffect(()=>{
         const getState = async() =>{
+            setShow(true);
             const metadataRead = await fetch(metaWasm)
             const gearApi = await GearApi.create({providerAddress: NODE});
             const bufferData = await metadataRead.arrayBuffer()

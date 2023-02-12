@@ -6,19 +6,19 @@ import DownImg from "./assets/images/icon_down_arrow_outline.svg";
 import CheckImg from "./assets/images/icon_check.svg";
 import Wait from "./components/wait";
 import {ADDRESS} from "./consts";
-import {Hex} from "@gear-js/api";
-import {useAccount, useReadState} from "@gear-js/react-hooks";
+import {useAccount} from "@gear-js/react-hooks";
 import ReactPaginate from 'react-paginate';
 import publicJs from "./utils/publicJs";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import CopyImg from "./assets/images/icon-copyWhite.svg";
 import {ApiLoader} from "./components";
-import Finished from "./assets/images/icon_check_handwritten.svg";
+// import Finished from "./assets/images/icon_check_handwritten.svg";
 import ContractImg from "./assets/images/icon_contract.svg";
 import FontUrl from "./assets/fonts/Arabella.ttf";
 import {PDFDocument, rgb} from "pdf-lib";
 import fontkit from "@pdf-lib/fontkit";
 import download from "downloadjs";
+import {GearApi, getStateMetadata} from "@gear-js/api";
 
 const Box = styled.div`
     padding:20px 40px 40px;
@@ -307,7 +307,7 @@ export default function Contract(){
     const [ Nav ] = useState(['Queue','History']);
     const [ showArr,setShowArr ] = useState(new Array(6).fill(false));
 
-    const [list,setList] = useState([]);
+    const [list,setList] = useState<any[]>([]);
     const [pageCount, setPageCount] = useState(1);
     const pageSize = 10;
     const [current, setCurrent] = useState(1);
@@ -332,8 +332,8 @@ export default function Contract(){
         navigate(`/detail/${num}`)
     }
 
-    const {metadata,NODE} = ADDRESS;
-    const programId = process.env.REACT_APP_PROGRAM_ID as Hex;
+    const {NODE,metaWasm} = ADDRESS;
+    const programId = process.env.REACT_APP_PROGRAM_ID as any;
 
     let arr = currentNav === 0 ? [
         {
@@ -348,43 +348,47 @@ export default function Contract(){
         }
     ]
 
-    const payload ={
-        "QueryContractBySignerAndStatus": [
-            {
-                "pageNum": current,
-                "pageSize":pageSize
-            },
-            account?.decodedAddress,
-            arr
-        ]
-    }
-    // const payload ={
-    //     "QueryContractBySigner": [
-    //         {
-    //             "pageNum": current,
-    //             "pageSize":pageSize
-    //         },
-    //         account?.decodedAddress
-    //     ]
-    // }
-
-
-    // console.error(payload)
-
-    const stateAll = useReadState(programId, metadata, payload);
     useEffect(()=>{
-        setShow(true);
-        if(!(stateAll as any).state || !(stateAll as any).state!.Contracts)  return;
-        const {total,pages,pageNum,data} = (stateAll as any).state.Contracts;
-        if(pageNum == current){
-            setShow(false);
-        }else{
+
+        const getState = async() =>{
             setShow(true);
+            const metadataRead = await fetch(metaWasm)
+            const gearApi = await GearApi.create({providerAddress: NODE});
+            const bufferData = await metadataRead.arrayBuffer()
+            const metadataState = await getStateMetadata(new Uint8Array(bufferData));
+            console.log(arr)
+
+            const state = await gearApi.programState.readUsingWasm(
+                {
+                    programId,
+                    fn_name: 'query_contract_by_signer_and_status',
+                    wasm:new Uint8Array(bufferData),
+                    argument:  {
+                        "pageNum": current,
+                        "pageSize":pageSize,
+                        "addr":account?.decodedAddress,
+                        "statuses":arr
+                    },
+                },
+                metadataState,
+            );
+
+            const map = new Map(Object.entries(JSON.parse(state as any)));
+            const jsonFromMap = JSON.stringify(Object.fromEntries(map));
+            const jsonFormat = JSON.parse(jsonFromMap);
+            const {total,pages,pageNum,data} = jsonFormat;
+            if(pageNum == current){
+                setShow(false);
+            }else{
+                setShow(true);
+            }
+            setPageCount(pages);
+            setTotal(total)
+            setList(data)
         }
-        setPageCount(pages);
-        setTotal(total)
-        setList(data)
-    },[(stateAll as any).state,current]);
+        getState()
+
+    },[arr.length])
 
     const handlePageClick = (event:{ selected: number }) => {
         setCurrent((event as any).selected + 1);
