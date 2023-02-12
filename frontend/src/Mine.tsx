@@ -224,8 +224,6 @@ export default function Mine(){
             const gearApi = await GearApi.create({providerAddress: NODE});
             const bufferData = await metadataRead.arrayBuffer()
             const metadataState = await getStateMetadata(new Uint8Array(bufferData));
-            console.log(current,pageSize,account?.decodedAddress)
-
             const state = await gearApi.programState.readUsingWasm(
                 {
                     programId,
