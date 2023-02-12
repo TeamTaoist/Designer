@@ -8,8 +8,7 @@ import Finished from "./assets/images/icon_check_handwritten.svg";
 import {useEffect, useState} from "react";
 import ReactPaginate from 'react-paginate';
 import {ADDRESS} from "./consts";
-import {Hex} from "@gear-js/api";
-import {useAccount, useReadState} from "@gear-js/react-hooks";
+import {useAccount} from "@gear-js/react-hooks";
 import {ApiLoader} from "./components";
 import publicJs from "./utils/publicJs";
 import ContractImg from "./assets/images/icon_contract.svg";
@@ -18,6 +17,8 @@ import download from "downloadjs";
 import FontUrl from "./assets/fonts/Arabella.ttf";
 import fontkit from '@pdf-lib/fontkit';
 import Modal from "./components/modal";
+import { getStateMetadata,GearApi } from '@gear-js/api';
+import metaWasm from "./wasm/designer_state.meta.wasm";
 
 
 const MaskBox = styled.div`
@@ -214,34 +215,47 @@ export default function Mine(){
     const [showConfirm,setShowConfirm] = useState(false);
     const [currentItem,setCurrentItem] = useState<any>();
 
-    const {metadata} = ADDRESS;
-    const programId = process.env.REACT_APP_PROGRAM_ID as Hex;
+    const {NODE,metaWasm} = ADDRESS;
+    const programId = process.env.REACT_APP_PROGRAM_ID as any ;
 
-
-    const payload ={
-        "QueryContractByCreator": [
-            {
-                "pageNum": current,
-                "pageSize":pageSize
-            },
-            account?.decodedAddress
-        ]
-    }
-
-    const stateAll = useReadState(programId, metadata, payload);
     useEffect(()=>{
-        setShow(true);
-        if(!(stateAll as any).state || !(stateAll as any).state!.Contracts)  return;
-        const {total,pages,pageNum,pageSize,data} = (stateAll as any).state.Contracts;
-        if(pageNum == current){
-            setShow(false);
-        }else{
-            setShow(true);
+        const getState = async() =>{
+            const metadataRead = await fetch(metaWasm)
+            const gearApi = await GearApi.create({providerAddress: NODE});
+            const bufferData = await metadataRead.arrayBuffer()
+            const metadataState = await getStateMetadata(new Uint8Array(bufferData));
+            console.log(current,pageSize,account?.decodedAddress)
+
+            const state = await gearApi.programState.readUsingWasm(
+                {
+                    programId,
+                    fn_name: 'query_contract_by_creator',
+                    wasm:new Uint8Array(bufferData),
+                    argument:  {
+                        "pageNum": current,
+                        "pageSize":pageSize,
+                        "addr":account?.decodedAddress
+                    },
+                },
+                metadataState,
+            );
+
+            const map = new Map(Object.entries(JSON.parse(state as any)));
+            const jsonFromMap = JSON.stringify(Object.fromEntries(map));
+            const jsonFormat = JSON.parse(jsonFromMap);
+            const {total,pages,pageNum,data} = jsonFormat;
+                if(pageNum == current){
+                    setShow(false);
+                }else{
+                    setShow(true);
+                }
+                setPageCount(pages);
+                setTotal(total)
+                setList(data)
         }
-        setPageCount(pages);
-        setTotal(total)
-        setList(data)
-    },[(stateAll as any).state,current]);
+        getState()
+
+    },[])
 
 
     const handleView = (num:number) =>{
@@ -264,7 +278,6 @@ export default function Mine(){
 
         const fontBytes = await fetch(FontUrl).then(res => res.arrayBuffer());
 
-
         let arr=[];
         for(let key in all){
             let item = all[key][0];
@@ -274,11 +287,8 @@ export default function Mine(){
             }
         }
 
-
         const fileUrl = item.file.url;
-
         const existingPdfBytes = await fetch(fileUrl).then(res => res.arrayBuffer());
-
         const pdfDoc = await PDFDocument.load(existingPdfBytes);
         pdfDoc.registerFontkit(fontkit);
 
@@ -300,8 +310,6 @@ export default function Mine(){
                 height: textHeight + 20,
                 color:rgb(1,1,1),
                 opacity:0.9
-                // borderColor: rgb(1, 0, 0),
-                // borderWidth: 1.5,
             })
 
             itemPage.drawText(item.base64, {
@@ -427,8 +435,6 @@ export default function Mine(){
                             />
                         </PageLine>
                     }
-
-
                 </Box>
             </Layout>
 
