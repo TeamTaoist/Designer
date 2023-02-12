@@ -3,11 +3,10 @@ import ViewPdf from "./components/ViewPdf";
 import Layout from "./components/layout/layout";
 import {useEffect, useState} from "react";
 import { useParams } from "react-router-dom";
-import {useReadState} from "@gear-js/react-hooks";
 import {ADDRESS} from "./consts";
-import {Hex} from "@gear-js/api";
 import {ApiLoader} from "./components";
-
+import ContractFile from "./components/Introduction.pdf";
+import {GearApi, getStateMetadata} from "@gear-js/api";
 
 const MaskBox = styled.div`
     width: 100vw;
@@ -30,19 +29,112 @@ export default function Detail(){
     const [agreeList,setAgreeList] = useState<any[]>([]);
     const [contract,setContract] = useState<any[]>([]);
     const [url,setUrl] = useState('');
+    const [stateAll,setStateAll] = useState<any>();
 
     const {id} = useParams();
-    const payload ={
-        "QueryContractById":id
-    }
-    const {metadata} = ADDRESS;
-    const programId = process.env.REACT_APP_PROGRAM_ID as Hex;
-    const stateAll = useReadState(programId, metadata, payload);
+
+    // const payload ={
+    //     "QueryContractById":id
+    // }
+
+    const {NODE,metaWasm} = ADDRESS;
+    const programId = process.env.REACT_APP_PROGRAM_ID as any;
 
     useEffect(()=>{
-        if(!stateAll.state)return;
+        const getState = async() =>{
+            setShow(true);
+            const metadataRead = await fetch(metaWasm)
+            const gearApi = await GearApi.create({providerAddress: NODE});
+            const bufferData = await metadataRead.arrayBuffer()
+            const metadataState = await getStateMetadata(new Uint8Array(bufferData));
+            const state = await gearApi.programState.readUsingWasm(
+                {
+                    programId,
+                    fn_name: 'query_contract_by_id',
+                    wasm:new Uint8Array(bufferData),
+                    argument:  {
+                        "owner":id
+                    },
+                },
+                metadataState,
+            );
+
+            const map = new Map(Object.entries(JSON.parse(state as any)));
+            const jsonFromMap = JSON.stringify(Object.fromEntries(map));
+            const jsonFormat = JSON.parse(jsonFromMap);
+            setStateAll(jsonFormat)
+            console.log(jsonFormat)
+            setShow(false);
+        }
+        getState()
+
+    },[])
+    // const stateAll:any = {};
+    //  stateAll.state  = {
+    //     "Contract": {
+    //         "id": "4",
+    //         "creator": "0x7070189aebb91e842b482632acf8016110e48a0051bb2e64c1f458d34538145d",
+    //         "creatTx": "0x93c2100339739f5a2465fb233107d6ab70185251b36757e93c4b8ca1a1c305e6",
+    //         "name": "Hackathon-2022-winter.pdf",
+    //         "createAt": "1,672,084,118,000",
+    //         "expire": "1,674,676,104,132",
+    //         "status": "Sealed",
+    //         "signers": [
+    //             "0x7070189aebb91e842b482632acf8016110e48a0051bb2e64c1f458d34538145d",
+    //             "0xc4a4583f82475091d80f972ea0a6c7a12774cd01a0fac5ed2b57f2cffe778f7d"
+    //         ],
+    //         "agreeOn": {
+    //             "0x7070189aebb91e842b482632acf8016110e48a0051bb2e64c1f458d34538145d": {
+    //                 "msgId": "0x93c2100339739f5a2465fb233107d6ab70185251b36757e93c4b8ca1a1c305e6",
+    //                 "createAt": "1,672,084,118,000"
+    //             },
+    //             "0xc4a4583f82475091d80f972ea0a6c7a12774cd01a0fac5ed2b57f2cffe778f7d": {
+    //                 "msgId": "0x475c406c691e20c12de1f5c1a0dc2d91fe33a22bd0d3b9eef7b63aaf81f7da63",
+    //                 "createAt": "1,672,084,215,001"
+    //             }
+    //         },
+    //         "file": {
+    //             "digest": {
+    //                 "SHA256": "26181c8d481d75a930886d82bac166193eed215556656e1ca1ab7e32673d42de"
+    //             },
+    //             "url": ContractFile,
+    //             "memo": null,
+    //             "cate": "MainFile",
+    //             "creator": "0x7070189aebb91e842b482632acf8016110e48a0051bb2e64c1f458d34538145d",
+    //             "creatAt": "1,672,084,118,000"
+    //         },
+    //         "otherRes": {
+    //             "0x7070189aebb91e842b482632acf8016110e48a0051bb2e64c1f458d34538145d": [
+    //                 {
+    //                     "digest": {
+    //                         "SHA256": "-"
+    //                     },
+    //                     "url": "-",
+    //                     "memo": "{\"left\":0.4298,\"top\":0.2502,\"base64\":\"test003\",\"index\":0,\"page\":2,\"creator\":\"0x7070189aebb91e842b482632acf8016110e48a0051bb2e64c1f458d34538145d\",\"saveAt\":1672084099695}",
+    //                     "cate": "SignMetadata",
+    //                     "creator": "0x7070189aebb91e842b482632acf8016110e48a0051bb2e64c1f458d34538145d",
+    //                     "creatAt": "1,672,084,118,000"
+    //                 }
+    //             ],
+    //             "0xc4a4583f82475091d80f972ea0a6c7a12774cd01a0fac5ed2b57f2cffe778f7d": [
+    //                 {
+    //                     "digest": {
+    //                         "SHA256": "26181c8d481d75a930886d82bac166193eed215556656e1ca1ab7e32673d42de"
+    //                     },
+    //                     "url": "http://localhost:8080/preview/26181c8d481d75a930886d82bac166193eed215556656e1ca1ab7e32673d42de",
+    //                     "memo": "{\"left\":0.4298,\"top\":0.2502,\"base64\":\"Test001\",\"index\":1,\"page\":3,\"creator\":\"0xc4a4583f82475091d80f972ea0a6c7a12774cd01a0fac5ed2b57f2cffe778f7d\",\"saveAt\":1672084195359}",
+    //                     "cate": "SignMetadata",
+    //                     "creator": "0xc4a4583f82475091d80f972ea0a6c7a12774cd01a0fac5ed2b57f2cffe778f7d",
+    //                     "creatAt": "1,672,084,215,001"
+    //                 }
+    //             ]
+    //         }
+    //     }
+    // }
+    useEffect(()=>{
+        if(!stateAll)return;
         setShow(false);
-        let all = (stateAll as any).state.Contract.otherRes;
+        let all = (stateAll as any).otherRes;
         let arr=[];
         for(let key in all){
             let item = all[key][0];
@@ -60,11 +152,11 @@ export default function Detail(){
             }
         }
         setAgreeList(arr)
-        setContract((stateAll as any).state!.Contract)
-        const {file } = (stateAll as any).state.Contract;
+        setContract((stateAll as any))
+        const {file } = (stateAll as any);
         const {url} = file;
         setUrl(url);
-    },[stateAll.state])
+    },[])
 
     return <div>
         {
@@ -72,7 +164,7 @@ export default function Detail(){
         }
         <Layout>
             <Box>
-                <ViewPdf fileUrl={url} agreeList={agreeList} showBtn={true} id={id} contract={contract} />
+                <ViewPdf fileUrl={ContractFile} agreeList={agreeList} showBtn={true} id={id} contract={contract} />
             </Box>
 
         </Layout>
