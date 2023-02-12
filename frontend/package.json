@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@gear-js/api": "^0.27.7",
+    "@gear-js/api": "^0.29.1",
     "@gear-js/react-hooks": "^0.3.10",
     "@gear-js/ui": "^0.5.13",
     "@mantine/form": "^4.2.12",
@@ -26,6 +26,7 @@
     "@types/react-copy-to-clipboard": "^5.0.4",
     "@types/react-dom": "^18.0.9",
     "@types/styled-components": "^5.1.26",
+    "assert": "^2.0.0",
     "axios": "^1.2.1",
     "bootstrap": "^5.2.3",
     "buffer": "^6.0.3",

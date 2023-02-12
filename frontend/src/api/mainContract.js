@@ -1,5 +1,4 @@
 import { ActionType } from "../utils/types";
-import metaWasm from "../wasm/de_signer.meta.wasm";
 
 
 const programId = process.env.REACT_APP_PROGRAM_ID;
