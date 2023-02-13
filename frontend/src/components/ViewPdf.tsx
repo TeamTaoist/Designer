@@ -7,9 +7,13 @@ import {ActionType} from "../utils/types";
 import FinishedImg from "../assets/images/hand.svg";
 import PenImg from "../assets/images/icon_pen.svg";
 import {ADDRESS} from "../consts";
-import {Hex} from "@gear-js/api";
+// import {Hex} from "@gear-js/api";
 import {useNavigate} from "react-router-dom";
 import {ApiLoader} from "./loaders";
+// import metaWasm from "../wasm/designer_state.meta.wasm";
+import {GearApi, getProgramMetadata} from "@gear-js/api";
+import MetaTxt from "../wasm/meta.txt";
+import {web3FromSource} from "@polkadot/extension-dapp";
 
 const Box = styled.div`
   display: flex;
@@ -230,9 +234,9 @@ export default function ViewPdf(props:pdfProps){
     (document.querySelector('#iframe') as any).contentWindow.gotoPageFrom(num)
   }
 
-  const {metadata} = ADDRESS;
-  const programId = process.env.REACT_APP_PROGRAM_ID as Hex;
-  const sendMessage = useSendMessage(programId, metadata);
+  const {metaWasm,NODE} = ADDRESS;
+  const programId = process.env.REACT_APP_PROGRAM_ID;
+  // const sendMessage = useSendMessage(programId, metaWasm);
 
   let sig = JSON.stringify(sList[sList.length-1]);
 
@@ -250,14 +254,45 @@ export default function ViewPdf(props:pdfProps){
         }
       }
   ;
-  const reset = () =>{
-    setShow(false);
-    window.location.reload();
-  }
+  // const reset = () =>{
+  //   setShow(false);
+  //   window.location.reload();
+  // }
 
-  const handleSubmit = () =>{
+  const handleSubmit = async () =>{
     setShow(true);
-    return sendMessage(payload, { onSuccess: reset })
+    // return sendMessage(payload, { onSuccess: reset })
+
+    try {
+      const message:any = {
+        destination: programId, // programId
+        payload,
+        gasLimit: 10000000000,
+        value: 10000,
+      };
+      // const metadataRead = await fetch(metaWasm)
+      const gearApi = await GearApi.create({providerAddress: NODE});
+
+
+      const metaTXTRead = await fetch(MetaTxt);
+      const metaStr = await metaTXTRead.text();
+
+      const metadata = getProgramMetadata(`0x${metaStr}`);
+
+      console.error(gearApi.message)
+      let extrinsic = gearApi.message.send(message, metadata);
+      console.log(extrinsic,account)
+
+      const injector = await web3FromSource(account!.meta.source);
+      console.error("injector===",account!.decodedAddress,injector.signer)
+
+      await extrinsic.signAndSend(account!.decodedAddress, { signer: injector.signer },(event) => {
+        console.log(event.toHuman());
+      });
+
+    } catch (error:any) {
+      console.error(`${error.name}: ${error.message}`);
+    }
   }
 
   const handleShowBtn = () =>{
