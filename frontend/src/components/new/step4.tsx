@@ -6,11 +6,15 @@ import MeImg from "../../assets/images/icon_person.svg";
 import Wait from "../wait";
 
 import {ADDRESS} from "../../consts";
-import {Hex} from "@gear-js/api";
-import {useSendMessage} from "@gear-js/react-hooks";
+import {useAccount} from "@gear-js/react-hooks";
 import {useEffect, useState} from "react";
 import {useSubstrate} from "../../api/connect";
 import {useNavigate} from "react-router-dom";
+import metaWasm from "../../wasm/multisig_wallet_state.meta.wasm";
+import {GearApi} from "@gear-js/api";
+import { getProgramMetadata } from '@gear-js/api';
+import MetaTxt from "../../wasm/meta.txt";
+import {  web3FromSource } from '@polkadot/extension-dapp';
 
 const Box = styled.div`
   margin-top: 40px;
@@ -121,7 +125,7 @@ export default function Step4(props:Iprops){
     const {state} = useSubstrate();
     const {iframeList,pdf} = state;
     const navigate = useNavigate();
-
+    const { account } = useAccount();
     const {list,fileObj} =props;
     const [signers,setSigners]= useState<string[]>([]);
 
@@ -133,23 +137,47 @@ export default function Step4(props:Iprops){
         setSigners(arr);
     },[list])
 
-    const {metadata} = ADDRESS;
-    const programId = process.env.REACT_APP_PROGRAM_ID as Hex;
-    const sendMessage = useSendMessage(programId, metadata);
+    // const {metadata} = ADDRESS;
+    const programId = process.env.REACT_APP_PROGRAM_ID as any ;
+    const {NODE} = ADDRESS;
+    // const sendMessage = useSendMessage(programId, metadata);
 
     const dateTime = (new Date()).valueOf() + 30 * 24 * 3600 * 1000;
-    console.log(dateTime,pdf)
 
     // const IPFS_URL = process.env.REACT_APP_IPFS_URL;
+    // const payload = {
+    //     "createContractWithAgree": {
+    //         "name": fileObj?.name,
+    //         "signers":signers,
+    //         "file": {
+    //             "digest": {
+    //                 "SHA256": pdf.fid
+    //             },
+    //             "url": `/preview/${pdf.fid}`,
+    //             "memo":null
+    //         },
+    //         "resource": {
+    //             "digest": {
+    //                 "SHA256": "-"
+    //             },
+    //             "url": "-",
+    //             "memo": JSON.stringify(iframeList![0])
+    //         },
+    //
+    //         "expire": dateTime
+    //     }
+    // };
+    console.log(signers)
     const payload = {
         "createContractWithAgree": {
             "name": fileObj?.name,
-            "signers":signers,
+            // "signers":signers,
+            "signers":["0xc4a4583f82475091d80f972ea0a6c7a12774cd01a0fac5ed2b57f2cffe778f7d"],
             "file": {
                 "digest": {
-                    "SHA256": pdf.fid
+                    "SHA256": "0xD85c413dA833CeBD8338138CcEFA04979DF70E8e"
                 },
-                "url": `/preview/${pdf.fid}`,
+                "url": `/preview/0xD85c413dA833CeBD8338138CcEFA04979DF70E8e`,
                 "memo":null
             },
             "resource": {
@@ -157,19 +185,51 @@ export default function Step4(props:Iprops){
                     "SHA256": "-"
                 },
                 "url": "-",
-                "memo": JSON.stringify(iframeList![0])
+                "memo":"{\"left\":259,\"top\":84,\"base64\":\"aaa\",\"index\":0,\"page\":2,\"creator\":\"0xc4a4583f82475091d80f972ea0a6c7a12774cd01a0fac5ed2b57f2cffe778f7d\",\"saveAt\":1672079578673}"
             },
 
             "expire": dateTime
         }
     };
 
-    console.error(payload);
-
     const reset = () =>{
-        navigate(`/mine`);
+        // navigate(`/mine`);
     }
-    const sendReply = () => sendMessage(payload, { onSuccess: reset });
+
+    const sendReply = async() =>{
+
+
+        try {
+            const message = {
+                destination: programId, // programId
+                payload,
+                gasLimit: 10000000000,
+                value: 10000,
+            };
+            const metadataRead = await fetch(metaWasm)
+            const gearApi = await GearApi.create({providerAddress: NODE});
+
+
+        const metaTXTRead = await fetch(MetaTxt);
+        const metaStr = await metaTXTRead.text();
+
+        const metadata = getProgramMetadata(`0x${metaStr}`);
+
+        console.error(gearApi.message)
+            let extrinsic = gearApi.message.send(message, metadata);
+            console.log(extrinsic,account)
+
+        const injector = await web3FromSource(account!.meta.source);
+            console.error("===injector",injector)
+
+        await extrinsic.signAndSend(account!.address, { signer: injector.signer },(event) => {
+            console.log(event.toHuman());
+        });
+
+        } catch (error:any) {
+            console.error(`${error.name}: ${error.message}`);
+        }
+    }
 
     return <Box>
 
