@@ -9,7 +9,7 @@ import { stringToU8a,stringToHex } from '@polkadot/util';
 import { decodeAddress, encodeAddress } from "@polkadot/util-crypto"
 import { web3FromSource} from '@polkadot/extension-dapp';
 import {useAccount} from "@gear-js/react-hooks";
-import {Auth, Upload} from "../../api/apiHttp";
+// import {Auth, Upload} from "../../api/apiHttp";
 import fleekStorage from '@fleekhq/fleek-storage-js';
 import  * as uuid  from 'uuid';
 import {ApiLoader} from "../loaders";
@@ -161,34 +161,34 @@ export default function Step1(props:Iprops){
     }
 
 
-    const auth = async() =>{
-        let accountFormat = encodeAddress(decodeAddress(account?.address), 11330)
-        console.log(account)
-        let message = "hello"
-        const messageU8a = stringToU8a(message);
-        console.log(messageU8a)
-        const {meta} = account!;
-        // const {signer} = await web3FromSource(meta.source);
-        const injector = await web3FromSource(meta.source);
-        const signRaw = injector?.signer?.signRaw;
-
-        if (!signRaw && !account?.address)return;
-        // const { signature } = await (signRaw as any)({
-        //     address: account?.address,
-        //     data: stringToHex(message),
-        //     type: 'bytes'
-        // });
-        // let signatureArr = stringToU8a(signature)
-
-        let obj = {
-            "account": accountFormat,
-            "message": "",
-            "signature": []
-        }
-        let res = await Auth(obj);
-        localStorage.setItem("token",res.token);
-        console.log(res.token)
-    }
+    // const auth = async() =>{
+    //     let accountFormat = encodeAddress(decodeAddress(account?.address), 11330)
+    //     console.log(account)
+    //     let message = "hello"
+    //     const messageU8a = stringToU8a(message);
+    //     console.log(messageU8a)
+    //     const {meta} = account!;
+    //     // const {signer} = await web3FromSource(meta.source);
+    //     const injector = await web3FromSource(meta.source);
+    //     const signRaw = injector?.signer?.signRaw;
+    //
+    //     if (!signRaw && !account?.address)return;
+    //     // const { signature } = await (signRaw as any)({
+    //     //     address: account?.address,
+    //     //     data: stringToHex(message),
+    //     //     type: 'bytes'
+    //     // });
+    //     // let signatureArr = stringToU8a(signature)
+    //
+    //     let obj = {
+    //         "account": accountFormat,
+    //         "message": "",
+    //         "signature": []
+    //     }
+    //     let res = await Auth(obj);
+    //     localStorage.setItem("token",res.token);
+    //     console.log(res.token)
+    // }
 
     // const upload = (fileData: File) => {
     //     const formData = new FormData();
