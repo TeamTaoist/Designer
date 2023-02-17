@@ -10,6 +10,9 @@ import { decodeAddress, encodeAddress } from "@polkadot/util-crypto"
 import { web3FromSource} from '@polkadot/extension-dapp';
 import {useAccount} from "@gear-js/react-hooks";
 import {Auth, Upload} from "../../api/apiHttp";
+import fleekStorage from '@fleekhq/fleek-storage-js';
+import  * as uuid  from 'uuid';
+import {ApiLoader} from "../loaders";
 
 const Box = styled.div`
   padding-top: 20px;
@@ -125,6 +128,17 @@ const Wallet = styled.div`
     opacity: 0.8;
   }
 `
+
+const MaskBox = styled.div`
+    width: 100vw;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background: #000;
+  z-index: 19;
+`
+
 interface Iprops{
     checkStep:Function
     handleUrl:Function
@@ -135,6 +149,7 @@ export default function Step1(props:Iprops){
     const [fileName,setFileName] = useState('');
     const [file,setFile] = useState();
     const { account } = useAccount();
+    const [show, setShow] = useState(false);
 
     const updateLogo = (e:FormEvent) =>{
         const { files } = e.target as any;
@@ -184,23 +199,40 @@ export default function Step1(props:Iprops){
 
     const handleNext = async () =>{
         if(!file)return;
-        try {
-            await auth();
-            const res = await Upload(file);
-                console.log(res)
+        setShow(true);
+        const key = uuid.v4();
+        const apiKey = process.env.REACT_APP_API_KEY;
+        const apiSecret= process.env.REACT_APP_API_SECRET;
+        console.log(key)
+        try{
+            // await auth();
+            const uploadedFile = await fleekStorage.upload({
+                apiKey:apiKey!,
+                apiSecret:apiSecret!,
+                key,
+                data: file,
+                httpUploadProgressCallback: (event) => {
+                    console.log(Math.round(event.loaded/event.total*100)+ '% done');
+                }
+            });
+             console.log("uploadedFile",uploadedFile)
+            setShow(false);
+
             let obj ={
-                    fid:res.fid,
+                    fid:uploadedFile.key,
             }
             dispatch({ type: ActionType.SET_PDF, payload:obj });
             checkStep(2)
-
         } catch (error:any) {
+            setShow(false);
             console.error(error?.message);
-
         }
     }
 
     return  <Box>
+        {
+            show && <MaskBox><ApiLoader /></MaskBox>
+        }
         <TitleBox>Upload Contract</TitleBox>
         <label htmlFor="file-upload" className="custom-file-upload" >
             <UploadBox >

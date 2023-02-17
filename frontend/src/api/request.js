@@ -1,23 +1,23 @@
 import axios from "axios";
 
-const CESS_URL = process.env.REACT_APP_CESS_URL;
+// const CESS_URL = process.env.REACT_APP_CESS_URL;
 
 const request = axios.create({
-    baseURL: CESS_URL,
+    // baseURL: CESS_URL,
     timeout: 6000,
     // headers: { "Content-Type": "multipart/form-data" },
 });
 
 request.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem("token");
-        console.log("====",config)
+        // const token = localStorage.getItem("token");
+        // console.log("====",config)
         // if (!token) {
         //     return config;
         // }
-        config.headers["Authorization"] = token || "";
+        // config.headers["Authorization"] = token || "";
         // config.headers["Authorization"] = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50IjoiY1hoWDV0OWVNWmoxTGt6YVhqZVdzQ1hqZ2J3OHdmSE5mM0NuRDNqQlp6dmgxZkV5NyIsImV4cCI6MTY3NDY2NDE5MCwibmJmIjoxNjcyMDcyMTMwfQ.ib6QL4xW41mei8H4eMtFknr-Jr85bSWMK2d1f51-n-Y";
-        config.headers["BucketName"] = "myspace";
+        // config.headers["BucketName"] = "myspace";
         return config;
     },
     (error) => {

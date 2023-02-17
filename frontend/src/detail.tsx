@@ -5,8 +5,8 @@ import {useEffect, useState} from "react";
 import { useParams } from "react-router-dom";
 import {ADDRESS} from "./consts";
 import {ApiLoader} from "./components";
-import ContractFile from "./components/Introduction.pdf";
 import {GearApi, getStateMetadata} from "@gear-js/api";
+import fleekStorage from '@fleekhq/fleek-storage-js';
 
 const MaskBox = styled.div`
     width: 100vw;
@@ -29,6 +29,7 @@ export default function Detail(){
     const [agreeList,setAgreeList] = useState<any[]>([]);
     const [contract,setContract] = useState<any[]>([]);
     const [url,setUrl] = useState('');
+    const [fid,setFid] = useState('d9060831-2355-45d6-9780-3d6e8d391146');
     const [stateAll,setStateAll] = useState<any>();
 
     const {id} = useParams();
@@ -65,10 +66,37 @@ export default function Detail(){
             setStateAll(jsonFormat)
             console.log(jsonFormat)
             setShow(false);
+            const fidUrl = jsonFormat.file.digest.SHA256;
+            setFid(fidUrl);
         }
         getState()
 
     },[])
+    useEffect(()=>{
+        if(!fid)return;
+        const apiKey = process.env.REACT_APP_API_KEY;
+        const apiSecret= process.env.REACT_APP_API_SECRET;
+        const getFile = async() =>{
+            const myFile = await fleekStorage.get({
+                apiKey:apiKey!,
+                apiSecret:apiSecret!,
+                key: fid,
+                getOptions: [
+                    'data',
+                    'bucket',
+                    'key',
+                    'hash',
+                    'publicUrl'
+                ],
+            })
+            const { publicUrl } = myFile;
+            setUrl(publicUrl!);
+        }
+
+
+        getFile();
+
+    },[fid])
     // const stateAll:any = {};
     //  stateAll.state  = {
     //     "Contract": {
@@ -153,9 +181,9 @@ export default function Detail(){
         }
         setAgreeList(arr)
         setContract((stateAll as any))
-        const {file } = (stateAll as any);
-        const {url} = file;
-        setUrl(url);
+        // const {file } = (stateAll as any);
+        // const {url} = file;
+        // setUrl(url);
     },[])
 
     return <div>
@@ -164,7 +192,7 @@ export default function Detail(){
         }
         <Layout>
             <Box>
-                <ViewPdf fileUrl={ContractFile} agreeList={agreeList} showBtn={true} id={id} contract={contract} />
+                <ViewPdf fileUrl={url} agreeList={agreeList} showBtn={true} id={id} contract={contract} />
             </Box>
 
         </Layout>

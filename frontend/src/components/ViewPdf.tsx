@@ -279,9 +279,7 @@ export default function ViewPdf(props:pdfProps){
 
       const metadata = getProgramMetadata(`0x${metaStr}`);
 
-      console.error(gearApi.message)
       let extrinsic = gearApi.message.send(message, metadata);
-      console.log(extrinsic,account)
 
       const injector = await web3FromSource(account!.meta.source);
       console.error("injector===",account!.decodedAddress,injector.signer)
