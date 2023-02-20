@@ -19,6 +19,7 @@ import {PDFDocument, rgb} from "pdf-lib";
 import fontkit from "@pdf-lib/fontkit";
 import download from "downloadjs";
 import {GearApi, getStateMetadata} from "@gear-js/api";
+import fleekStorage from "@fleekhq/fleek-storage-js";
 
 const Box = styled.div`
     padding:20px 40px 40px;
@@ -437,12 +438,12 @@ export default function Contract(){
     }
 
     const handleDownload = async(item:any) =>{
-        console.log(item)
+        setShow(true)
         const all = item.otherRes;
 
         const fontBytes = await fetch(FontUrl).then(res => res.arrayBuffer());
 
-
+        console.log(item)
         let arr=[];
         for(let key in all){
             let item = all[key][0];
@@ -452,9 +453,27 @@ export default function Contract(){
             }
         }
 
+        const fid = item.file.digest.sha256;
+        const apiKey = process.env.REACT_APP_API_KEY;
+        const apiSecret= process.env.REACT_APP_API_SECRET;
 
-        const fileUrl = item.file.url;
-        const existingPdfBytes = await fetch(fileUrl).then(res => res.arrayBuffer());
+        const myFile = await fleekStorage.get({
+            apiKey:apiKey!,
+            apiSecret:apiSecret!,
+            key: fid,
+            getOptions: [
+                'data',
+                'bucket',
+                'key',
+                'hash',
+                'publicUrl'
+            ],
+        })
+
+            const { publicUrl } = myFile;
+
+
+        const existingPdfBytes = await fetch(publicUrl!).then(res => res.arrayBuffer());
 
         const pdfDoc = await PDFDocument.load(existingPdfBytes);
         pdfDoc.registerFontkit(fontkit);
@@ -463,16 +482,17 @@ export default function Contract(){
         const textSize = 30;
         const pages = pdfDoc.getPages();
 
-        arr.map((item)=>{
-            const textWidth = customFont.widthOfTextAtSize(item.base64, textSize)
+        arr.map((itemInner)=>{
+            const textWidth = customFont.widthOfTextAtSize(itemInner.base64, textSize)
             const textHeight = customFont.heightAtSize(textSize);
 
-            const itemPage = pages[item.page-1];
-            const { height } = itemPage.getSize()
+            const itemPage = pages[itemInner.page-1];
+            const { height,width } = itemPage.getSize()
+
 
             itemPage.drawRectangle({
-                x: item.left,
-                y:  height - item.top,
+                x: itemInner.left * width,
+                y:  height * (1- itemInner.top) ,
                 width: textWidth + 20,
                 height: textHeight + 20,
                 color:rgb(1,1,1),
@@ -481,17 +501,18 @@ export default function Contract(){
                 // borderWidth: 1.5,
             })
 
-            itemPage.drawText(item.base64, {
-                x: item.left + 10,
-                y: height - item.top + 10 ,
+            itemPage.drawText(itemInner.base64, {
+                x: itemInner.left * width + 10,
+                y: height * (1- itemInner.top) + 10 ,
                 size: textSize,
                 font: customFont,
                 color: rgb(0, 0, 0),
             })
         })
-
+        setShow(false);
         const pdfBytes = await pdfDoc.save();
         download(pdfBytes, item.name, "application/pdf");
+
     }
 
     return  <div>
