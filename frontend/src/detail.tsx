@@ -163,17 +163,19 @@ export default function Detail(){
         if(!stateAll)return;
         setShow(false);
         let all = (stateAll as any).otherRes;
+
         let arr=[];
         for(let key in all){
             let item = all[key][0];
             if(item.cate === "SignMetadata"){
                 const{creatAt,creator} = item;
                 let info = JSON.parse(item.memo);
-                let str = creatAt.replace(/,/g, "");
+                console.log(info)
+                // let str = creatAt.replace(/,/g, "");
                 arr.push(
                     {
                         ...info,
-                        saveAt:Number(str),
+                        saveAt:Number(creatAt),
                         creator
                     }
                 )
@@ -184,7 +186,7 @@ export default function Detail(){
         // const {file } = (stateAll as any);
         // const {url} = file;
         // setUrl(url);
-    },[])
+    },[stateAll,url])
 
     return <div>
         {

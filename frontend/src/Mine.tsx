@@ -265,8 +265,9 @@ export default function Mine(){
     }
 
     const formatTime = (time:string) =>{
-        let str = time.replace(/,/g, "");
-        let res =  publicJs.dateFormat(Number(str))
+        console.log(time)
+        // let str = time?.replace(/,/g, "");
+        let res =  publicJs.dateFormat(Number(time))
         return res
     }
 

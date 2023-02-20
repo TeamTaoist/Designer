@@ -395,8 +395,8 @@ export default function Contract(){
     }
 
     const formatTime = (time:string) =>{
-        let str = time.replace(/,/g, "");
-        let res =  publicJs.dateFormat(Number(str))
+        // let str = time.replace(/,/g, "");
+        let res =  publicJs.dateFormat(Number(time))
         return res
     }
 
@@ -584,18 +584,18 @@ export default function Contract(){
                                                 </CopyToClipboard>
                                         </FL>
                                         </div>
-                                        <div className="hashLine">
-                                            <div className="top">File Hash: </div><FL><div>{publicJs.AddresstoShow(item.file.digest.SHA256)}</div><CopyToClipboard text={item.file.digest.SHA256} onCopy={handleCopy2}>
-                                            <CopiedBtn>
-                                                <img src={CopyImg} alt=""/>
-                                                {
-                                                    showTips2 &&<span>Copied!</span>
-                                                }
+                                        {/*<div className="hashLine">*/}
+                                        {/*    <div className="top">File Hash: </div><FL><div>{publicJs.AddresstoShow(item.file.digest.SHA256)}</div><CopyToClipboard text={item.file.digest.SHA256} onCopy={handleCopy2}>*/}
+                                        {/*    <CopiedBtn>*/}
+                                        {/*        <img src={CopyImg} alt=""/>*/}
+                                        {/*        {*/}
+                                        {/*            showTips2 &&<span>Copied!</span>*/}
+                                        {/*        }*/}
 
-                                            </CopiedBtn>
-                                        </CopyToClipboard>
-                                        </FL>
-                                        </div>
+                                        {/*    </CopiedBtn>*/}
+                                        {/*</CopyToClipboard>*/}
+                                        {/*</FL>*/}
+                                        {/*</div>*/}
                                         <div className="hashLine">
                                             <div className="top">Created: </div><div>{formatTime(item.createAt)}</div>
                                         </div>

@@ -15,6 +15,7 @@ import {GearApi} from "@gear-js/api";
 import { getProgramMetadata } from '@gear-js/api';
 import MetaTxt from "../../wasm/meta.txt";
 import {  web3FromSource } from '@polkadot/extension-dapp';
+import {ApiLoader} from "../loaders";
 
 const Box = styled.div`
   margin-top: 40px;
@@ -110,6 +111,17 @@ const TitleBox = styled.div`
   font-size: 20px;
 `
 
+const MaskBox = styled.div`
+    width: 100vw;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background: #000;
+  z-index: 19;
+`
+
+
 interface obj{
     name:string
     address:string
@@ -128,6 +140,7 @@ export default function Step4(props:Iprops){
     const { account } = useAccount();
     const {list,fileObj} =props;
     const [signers,setSigners]= useState<string[]>([]);
+    const [show, setShow] = useState(false);
 
     useEffect(()=>{
         let arr:string[]=[];
@@ -195,18 +208,18 @@ export default function Step4(props:Iprops){
     console.log(JSON.stringify(payload))
 
     const reset = () =>{
-        // navigate(`/mine`);
+        navigate(`/mine`);
     }
 
     const sendReply = async() =>{
 
-
+        setShow(true);
         try {
             const message = {
                 destination: programId, // programId
                 payload,
                 gasLimit: 10000000000,
-                value: 10000,
+                value: 0,
             };
             const metadataRead = await fetch(metaWasm)
             const gearApi = await GearApi.create({providerAddress: NODE});
@@ -226,6 +239,11 @@ export default function Step4(props:Iprops){
 
         await extrinsic.signAndSend(account!.address, { signer: injector.signer },(event) => {
             console.log(event.toHuman());
+            setShow(false);
+            setTimeout(()=>{
+                    reset()
+                }
+                ,500)
         });
 
         } catch (error:any) {
@@ -234,7 +252,9 @@ export default function Step4(props:Iprops){
     }
 
     return <Box>
-
+        {
+            show && <MaskBox><ApiLoader /></MaskBox>
+        }
         <UlBox>
             {
                 !!fileObj?.name &&

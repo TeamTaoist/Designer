@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import {useState,useEffect} from "react";
-import {useAccount, useSendMessage} from "@gear-js/react-hooks";
+import {useAccount} from "@gear-js/react-hooks";
 import AddImg from "../assets/images/add.svg";
 import {useSubstrate} from "../api/connect";
 import {ActionType} from "../utils/types";
@@ -181,17 +181,22 @@ export default function ViewPdf(props:pdfProps){
   const [sListIframe,setSListIframe] = useState<iframeObj[]>([]);
   const [show, setShow] = useState(false);
   const { account } = useAccount();
+  const navigate = useNavigate();
 
   const handleSign = () =>{
     (document.querySelector('#iframe') as any).contentWindow.displaySignature()
   }
 
   useEffect(() => {
+    if(!fileUrl)return;
     const getResourcesInfo =  () => {
-      (document.querySelector('#iframe') as any).contentWindow.haveSignedList = agreeList
+      setTimeout(()=>{
+        (document.querySelector('#iframe') as any).contentWindow.haveSignedList = agreeList
+      },800)
+
     }
     getResourcesInfo()
-  }, [agreeList])
+  }, [agreeList,fileUrl])
 
 
   useEffect(() => {
@@ -268,7 +273,7 @@ export default function ViewPdf(props:pdfProps){
         destination: programId, // programId
         payload,
         gasLimit: 10000000000,
-        value: 10000,
+        value: 0,
       };
       // const metadataRead = await fetch(metaWasm)
       const gearApi = await GearApi.create({providerAddress: NODE});
@@ -280,13 +285,20 @@ export default function ViewPdf(props:pdfProps){
       const metadata = getProgramMetadata(`0x${metaStr}`);
 
       let extrinsic = gearApi.message.send(message, metadata);
+      console.log("extrinsic",extrinsic)
 
       const injector = await web3FromSource(account!.meta.source);
       console.error("injector===",account!.decodedAddress,injector.signer)
 
       await extrinsic.signAndSend(account!.decodedAddress, { signer: injector.signer },(event) => {
         console.log(event.toHuman());
+        setShow(false);
+        setTimeout(()=>{
+              navigate(`/mine`);
+            }
+            ,500)
       });
+
 
     } catch (error:any) {
       console.error(`${error.name}: ${error.message}`);
