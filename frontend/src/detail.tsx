@@ -170,7 +170,6 @@ export default function Detail(){
             if(item.cate === "SignMetadata"){
                 const{creatAt,creator} = item;
                 let info = JSON.parse(item.memo);
-                console.log(info)
                 // let str = creatAt.replace(/,/g, "");
                 arr.push(
                     {
