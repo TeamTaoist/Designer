@@ -2,7 +2,9 @@
 
 ## Overview
 
-<img src="./designer-logo.svg" style="width:300px" />
+
+<img src="./docs/designer-logo.svg" style="width:300px" />
+
 
 `Designer` is a decentralized coordinate tool for DAO. With Designer, members in DAO can sign agreements with anyone not relying on any centralized services. The agreement content can be encrypted or public as needs. It's your freedom to sign any agreements as you wish in a pure web3 way.
 
@@ -16,7 +18,7 @@ They are using decentralized technologies, but they don't let you know, there ar
 
 Designer uses Gear Smart Contracts which is a new way, and IPFS as decentralized storage layer. The front end uses React + gear-js + polkadot-js/extention.
 
-![](./docs/graphics/designer-home.png)
+![](./docs/designer-home.png)
 
 ### Tech
 
@@ -27,7 +29,7 @@ Anyone can access the web app and agreement files at anytime, without worry abou
 
 The following graph shows the flow of how it works.
 
-<img src="./docs/graphics/flow.png" style="zoom: 25%;" />
+<img src="./docs/flow.png" style="zoom: 25%;" />
 
 It's quite simple to use Designer.
 
