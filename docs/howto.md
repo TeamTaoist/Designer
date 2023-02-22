@@ -4,7 +4,6 @@
 
 It's quite simple to use Designer.
 
-<img src="./graphics/flow.png" style="zoom: 25%;" />
 
 Firstly, just create agreement with the help of Designer Web App, currently only PDF file supported, later we will have more file formats.
 
