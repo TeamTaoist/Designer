@@ -2,7 +2,7 @@
 
 ## Overview
 
-
+<img src="./designer-logo.svg" style="width:300px" />
 
 `Designer` is a decentralized coordinate tool for DAO. With Designer, members in DAO can sign agreements with anyone not relying on any centralized services. The agreement content can be encrypted or public as needs. It's your freedom to sign any agreements as you wish in a pure web3 way.
 
