@@ -46,8 +46,12 @@ After all, the co-signers can view the agreements at anytime.
 The details can be find [How to use Designer](./docs/howto.md).
 
 The instructions to build Designer can be find 
-[Contracts](./contracts/README.md).
-[FrontEnd](./frontend/README.md).
+
+
+[Contracts](./tree/main/contracts/README.md).
+
+[FrontEnd](./tree/main/frontend/README.md).
+
 
 
 
