@@ -43,30 +43,34 @@ export default function Detail(){
 
     useEffect(()=>{
         const getState = async() =>{
+
             setShow(true);
             const metadataRead = await fetch(metaWasm)
             const gearApi = await GearApi.create({providerAddress: NODE});
             const bufferData = await metadataRead.arrayBuffer()
             const metadataState = await getStateMetadata(new Uint8Array(bufferData));
+            console.log(id)
+
+
             const state = await gearApi.programState.readUsingWasm(
                 {
                     programId,
-                    fn_name: 'query_contract_by_id',
+                    fn_name: 'query_all_contract_by_id',
                     wasm:new Uint8Array(bufferData),
-                    argument:  {
-                        "owner":id
-                    },
+                    argument: [id],
                 },
                 metadataState,
             );
 
+
+
             const map = new Map(Object.entries(JSON.parse(state as any)));
             const jsonFromMap = JSON.stringify(Object.fromEntries(map));
             const jsonFormat = JSON.parse(jsonFromMap);
-            setStateAll(jsonFormat)
-            console.log(jsonFormat)
+            setStateAll(jsonFormat[0])
+            console.log(jsonFormat[0])
             setShow(false);
-            const fidUrl = jsonFormat.file.digest.SHA256;
+            const fidUrl = jsonFormat[0].file.digest.sha256;
             setFid(fidUrl);
         }
         getState()
