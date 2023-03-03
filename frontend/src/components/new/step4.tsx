@@ -151,8 +151,7 @@ export default function Step4(props:Iprops){
     },[list])
 
     // const {metadata} = ADDRESS;
-    const programId = process.env.REACT_APP_PROGRAM_ID as any ;
-    const {NODE} = ADDRESS;
+    const {NODE,programId} = ADDRESS;
     // const sendMessage = useSendMessage(programId, metadata);
 
     const dateTime = (new Date()).valueOf() + 30 * 24 * 3600 * 1000;

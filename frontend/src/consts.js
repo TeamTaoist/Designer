@@ -1,8 +1,10 @@
 import metaWasm from "./wasm/designer_state.meta.wasm";
 
 const ADDRESS = {
-  NODE: process.env.REACT_APP_NODE_ADDRESS ,
-  programId: process.env.REACT_APP_PROGRAM_ID,
+  NODE: window.configInfo.NODE_ADDRESS ,
+  programId: window.configInfo.PROGRAM_ID,
+  apiKey:process.env.REACT_APP_FLEEK_API_KEY,
+  apiSecret:process.env.REACT_APP_FLEEK_API_SECRET,
   metaWasm:metaWasm,
 };
 

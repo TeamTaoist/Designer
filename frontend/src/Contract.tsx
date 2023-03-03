@@ -317,6 +317,7 @@ export default function Contract(){
 
     const [ showTips,setShowTips] = useState(false);
     const [ showTips2,setShowTips2] = useState(false);
+    const {NODE,metaWasm,programId,apiKey,apiSecret} = ADDRESS;
 
     const handleClick = (i:number) => {
         setCurrrentNav(i);
@@ -333,8 +334,7 @@ export default function Contract(){
         navigate(`/detail/${num}`)
     }
 
-    const {NODE,metaWasm} = ADDRESS;
-    const programId = process.env.REACT_APP_PROGRAM_ID as any;
+
 
     let arr = currentNav === 0 ? [
         {
@@ -454,8 +454,6 @@ export default function Contract(){
         }
 
         const fid = item.file.digest.sha256;
-        const apiKey = process.env.REACT_APP_API_KEY;
-        const apiSecret= process.env.REACT_APP_API_SECRET;
 
         const myFile = await fleekStorage.get({
             apiKey:apiKey!,

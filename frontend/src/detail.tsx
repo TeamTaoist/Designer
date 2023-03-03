@@ -38,8 +38,7 @@ export default function Detail(){
     //     "QueryContractById":id
     // }
 
-    const {NODE,metaWasm} = ADDRESS;
-    const programId = process.env.REACT_APP_PROGRAM_ID as any;
+    const {NODE,metaWasm,programId,apiSecret,apiKey} = ADDRESS;
 
     useEffect(()=>{
         const getState = async() =>{
@@ -78,8 +77,6 @@ export default function Detail(){
     },[])
     useEffect(()=>{
         if(!fid)return;
-        const apiKey = process.env.REACT_APP_API_KEY;
-        const apiSecret= process.env.REACT_APP_API_SECRET;
         const getFile = async() =>{
             const myFile = await fleekStorage.get({
                 apiKey:apiKey!,

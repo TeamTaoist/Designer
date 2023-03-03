@@ -13,6 +13,7 @@ import {useAccount} from "@gear-js/react-hooks";
 import fleekStorage from '@fleekhq/fleek-storage-js';
 import  * as uuid  from 'uuid';
 import {ApiLoader} from "../loaders";
+import {ADDRESS} from "../../consts";
 
 const Box = styled.div`
   padding-top: 20px;
@@ -151,6 +152,8 @@ export default function Step1(props:Iprops){
     const { account } = useAccount();
     const [show, setShow] = useState(false);
 
+    const {apiKey,apiSecret} = ADDRESS;
+
     const updateLogo = (e:FormEvent) =>{
         const { files } = e.target as any;
         const { name } = files[0]
@@ -201,8 +204,6 @@ export default function Step1(props:Iprops){
         if(!file)return;
         setShow(true);
         const key = uuid.v4();
-        const apiKey = process.env.REACT_APP_API_KEY;
-        const apiSecret= process.env.REACT_APP_API_SECRET;
         console.log(key)
         try{
             // await auth();

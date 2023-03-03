@@ -239,8 +239,8 @@ export default function ViewPdf(props:pdfProps){
     (document.querySelector('#iframe') as any).contentWindow.gotoPageFrom(num)
   }
 
-  const {metaWasm,NODE} = ADDRESS;
-  const programId = process.env.REACT_APP_PROGRAM_ID;
+  const {metaWasm,NODE,programId} = ADDRESS;
+
   // const sendMessage = useSendMessage(programId, metaWasm);
 
   let sig = JSON.stringify(sList[sList.length-1]);
