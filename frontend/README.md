@@ -19,7 +19,7 @@ In case of issues with the application, try to switch to another network or run 
 
 REACT_APP_FLEEK_API_KEY=
 
-REACT_APP_API_SECRET=
+REACT_APP_FLEEK_API_SECRET=
 ```
 REACT_APP_FLEEK_API_KEY and REACT_APP_FLEEK_API_SECRET is the configuration of Fleek
 [docs.fleek.co](https://docs.fleek.co/storage/fleek-storage-js/)
