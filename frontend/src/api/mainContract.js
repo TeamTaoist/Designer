@@ -1,7 +1,8 @@
 import { ActionType } from "../utils/types";
+import {ADDRESS} from "../consts";
 
 
-const programId = process.env.REACT_APP_PROGRAM_ID;
+const {programId} = ADDRESS;
 
 let loadMain = false;
 

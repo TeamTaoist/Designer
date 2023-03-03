@@ -215,8 +215,7 @@ export default function Mine(){
     const [showConfirm,setShowConfirm] = useState(false);
     const [currentItem,setCurrentItem] = useState<any>();
 
-    const {NODE,metaWasm} = ADDRESS;
-    const programId = process.env.REACT_APP_PROGRAM_ID as any ;
+    const {NODE,metaWasm,programId,apiKey,apiSecret} = ADDRESS;
 
     useEffect(()=>{
         const getState = async() =>{
@@ -287,8 +286,6 @@ export default function Mine(){
         }
 
         const fid = item.file.digest.sha256;
-        const apiKey = process.env.REACT_APP_API_KEY;
-        const apiSecret= process.env.REACT_APP_API_SECRET;
 
         const myFile = await fleekStorage.get({
             apiKey:apiKey!,
