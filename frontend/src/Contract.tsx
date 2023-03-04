@@ -456,8 +456,8 @@ export default function Contract(){
         const fid = item.file.digest.sha256;
 
         const myFile = await fleekStorage.get({
-            apiKey:apiKey!,
-            apiSecret:apiSecret!,
+            apiKey:publicJs.RevertCode(apiKey)!,
+            apiSecret:publicJs.RevertCode(apiSecret)!,
             key: fid,
             getOptions: [
                 'data',

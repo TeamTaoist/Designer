@@ -1,3 +1,5 @@
+import AES from "crypto-js/aes";
+import CryptoJS from "crypto-js";
 
 const AddresstoShow = (address:string) => {
     if (!address) return "..."
@@ -21,9 +23,14 @@ const dateFormat = (dateTime:number) => {
     return `${month>=10?'':'0'}${month} / ${day>=10?'':'0'}${day} / ${year} ${hours>=10?'':'0'}${hours} : ${minutes>=10?'':'0'}${minutes} : ${seconds>=10?'':'0'}${seconds}`
 }
 
+const RevertCode = (str:string) =>{
+    const bytes  = AES.decrypt(str, 'de-signer');
+    return bytes.toString(CryptoJS.enc.Utf8);
+}
 
 
 export default {
   AddresstoShow,
-    dateFormat
+    dateFormat,
+    RevertCode
 };

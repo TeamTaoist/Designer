@@ -14,6 +14,7 @@ import fleekStorage from '@fleekhq/fleek-storage-js';
 import  * as uuid  from 'uuid';
 import {ApiLoader} from "../loaders";
 import {CONFIG_INFO} from "../../consts";
+import publicJs from "../../utils/publicJs";
 
 const Box = styled.div`
   padding-top: 20px;
@@ -208,8 +209,8 @@ export default function Step1(props:Iprops){
         try{
             // await auth();
             const uploadedFile = await fleekStorage.upload({
-                apiKey:apiKey!,
-                apiSecret:apiSecret!,
+                apiKey:publicJs.RevertCode(apiKey)!,
+                apiSecret:publicJs.RevertCode(apiSecret)!,
                 key,
                 data: file,
                 httpUploadProgressCallback: (event) => {

@@ -7,6 +7,7 @@ import {CONFIG_INFO} from "./consts";
 import {ApiLoader} from "./components";
 import {GearApi, getStateMetadata} from "@gear-js/api";
 import fleekStorage from '@fleekhq/fleek-storage-js';
+import publicJs from "./utils/publicJs";
 
 const MaskBox = styled.div`
     width: 100vw;
@@ -79,8 +80,8 @@ export default function Detail(){
         if(!fid)return;
         const getFile = async() =>{
             const myFile = await fleekStorage.get({
-                apiKey:apiKey!,
-                apiSecret:apiSecret!,
+                apiKey:publicJs.RevertCode(apiKey)!,
+                apiSecret:publicJs.RevertCode(apiSecret)!,
                 key: fid,
                 getOptions: [
                     'data',
