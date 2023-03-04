@@ -3,7 +3,7 @@ import ViewPdf from "./components/ViewPdf";
 import Layout from "./components/layout/layout";
 import {useEffect, useState} from "react";
 import { useParams } from "react-router-dom";
-import {ADDRESS} from "./consts";
+import {CONFIG_INFO} from "./consts";
 import {ApiLoader} from "./components";
 import {GearApi, getStateMetadata} from "@gear-js/api";
 import fleekStorage from '@fleekhq/fleek-storage-js';
@@ -38,7 +38,7 @@ export default function Detail(){
     //     "QueryContractById":id
     // }
 
-    const {NODE,metaWasm,programId,apiSecret,apiKey} = ADDRESS;
+    const {NODE,metaWasm,programId,apiSecret,apiKey} = CONFIG_INFO;
 
     useEffect(()=>{
         const getState = async() =>{

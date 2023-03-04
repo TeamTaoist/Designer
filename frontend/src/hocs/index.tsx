@@ -7,10 +7,10 @@ import {
 import { Alert, alertStyles } from '@gear-js/ui';
 import { ComponentType } from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import { ADDRESS } from 'consts';
+import { CONFIG_INFO } from 'consts';
 
 function ApiProvider({ children }: ProviderProps) {
-  return <GearApiProvider providerAddress={ADDRESS.NODE}>{children}</GearApiProvider>;
+  return <GearApiProvider providerAddress={CONFIG_INFO.NODE}>{children}</GearApiProvider>;
 }
 
 function AlertProvider({ children }: ProviderProps) {

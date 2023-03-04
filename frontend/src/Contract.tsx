@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import DownImg from "./assets/images/icon_down_arrow_outline.svg";
 import CheckImg from "./assets/images/icon_check.svg";
 import Wait from "./components/wait";
-import {ADDRESS} from "./consts";
+import { CONFIG_INFO} from "./consts";
 import {useAccount} from "@gear-js/react-hooks";
 import ReactPaginate from 'react-paginate';
 import publicJs from "./utils/publicJs";
@@ -317,7 +317,7 @@ export default function Contract(){
 
     const [ showTips,setShowTips] = useState(false);
     const [ showTips2,setShowTips2] = useState(false);
-    const {NODE,metaWasm,programId,apiKey,apiSecret} = ADDRESS;
+    const {NODE,metaWasm,programId,apiKey,apiSecret} = CONFIG_INFO;
 
     const handleClick = (i:number) => {
         setCurrrentNav(i);

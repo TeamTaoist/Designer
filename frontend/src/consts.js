@@ -1,6 +1,6 @@
 import metaWasm from "./wasm/designer_state.meta.wasm";
 
-const ADDRESS = {
+const CONFIG_INFO = {
   NODE: window.configInfo.NODE_ADDRESS ,
   programId: window.configInfo.PROGRAM_ID,
   apiKey:process.env.REACT_APP_FLEEK_API_KEY,
@@ -12,4 +12,4 @@ const LOCAL_STORAGE = {
   ACCOUNT: 'account',
 };
 
-export { ADDRESS, LOCAL_STORAGE };
+export { CONFIG_INFO, LOCAL_STORAGE };

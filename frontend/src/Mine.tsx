@@ -7,7 +7,7 @@ import DownImg from "./assets/images/icon_download.svg";
 import Finished from "./assets/images/icon_check_handwritten.svg";
 import {useEffect, useState} from "react";
 import ReactPaginate from 'react-paginate';
-import {ADDRESS} from "./consts";
+import {CONFIG_INFO} from "./consts";
 import {useAccount} from "@gear-js/react-hooks";
 import {ApiLoader} from "./components";
 import publicJs from "./utils/publicJs";
@@ -215,7 +215,7 @@ export default function Mine(){
     const [showConfirm,setShowConfirm] = useState(false);
     const [currentItem,setCurrentItem] = useState<any>();
 
-    const {NODE,metaWasm,programId,apiKey,apiSecret} = ADDRESS;
+    const {NODE,metaWasm,programId,apiKey,apiSecret} = CONFIG_INFO;
 
     useEffect(()=>{
         const getState = async() =>{

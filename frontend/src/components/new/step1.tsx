@@ -13,7 +13,7 @@ import {useAccount} from "@gear-js/react-hooks";
 import fleekStorage from '@fleekhq/fleek-storage-js';
 import  * as uuid  from 'uuid';
 import {ApiLoader} from "../loaders";
-import {ADDRESS} from "../../consts";
+import {CONFIG_INFO} from "../../consts";
 
 const Box = styled.div`
   padding-top: 20px;
@@ -152,7 +152,7 @@ export default function Step1(props:Iprops){
     const { account } = useAccount();
     const [show, setShow] = useState(false);
 
-    const {apiKey,apiSecret} = ADDRESS;
+    const {apiKey,apiSecret} = CONFIG_INFO;
 
     const updateLogo = (e:FormEvent) =>{
         const { files } = e.target as any;
