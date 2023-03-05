@@ -5,7 +5,7 @@ import PDFimg from "../../assets/images/icon_pdf.svg";
 import MeImg from "../../assets/images/icon_person.svg";
 import Wait from "../wait";
 
-import {ADDRESS} from "../../consts";
+import {CONFIG_INFO} from "../../consts";
 import {useAccount} from "@gear-js/react-hooks";
 import {useEffect, useState} from "react";
 import {useSubstrate} from "../../api/connect";
@@ -150,8 +150,7 @@ export default function Step4(props:Iprops){
         setSigners(arr);
     },[list])
 
-    // const {metadata} = ADDRESS;
-    const {NODE,programId} = ADDRESS;
+    const {NODE,programId} = CONFIG_INFO;
     // const sendMessage = useSendMessage(programId, metadata);
 
     const dateTime = (new Date()).valueOf() + 30 * 24 * 3600 * 1000;

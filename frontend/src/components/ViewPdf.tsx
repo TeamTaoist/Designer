@@ -6,7 +6,7 @@ import {useSubstrate} from "../api/connect";
 import {ActionType} from "../utils/types";
 import FinishedImg from "../assets/images/hand.svg";
 import PenImg from "../assets/images/icon_pen.svg";
-import {ADDRESS} from "../consts";
+import {CONFIG_INFO} from "../consts";
 // import {Hex} from "@gear-js/api";
 import {useNavigate} from "react-router-dom";
 import {ApiLoader} from "./loaders";
@@ -239,7 +239,7 @@ export default function ViewPdf(props:pdfProps){
     (document.querySelector('#iframe') as any).contentWindow.gotoPageFrom(num)
   }
 
-  const {metaWasm,NODE,programId} = ADDRESS;
+  const {metaWasm,NODE,programId} = CONFIG_INFO;
 
   // const sendMessage = useSendMessage(programId, metaWasm);
 

@@ -3,10 +3,11 @@ import ViewPdf from "./components/ViewPdf";
 import Layout from "./components/layout/layout";
 import {useEffect, useState} from "react";
 import { useParams } from "react-router-dom";
-import {ADDRESS} from "./consts";
+import {CONFIG_INFO} from "./consts";
 import {ApiLoader} from "./components";
 import {GearApi, getStateMetadata} from "@gear-js/api";
 import fleekStorage from '@fleekhq/fleek-storage-js';
+import publicJs from "./utils/publicJs";
 
 const MaskBox = styled.div`
     width: 100vw;
@@ -38,7 +39,7 @@ export default function Detail(){
     //     "QueryContractById":id
     // }
 
-    const {NODE,metaWasm,programId,apiSecret,apiKey} = ADDRESS;
+    const {NODE,metaWasm,programId,apiSecret,apiKey} = CONFIG_INFO;
 
     useEffect(()=>{
         const getState = async() =>{
@@ -79,8 +80,8 @@ export default function Detail(){
         if(!fid)return;
         const getFile = async() =>{
             const myFile = await fleekStorage.get({
-                apiKey:apiKey!,
-                apiSecret:apiSecret!,
+                apiKey:publicJs.RevertCode(apiKey)!,
+                apiSecret:publicJs.RevertCode(apiSecret)!,
                 key: fid,
                 getOptions: [
                     'data',
