@@ -92,6 +92,34 @@ pub trait Metawasm {
         let contract = state.contract_map.get(&param).expect("not found contract");
         (*contract).clone()
     }
+
+    fn query_all_contract_by_id(ids: Vec<u64>, state: Self::State) -> Vec<Contract> {
+        let mut res = Vec::with_capacity(ids.len());
+        for i in ids.iter() {
+            let contract = state
+                .contract_map
+                .get(i)
+                .expect("not found contract");
+            res.push((*contract).clone())
+        }
+        res
+    }
+
+    fn query_all_contract_by_creator(addr: ActorId, state: Self::State) -> Vec<Contract> {
+        if let Some(id_list) = state.contract_map_by_creator.get(&addr) {
+            let mut res = Vec::with_capacity(id_list.len());
+            for i in id_list.iter() {
+                let contract = state
+                    .contract_map
+                    .get(i)
+                    .expect("not found contract");
+                res.push((*contract).clone())
+            }
+            res
+        } else {
+            Vec::new()
+        }
+    }
 }
 
 pub type PendingExecuted = (bool, bool);
