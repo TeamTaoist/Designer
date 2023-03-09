@@ -126,7 +126,10 @@ export default function StepNav(props:Iprops){
     return <Box>
             <ul className="step-wizard-list">
                 {
-                    list.map((item,index)=>( <li key={index} onClick={()=>handleCurrent(index)} className={current === index+1?'step-wizard-item current-item':'step-wizard-item'}>
+                    list.map((item,index)=>( <li
+                        key={index}
+                        // onClick={()=>handleCurrent(index)}
+                        className={current === index+1?'step-wizard-item current-item':'step-wizard-item'}>
                         <span className="progress-count">{index+1}</span>
                         <span className="progress-label">{item}</span>
                     </li>))

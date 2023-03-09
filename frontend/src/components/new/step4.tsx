@@ -246,6 +246,7 @@ export default function Step4(props:Iprops){
 
         } catch (error:any) {
             console.error(`${error.name}: ${error.message}`);
+            setShow(false);
         }
     }
 
